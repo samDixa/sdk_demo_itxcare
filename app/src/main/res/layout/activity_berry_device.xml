@@ -1,29 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:scrollbars="none"
     android:background="@color/textcolor"
+    android:scrollbars="none"
     tools:context=".BerryDeviceActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <include layout="@layout/layout_bluetooth"/> <!--Bluetooth-->
-        <include layout="@layout/layout_ecg"/>       <!--ECG-->
-        <include layout="@layout/layout_spo2"/>      <!--SPO2-->
-        <include layout="@layout/layout_temp"/>      <!--TEMP-->
-        <include layout="@layout/layout_nibp"/>      <!--NIBP-->
-<!--        <include layout="@layout/layout_about"/>     &lt;!&ndash;ABOUT&ndash;&gt;-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/colorPrimary"
+
+            android:orientation="horizontal">
+
+            <include layout="@layout/layout_bluetooth" />
+
+            <include layout="@layout/layout_about" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <!--            graph -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7"
+                android:orientation="vertical">
+
+                <include layout="@layout/layout_ecg" />
+
+                <include layout="@layout/layout_spo2" />
+
+                <include layout="@layout/layout_temp" />
+
+                <include layout="@layout/layout_hrbpm" />
+
+                <include layout="@layout/layout_nibp" />
+
+            </LinearLayout>
+
+            <!--            ratings-->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".3"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvECGinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="@drawable/border_box"
+                    android:padding="10dp"
+                    android:text="Heart Rate:--"
+                    android:textColor="@color/green_wave"
+                    android:textSize="22sp" />
+
+
+                <TextView
+                    android:id="@+id/tvSPO2info"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_below="@id/btnBtCtr"
+                    android:background="@drawable/border_box"
+                    android:gravity="top"
+                    android:text="PulseRate:--"
+                    android:textColor="#FFFA00"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvTEMPinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_below="@id/btnBtCtr"
+                    android:background="@drawable/border_box"
+                    android:padding="10dp"
+                    android:text="TEMP:--.- "
+
+                    android:textColor="@color/wheel_selected_text_color"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/tvBPMinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_below="@id/btnBtCtr"
+                    android:background="@drawable/border_box"
+                    android:padding="10dp"
+                    android:text="HR bpm:--.- "
+
+                    android:textColor="@color/green_wave"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/tvNIBPinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_below="@id/btnBtCtr"
+                    android:background="@drawable/border_box"
+                    android:padding="10dp"
+                    android:text="Cuff:--\nHigh:-- Low:-- Mean:--"
+                    android:textColor="#FF0000"
+
+                    android:textSize="22sp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </LinearLayout>
-</ScrollView>
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:orientation="vertical"-->
+    <!--        android:layout_height="wrap_content">-->
+
+    <!--        <include layout="@layout/layout_bluetooth"/> d &lt;!&ndash;Bluetooth&ndash;&gt;-->
+    <!--        <include layout="@layout/layout_ecg"/> d      &lt;!&ndash;ECG&ndash;&gt;-->
+    <!--        <include layout="@layout/layout_spo2"/> d     &lt;!&ndash;SPO2&ndash;&gt;-->
+    <!--            <include layout="@layout/layout_temp"/>   d   &lt;!&ndash;TEMP&ndash;&gt;-->
+    <!--        <include layout="@layout/layout_nibp"/>   d   &lt;!&ndash;NIBP&ndash;&gt;-->
+    <!--&lt;!&ndash;        <include layout="@layout/layout_about"/>  d   &lt;!&ndash;ABOUT&ndash;&gt;&ndash;&gt;-->
+
+    <!--    </LinearLayout>-->
+
+</LinearLayout>
 
     <!---->

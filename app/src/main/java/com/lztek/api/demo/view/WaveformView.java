@@ -16,174 +16,114 @@ import android.view.SurfaceView;
 
 import com.lztek.api.demo.R;
 
-
-/**
- * Created by ZXX on 2017/7/8.
- */
-
-public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
-
-    private static final String TAG = ">>>WAVEFORM VIEW<<<";
-
-    private int mHeight;
-    private int mWidth;
-
-    private Paint mWavePaint;
-    private Paint mBackgroundPaint;
-
-
+public class WaveformView extends SurfaceView implements SurfaceHolder.Callback {
+    private Paint mWavePaintECG, mWavePaintSpO2, mBackgroundPaint;
     private SurfaceHolder mSurfaceHolder;
     private Canvas mCanvas;
 
-    private Point mLastPoint;
+    private Point mLastPointECG, mLastPointSpO2;
     private float pointStep;
     private float mLineWidth;
 
-    private int[] mDataBuffer;
-    private int   mDataBufferIndex;
-    private int   mBufferSize;
-    private int   mMaxValue;
-
+    private int[] mDataBufferECG, mDataBufferSpO2;
+    private int mDataBufferIndexECG, mDataBufferIndexSpO2;
+    private int mBufferSize, mMaxValue;
     private boolean isSurfaceViewAvailable;
 
-
-    public WaveformView(Context context){
-        this(context,null);
-    }
-
-
     public WaveformView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
+        init(context, attrs);
     }
 
-    public WaveformView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-
+    private void init(Context context, AttributeSet attrs) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        TypedArray arr = context.getTheme().obtainStyledAttributes(attrs, R.styleable.WaveformView, defStyleAttr, 0);
+        TypedArray arr = context.getTheme().obtainStyledAttributes(attrs, R.styleable.WaveformView, 0, 0);
 
-        int waveColor = arr.getColor(R.styleable.WaveformView_waveColor, Color.GREEN);
-        mLineWidth = arr.getDimension(R.styleable.WaveformView_lineWidth, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, metrics));
-        pointStep = arr.getDimension(R.styleable.WaveformView_pointStep, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3.0f, metrics));
+        int waveColorECG = arr.getColor(R.styleable.WaveformView_waveColor, Color.GREEN);
+        int waveColorSpO2 = arr.getColor(R.styleable.WaveformView_waveColor, Color.RED);
+        mLineWidth = arr.getDimension(R.styleable.WaveformView_lineWidth, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, metrics));
+        pointStep = arr.getDimension(R.styleable.WaveformView_pointStep, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.4f, metrics));
         mBufferSize = arr.getInt(R.styleable.WaveformView_bufferSize, 5);
         mMaxValue = arr.getInteger(R.styleable.WaveformView_maxValue, 100);
 
-        mWavePaint = new Paint();
-        mWavePaint.setColor(waveColor);
-        mWavePaint.setStrokeWidth(mLineWidth);
-        mWavePaint.setStyle(Paint.Style.STROKE);
-        mWavePaint.setStrokeCap(Paint.Cap.ROUND);
-        mWavePaint.setStrokeJoin(Paint.Join.ROUND);
+        mWavePaintECG = new Paint();
+        mWavePaintECG.setColor(waveColorECG);
+        mWavePaintECG.setStrokeWidth(mLineWidth);
+        mWavePaintECG.setStyle(Paint.Style.STROKE);
 
-        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor,Color.rgb(0,0,0));
+        mWavePaintSpO2 = new Paint();
+        mWavePaintSpO2.setColor(waveColorSpO2);
+        mWavePaintSpO2.setStrokeWidth(mLineWidth);
+        mWavePaintSpO2.setStyle(Paint.Style.STROKE);
+
+        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor, Color.BLACK);
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setColor(backgroundColor);
 
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
 
-        mDataBuffer = new int[mBufferSize*2];
-        mDataBufferIndex = 0;
+        mDataBufferECG = new int[mBufferSize];
+        mDataBufferSpO2 = new int[mBufferSize];
+        mDataBufferIndexECG = 0;
+        mDataBufferIndexSpO2 = 0;
 
-        setBackgroundColor(backgroundColor);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        int width  = (MeasureSpec.getSize(widthMeasureSpec));
-        if(width > mWidth) mWidth = width;
-        int height = (int) (MeasureSpec.getSize(heightMeasureSpec)*0.95);
-        if(height > mHeight) mHeight = height;
-//
-//        mWidth  = (MeasureSpec.getSize(widthMeasureSpec));
-//        mHeight = (int) (MeasureSpec.getSize(heightMeasureSpec)*0.95);
-
-       // Log.i(TAG, "onMeasure: " + mWidth +"-" + mHeight );
+    public void addAmpECG(int amp) {
+        if (!isSurfaceViewAvailable) return;
+        drawWaveform(amp, mDataBufferECG, mDataBufferIndexECG, mWavePaintECG, mLastPointECG);
+        mDataBufferIndexECG = (mDataBufferIndexECG + 1) % mBufferSize;
     }
 
+    public void addAmpSpO2(int amp) {
+        if (!isSurfaceViewAvailable) return;
+        drawWaveform(amp, mDataBufferSpO2, mDataBufferIndexSpO2, mWavePaintSpO2, mLastPointSpO2);
+        mDataBufferIndexSpO2 = (mDataBufferIndexSpO2 + 1) % mBufferSize;
+    }
 
-    public void addAmp(int amp){
-        if(!isSurfaceViewAvailable) {
-            mDataBufferIndex = 0;
+    private void drawWaveform(int amp, int[] buffer, int index, Paint paint, Point lastPoint) {
+        buffer[index] = amp;
+        if (lastPoint == null) {
+            lastPoint = new Point(0, getHeight() - (int) ((getHeight() / (float) mMaxValue) * amp));
             return;
         }
 
-        if(mLastPoint == null){
-            mLastPoint = new Point();
-            mLastPoint.x = 0;
-            mLastPoint.y = (int) (mHeight - mHeight/(float)mMaxValue * amp);
-            return;
-        }
+        int xRight = (int) (lastPoint.x + pointStep);
+        mCanvas = mSurfaceHolder.lockCanvas(new Rect(lastPoint.x, 0, xRight, getHeight()));
+        if (mCanvas == null) return;
 
-        mDataBuffer[mDataBufferIndex] = amp;
-        mDataBufferIndex++;
-        if(mDataBufferIndex >= mBufferSize){
-            mDataBufferIndex = 0;
-            int points = (int) ((mWidth - mLastPoint.x) / pointStep);
+        mCanvas.drawRect(new Rect(lastPoint.x, 0, xRight, getHeight()), mBackgroundPaint);
+        Point newPoint = new Point(xRight, getHeight() - (int) ((getHeight() / (float) mMaxValue) * amp));
+        mCanvas.drawLine(lastPoint.x, lastPoint.y, newPoint.x, newPoint.y, paint);
+        lastPoint.set(newPoint.x, newPoint.y);
 
-            points = points > mBufferSize ? mBufferSize : points;
-            int xRight = (int) (mLastPoint.x + pointStep*points);
-            mCanvas = mSurfaceHolder.lockCanvas(new Rect(mLastPoint.x, 0, (int) (xRight + pointStep*2), (int) (mHeight + mLineWidth)));
-            if(mCanvas == null) return;
-
-            mCanvas.drawRect(new Rect(mLastPoint.x, 0, (int) (xRight + pointStep*2), (int) (mHeight+mLineWidth)), mBackgroundPaint);
-            for(int i = 0; i < points; i++){
-                Point point = new Point();
-                point.x = (int) (mLastPoint.x + pointStep);
-                point.y = (int) (mHeight - mHeight/(float)mMaxValue * mDataBuffer[i]);
-
-                mCanvas.drawLine(mLastPoint.x, mLastPoint.y,point.x, point.y ,mWavePaint);
-                mLastPoint = point;
-            }
-            mSurfaceHolder.unlockCanvasAndPost(mCanvas);
-            postInvalidate();
-
-            if((int) ((mWidth - mLastPoint.x) / pointStep) < 1){
-                mLastPoint.x = 0;
-            }
-            if(points < mBufferSize){
-                //Log.e(TAG, "addAmp: "+points);
-                mDataBufferIndex = mBufferSize - points;
-                for(int i = 0; i < mDataBufferIndex; i++){
-                    mDataBuffer[i] = mDataBuffer[points + i];
-                }
-                mLastPoint.x = 0;
-
-                //Log.i(TAG, "drawLine mDataBufferIndex:" + mDataBufferIndex + " Points:" + points);
-            }
-        }
+        mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+        postInvalidate();
     }
 
-    public void reset(){
-        mDataBufferIndex = 0;
-        mLastPoint = new Point(0,(int) (mHeight - mHeight/(float)mMaxValue * 128));
+    public void reset() {
+        mDataBufferIndexECG = 0;
+        mDataBufferIndexSpO2 = 0;
+        mLastPointECG = null;
+        mLastPointSpO2 = null;
         Canvas c = mSurfaceHolder.lockCanvas();
-        c.drawRect(new Rect(0,0,mWidth,mHeight), mBackgroundPaint);
-        mSurfaceHolder.unlockCanvasAndPost(c);
-
+        if (c != null) {
+            c.drawRect(new Rect(0, 0, getWidth(), getHeight()), mBackgroundPaint);
+            mSurfaceHolder.unlockCanvasAndPost(c);
+        }
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if(mLastPoint != null){
-            mLastPoint = null;
-        }
-        //Log.e(TAG, "surfaceCreated: ");
         isSurfaceViewAvailable = true;
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Canvas c = holder.lockCanvas();
-        c.drawRect(new Rect(0,0,mWidth,mHeight), mBackgroundPaint);
-        holder.unlockCanvasAndPost(c);
-       // Log.e(TAG, "surfaceChanged: ");
-
+        reset();
     }
 
     @Override

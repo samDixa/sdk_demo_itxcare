@@ -11,6 +11,9 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -180,7 +183,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BTControll
     protected void onDestroy() {
         super.onDestroy();
         finish();
-//        System.exit(0); //for release "mBluetoothDevices" on key_back down
+        System.exit(0); //for release "mBluetoothDevices" on key_back down
         mBtController.unregisterBroadcastReceiver(this);
     }
 
@@ -237,19 +240,44 @@ public class BerryDeviceActivity extends AppCompatActivity implements BTControll
 
     @Override
     public void onSpO2WaveReceived(int dat) {
-        wfSpO2.addAmp(dat);
+        wfSpO2.addAmpSpO2(dat);
     }
 
     @Override
     public void onSpO2Received(SpO2 spo2) {
         runOnUiThread(() -> {
-            tvSPO2info.setText(spo2.toString());
+            // Labels
+            String spo2Label = "SpO2: ";
+            String pulseLabel = "Pulse Rate: ";
+
+            // Jo values aayengi unko check karo
+            String spo2Value = (spo2.getSpO2() != spo2.SPO2_INVALID) ? String.valueOf(spo2.getSpO2()) : "--";
+            String pulseValue = (spo2.getPulseRate() != spo2.PULSE_RATE_INVALID) ? String.valueOf(spo2.getPulseRate()) : "--";
+
+            // Full text format
+            String fullText = spo2Label + spo2Value + "\n" + pulseLabel + pulseValue;
+            SpannableString spannable = new SpannableString(fullText);
+
+            // SpO2 value ka start & end index
+            int spo2Start = spo2Label.length();
+            int spo2End = spo2Start + spo2Value.length();
+
+            // Pulse Rate value ka start & end index
+            int pulseStart = fullText.indexOf(pulseValue);
+            int pulseEnd = pulseStart + pulseValue.length();
+
+            // Sirf numbers ka size bada karo (1.8x times)
+            spannable.setSpan(new RelativeSizeSpan(2.2f), spo2Start, spo2End, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new RelativeSizeSpan(2.2f), pulseStart, pulseEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            // Final text set karo TextView me
+            tvSPO2info.setText(spannable);
         });
     }
 
     @Override
     public void onECGWaveReceived(int dat) {
-        wfECG.addAmp(dat);
+        wfECG.addAmpECG(dat);
     }
 
     @Override

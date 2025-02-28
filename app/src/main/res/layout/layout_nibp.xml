@@ -5,58 +5,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/llnibptitle">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:padding="3dp"
-            android:textColor="@color/colorPrimaryDark"
-            android:text="NIBP"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1.5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:background="@color/backcolor"/>
-    </LinearLayout>
-
-    <TextView
-        android:padding="10dp"
-        android:id="@+id/tvNIBPinfo"
-        android:textSize="12sp"
-        android:layout_below="@id/btnBtCtr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/green_wave"
-        android:text="Cuff:--\nHigh:-- Low:-- Mean:--"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <Button
-            android:layout_width="55dp"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="Start"
-            android:textSize="10sp"
-            android:id="@+id/btnNIBPStart"/>
-        <Button
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="Stop"
-            android:textSize="10sp"
-            android:id="@+id/btnNIBPStop"/>
+            android:orientation="vertical">
+
+            <com.lztek.api.demo.view.WaveformView
+                android:id="@+id/wfNIBP"
+                android:layout_width="match_parent"
+                android:layout_height="120dp" />
+
+
+        </LinearLayout>
+
+
     </LinearLayout>
+
+<!--    <TextView-->
+<!--        android:padding="10dp"-->
+<!--        android:id="@+id/tvNIBPinfo"-->
+<!--        android:textSize="12sp"-->
+<!--        android:layout_below="@id/btnBtCtr"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/green_wave"-->
+<!--        android:text="Cuff:&#45;&#45;\nHigh:&#45;&#45; Low:&#45;&#45; Mean:&#45;&#45;"-->
+<!--        />-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+<!--        <Button-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:onClick="onClick"-->
+<!--            android:text="Start"-->
+<!--            android:textSize="10sp"-->
+<!--            android:id="@+id/btnNIBPStart"/>-->
+<!--        <Button-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:onClick="onClick"-->
+<!--            android:text="Stop"-->
+<!--            android:textSize="10sp"-->
+<!--            android:id="@+id/btnNIBPStop"/>-->
+<!--    </LinearLayout>-->
 
 </LinearLayout>

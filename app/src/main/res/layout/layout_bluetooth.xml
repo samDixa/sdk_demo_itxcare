@@ -17,8 +17,8 @@
           android:orientation="vertical">
           <Button
               android:layout_below="@+id/llbttitle"
-              android:layout_width="60dp"
-              android:layout_height="30sp"
+              android:layout_width="65dp"
+              android:layout_height="20sp"
               android:padding="2dp"
               android:layout_centerHorizontal="true"
               android:textAllCaps="false"
@@ -27,7 +27,7 @@
               android:textSize="8sp"
               android:textStyle="bold"
               android:textColor="@color/text_color_inverse"
-              android:background="@drawable/btn_shape"
+              android:background="@drawable/border_box"
               android:text="@string/search_devices"/>
 
           <TextView
@@ -42,7 +42,36 @@
               />
       </LinearLayout>
 
+
       <include layout="@layout/layout_about"/>
+
+
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="20dp"
+          android:orientation="horizontal">
+
+          <Button
+              android:layout_width="55dp"
+              android:layout_height="wrap_content"
+              android:onClick="onClick"
+              android:text="Start"
+              android:textColor="#FFFFFF"
+              android:textSize="10sp"
+              android:background="@drawable/border_box"
+              android:id="@+id/btnNIBPStart"/>
+          <Button
+              android:layout_width="55dp"
+              android:layout_height="wrap_content"
+              android:onClick="onClick"
+              android:text="Stop"
+              android:textColor="#FFFFFF"
+              android:textSize="10sp"
+              android:background="@drawable/border_box"
+              android:id="@+id/btnNIBPStop"/>
+
+      </LinearLayout>
 
   </LinearLayout>
 

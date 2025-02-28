@@ -33,7 +33,7 @@ public class SpO2 {
 
     @Override
     public String toString() {
-        return "SpO2: " + (SpO2!=SPO2_INVALID ? SpO2: "- -") +
-                "  Pulse Rate:"+(pulseRate!=PULSE_RATE_INVALID ? pulseRate: "- -");
+        return "SpO2: " + (SpO2!=SPO2_INVALID ? SpO2: "- -") + "\n" +
+                "Pulse Rate:"+(pulseRate!=PULSE_RATE_INVALID ? pulseRate: "- -");
     }
 }

@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:paddingTop="10dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/lltemptitle">
+        android:orientation="horizontal">
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="1.5dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:padding="10dp"
-        android:id="@+id/tvTEMPinfo"
-        android:textSize="14sp"
-        android:layout_below="@id/btnBtCtr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="TEMP:--.- "
-        />
+            <com.lztek.api.demo.view.WaveformView
+                android:id="@+id/wfTEMP"
+                android:layout_width="match_parent"
+                android:layout_height="120dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
