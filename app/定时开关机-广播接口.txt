@@ -1,0 +1,35 @@
+[更新时间]: 2022-06-29
+
+[功能说明]: 定时开关机设置广播接口
+  因android 8以上系统静态广播权限限制，发送广播时必须指定相应包名，因此发送广播时必须增加： intent.setPackage("com.lztek.bootmaster.poweralarm7") 
+
+◆ 每天模式定时开关机 com.lztek.tools.action.ALARM_DAILY
+  onTime  -- 开机时间，类型String，格式HH:mm，24小时制的时与分如08:05，空字符串表示无开机时间设置
+  offTime -- 关机时间，类型String，格式HH:mm，24小时制的时与分如20:30，空字符串表示无关机时间设置
+
+  调用示例(每天08:05开机、20:30关机)：
+    Intent intent = new Intent("com.lztek.tools.action.ALARM_DAILY");
+    intent.putExtra("onTime", "08:05");
+    intent.putExtra("offTime", "20:30");
+	intent.setPackage("com.lztek.bootmaster.poweralarm7");  // android 8以上必须
+    context.sendBroadcast(intent);
+		
+◆ 星期模式定时开关机 com.lztek.tools.action.ALARM_WEEKLY
+  onTime  -- 开机时间，类型String[]，数组长度必须为7(星期日~星期六)，数组元素格式HH:mm，空字符串表示当天无开机时间设置
+  offTime -- 关机时间，类型String[]，数组长度必须为7(星期日~星期六)，数组元素格式HH:mm，空字符串表示当天无关机时间设置
+
+  调用示例(周一、周二、周三、周四指定时间点开机；周一、周二、周三、周五指定时间点关机)：
+    Intent intent = new Intent("com.lztek.tools.action.ALARM_WEEKLY");
+    intent.putExtra("onTime", new String[]{"", "08:05", "09:15", "10:00", "10:00", "", ""});
+    intent.putExtra("offTime", new String[]{"", "21:45", "21:05", "21:00", "", "22:00", ""}); 
+	intent.setPackage("com.lztek.bootmaster.poweralarm7");  // android 8以上必须
+    context.sendBroadcast(intent);
+
+◆ 清除定时开关机设置 com.lztek.tools.action.ALARM_UNSET
+
+  调用示例：
+    Intent intent = new Intent("com.lztek.tools.action.ALARM_UNSET");
+	intent.setPackage("com.lztek.bootmaster.poweralarm7");  // android 8以上必须
+    context.sendBroadcast(intent);
+		
+

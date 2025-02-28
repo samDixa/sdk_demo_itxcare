@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        google()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+        maven { url "https://jitpack.io" }  // ✅ Ensure this is present
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.novoda:bintray-release:0.9.1'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url "https://jitpack.io" }  // ✅ Correct order
+
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

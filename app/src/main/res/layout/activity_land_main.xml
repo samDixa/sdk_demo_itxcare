@@ -1,0 +1,1008 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    tools:context=".NewMainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/textappname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/cardview_dark_background" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_20"
+
+            android:gravity="center">
+
+
+            <TableRow
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/system_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/system_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ota_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/ota_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navigation"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/navigationtxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/shownavigation"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/openslide"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/openslidetxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/openslide"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/navigationautohidden"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/navigationautohidden"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/startupbroadcast"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/bootstartbroadcast"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/startbroadcast"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/startbroadcast"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+
+                    android:background="@color/cardview_dark_background" />
+            </LinearLayout>
+
+            <TableRow
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/power_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/power_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/serialport_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/serialport_demo"
+
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/gpio_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/gpio_demo"
+
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/watchdog_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/watchdog_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/screen_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/screen_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/hdmiin_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/hdmiin_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/screenshot"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/screenshot"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+
+                    android:background="@color/cardview_dark_background" />
+            </LinearLayout>
+
+            <TableRow
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/apk_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/apk_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/autoinstall"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/autoinstall"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/silentinstallation"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/silentinstallationtxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/silentinstallation"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/whitelist"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/whitelist"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/blacklist"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/unmountwhitelist"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/onclick6"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/onclick7"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+
+                    android:background="@color/cardview_dark_background" />
+            </LinearLayout>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ethernet_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/ethernet_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/density_demo"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_selector"
+
+                        android:gravity="center"
+                        android:text="@string/density_demo"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/onclick1"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/onclick2"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/onclick3"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/onclick4"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+
+                        android:background="@color/cardview_dark_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/onclick5"
+                    android:layout_width="@dimen/dp_250"
+                    android:layout_height="@dimen/dp_250"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+
+                        android:gravity="center"
+                        android:textColor="@drawable/list_item_text_selector" />
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/appinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@color/cardview_dark_background" />
+    </LinearLayout>
+
+</LinearLayout>

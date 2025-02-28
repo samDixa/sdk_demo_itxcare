@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="reference" name="cardViewStyle"/>
+    <color name="cardview_dark_background">#FFFFFFFF</color>
+    <color name="cardview_light_background">#FFFFFFFF</color>
+    <color name="cardview_shadow_end_color">#03000000</color>
+    <color name="cardview_shadow_start_color">#37000000</color>
+    <color name="textcolor">#000000</color>
+    <color name="backcolor">#0056ff</color>
+    <color name="text_color_default">#00000C</color>
+<color name="text_color_inverse">#FFFFFF</color>
+
+    <color name="green_wave">#00FB1A</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="windowNoTitle">#FFFFFF</color>
+    <color name="listview_iten">#c2c2c2</color>
+
+
+    <color name="default_gray_light">#999999</color>
+    <color name="default_black">#333333</color>
+    <color name="white">#CCCCCC</color>
+    <color name="default_bg">#f2f2f2</color>
+    <color name="default_line">#f7f7f7</color>
+    <color name="T_mini_black">#bd000000</color>
+    <color name="opencolor">#0093DF</color>
+    <color name="colosecolor">#CCCCCC</color>
+    <color name="wheel_text_color">#727272</color>
+    <color name="wheel_selected_text_color">#1db0b8</color>
+    <color name="wheel_highlight_color">#00000000</color>
+    <color name="wheel_divider_color">#80808080</color>
+    <color name="textbackcolor">#5482e5</color>
+</resources>

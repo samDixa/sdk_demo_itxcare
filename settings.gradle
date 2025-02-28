@@ -1,0 +1,15 @@
+include ':usbCameraCommon'
+include ':libuvccamera'
+rootProject.name = "sdkdemo"
+
+// Include all modules
+include ':app'
+//include ':libuvccamera'
+//include ':usbCameraCommon'
+//project(':libuvccamera').projectDir = new File('libuvccamera')
+//project(':usbCameraCommon').projectDir = new File('usbCameraCommon')
+
+
+
+
+
