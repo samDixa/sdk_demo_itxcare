@@ -23,19 +23,20 @@ public class BTController {
     private final String TAG = this.getClass().getName();
 
     private static BTController mBtController = null;
-    private BluetoothAdapter    mBtAdapter    = null;
-    private boolean isBTConnected             = false;
+    private BluetoothAdapter mBtAdapter = null;
+    private boolean isBTConnected = false;
 
-    public  Listener                     mListener;
-    private BluetoothChatService         mBluetoothChatService;
+    public Listener mListener;
+    private com.lztek.api.demo.bluetooth.BluetoothChatService mBluetoothChatService;
 
-    private BTController(Listener listener){
+    private BTController(Listener listener) {
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-        mListener         = listener;
+        mListener = listener;
     }
 
     /**
      * Get a Controller
+     *
      * @return
      */
     public static BTController getDefaultBTController(Listener listener) {
@@ -49,7 +50,7 @@ public class BTController {
     /**
      * enable bluetooth adapter
      */
-    public void enableBtAdpter(){
+    public void enableBtAdpter() {
         if (!mBtAdapter.isEnabled()) {
             mBtAdapter.enable();
         }
@@ -58,7 +59,7 @@ public class BTController {
     /**
      * disable bluetooth adapter
      */
-    public void disableBtAdpter(){
+    public void disableBtAdpter() {
         if (mBtAdapter.isEnabled()) {
             mBtAdapter.disable();
         }
@@ -71,13 +72,13 @@ public class BTController {
 
     /**
      * Scan bluetooth devices
+     *
      * @param b
      */
-    public void startScan(boolean b){
-        if(b){
+    public void startScan(boolean b) {
+        if (b) {
             mBtAdapter.startDiscovery();
-        }
-        else {
+        } else {
             mBtAdapter.cancelDiscovery();
         }
     }
@@ -102,17 +103,15 @@ public class BTController {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if(BluetoothDevice.ACTION_FOUND.equals(action)) {
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 mListener.onFoundDevice(device);
-                Log.i(TAG, "<<<Bluetooth Devices>>>  On Found Device : "+ device.getName() + "  MAC:"+device.getAddress());
-            }
-            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
+                Log.i(TAG, "<<<Bluetooth Devices>>>  On Found Device : " + device.getName() + "  MAC:" + device.getAddress());
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.i(TAG, "<<<Bluetooth Devices>>>  Stop Scan.......");
                 mListener.onStopScan();
-            }
-            else if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 Log.i(TAG, "<<<Bluetooth Devices>>>  Start Scan.......");
                 mListener.onStartScan();
             }
@@ -120,16 +119,13 @@ public class BTController {
     };
 
     //GATT
-    Handler mHandler = new Handler(){
+    Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what)
-            {
-                case Const.MESSAGE_BLUETOOTH_STATE_CHANGE:
-                {
-                    switch(msg.arg1)
-                    {
+            switch (msg.what) {
+                case Const.MESSAGE_BLUETOOTH_STATE_CHANGE: {
+                    switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTING:
                             Log.i(TAG, "<<<Bluetooth Devices>>>  Connecting");
                             break;
@@ -146,9 +142,10 @@ public class BTController {
                         default:
                             break;
                     }
-                }break;
+                }
+                break;
                 case Const.MESSAGE_BLUETOOTH_DATA:
-                    mListener.onReceiveData((byte[])msg.obj);
+                    mListener.onReceiveData((byte[]) msg.obj);
                     break;
 
             }
@@ -157,53 +154,59 @@ public class BTController {
 
     /**
      * connect the bluetooth device
+     *
      * @param context
      * @param device
      */
     public void connect(Context context, final BluetoothDevice device) {
 
-        mBluetoothChatService = new BluetoothChatService(context,mHandler);
+        mBluetoothChatService = new BluetoothChatService(context, mHandler);
         mBluetoothChatService.connect(device, true);
     }
 
     /**
      * Disconnect the bluetooth
      */
-    public void disconnect(){
-        mBluetoothChatService.stop();
+    public void disconnect() {
+        if (mBluetoothChatService != null) {
+            mBluetoothChatService.stop();
+            mBluetoothChatService = null;  // Properly set to null
+        }
     }
 
     /**
      * Send data to the monitor
+     *
      * @param dat
      */
-    public void write(byte[] dat){
-        if(mBluetoothChatService != null){
+    public void write(byte[] dat) {
+        if (mBluetoothChatService != null) {
             mBluetoothChatService.write(dat);
         }
     }
 
-    public void registerBroadcastReceiver(Context context)
-    {
+    public void registerBroadcastReceiver(Context context) {
         context.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
     }
 
-    public void unregisterBroadcastReceiver(Context context)
-    {
+    public void unregisterBroadcastReceiver(Context context) {
         context.unregisterReceiver(mGattUpdateReceiver);
     }
 
     /**
      * BTController interfaces
      */
-    public interface Listener
-    {
+    public interface Listener {
         void onFoundDevice(BluetoothDevice device);
+
         void onStopScan();
+
         void onStartScan();
 
         void onConnected();
+
         void onDisconnected();
+
         void onReceiveData(byte[] dat);
     }
 }

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".PatientEntryActivity">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Back, Logo, Next -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg_outline01"
+                android:text="Back"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/app_logo"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:contentDescription="Logo of the Hospital or Company"
+                android:scaleType="centerInside"
+                android:src="@drawable/cnrgi_logo" />
+
+            <Button
+                android:id="@+id/next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg_outline01"
+                android:text="Next"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Paramedic Name and ID -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/paramedic_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Paramedic Name"
+                android:textColor="#6C6C6C"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/paramedic_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="ID: ........"
+                android:textColor="#6C6C6C"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Mobile Number, Order ID, and Search -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <EditText
+                android:id="@+id/mobile_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/edit_text"
+                android:hint="Mobile Number"
+                android:inputType="phone"
+                android:padding="4dp"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/order_id_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/edit_text"
+                android:hint="Order ID"
+                android:padding="4dp"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/search_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_bg_outline01"
+                android:text="Search"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Middle Section: Patient Details -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="Enter Details"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/patient_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Patient ID"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/patient_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Name of Patient"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/patient_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Mobile Number"
+            android:inputType="phone"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/patient_gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Gender"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/patient_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Height"
+            android:inputType="numberDecimal"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/patient_weight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Weight"
+            android:inputType="numberDecimal"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/patient_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Age"
+            android:inputType="number"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/place_of_consultation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Place of Consultation"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/abha_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="ABHA ID (XX-XXXX-XXXX-XXXX)"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/order_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Order ID (if any)"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/reported_sugar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Reported Sugar"
+            android:inputType="numberDecimal"
+            android:padding="4dp"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <!-- Bottom Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/create_new_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_bg_outline01"
+            android:text="Create New"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/existing_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_bg_outline01"
+            android:text="Existing"
+            android:textSize="14sp" />  <!-- Reduced margin from 8dp to 4dp -->
+
+        <Button
+            android:id="@+id/save_data_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_bg_outline01"
+            android:text="Save Data"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

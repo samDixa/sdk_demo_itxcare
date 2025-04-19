@@ -1,61 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="120dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:elevation="20dp"
+    android:translationZ="20dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"> <!-- Yahan elevation diya hai -->
 
-
-    <LinearLayout
+    <com.lztek.api.demo.view.WaveformView
+        android:id="@+id/wfECG1"
+        app:waveColor="@color/green_wave"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        app:maxValue="250"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <Spinner
+        android:id="@+id/spinnerECG1"
+        android:layout_width="wrap_content"
+        android:layout_height="10dp"
+        android:layout_alignParentStart="true"
+        android:gravity="left"
+        android:elevation="30dp"
+        android:translationZ="30dp"
+        android:background="@drawable/spinner_background"
+        android:textSize="8sp" />
 
-            <com.lztek.api.demo.view.WaveformView
-                android:id="@+id/wfECG"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                app:pointStep="4dp" />
-
-
-        </LinearLayout>
-
-        <!--        <LinearLayout-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_weight=".5"-->
-        <!--            android:gravity="center"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:orientation="vertical">-->
-
-        <!--            <LinearLayout-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="match_parent"-->
-        <!--                android:layout_gravity="center"-->
-        <!--                android:gravity="center"-->
-        <!--                android:orientation="vertical">-->
-
-        <!--                <TextView-->
-        <!--                    android:id="@+id/tvECGinfo"-->
-        <!--                    android:layout_width="match_parent"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:padding="10dp"-->
-        <!--                    android:layout_weight="1"-->
-        <!--                    android:text="Heart Rate:&#45;&#45;"-->
-        <!--                    android:textColor="@color/green_wave"-->
-        <!--                    android:textSize="18sp" />-->
-
-        <!--            </LinearLayout>-->
-        <!--        </LinearLayout>-->
-
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

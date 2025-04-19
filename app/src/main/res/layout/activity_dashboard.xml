@@ -1,191 +1,426 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="4dp"
     tools:context=".DashboardActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <!-- CNRGi Logo -->
-        <ImageView
-            android:id="@+id/app_logo"
-            android:layout_width="200dp"
-            android:layout_height="90dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="@string/app_logo"
-            android:src="@drawable/cnrgi_logo" />
-
-        <TableLayout
+        <!-- Top bar -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="20dp"
-            android:gravity="center">
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-            <TableRow
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/top_back_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                android:weightSum="4">
+                android:background="@drawable/btn_bg_outline01"
+                android:text="Back" />
 
-                <Button
-                    android:id="@+id/btn_appoin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:text="Apoinment List"
-                    android:textColor="#ffff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="3" />
 
-                <Button
-                    android:id="@+id/btn_camra"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingStart="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="20dp"
-                    android:text="Camera"
-                    android:textColor="#ffff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/top_Next_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                android:weightSum="2">
+                android:background="@drawable/btn_bg_outline01"
+                android:text="Next" />
 
-                <Button
-                    android:id="@+id/berry_device"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:text="Berry Device"
-                    android:textColor="#ffff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+        </LinearLayout>
 
-                <Button
-                    android:id="@+id/usb_berry"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingStart="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="20dp"
-                    android:text="Usb Berry"
-                    android:textColor="#ffff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+        <!-- Paramedic Name and Logo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/pramedic_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                android:weightSum="2">
+                android:text="Paramedic Name"
+                android:textColor="#6C6C6C"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:text="Apoinment List"
-                    android:textColor="#ffff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/app_logo"
+                android:layout_width="250dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="3"
+                android:contentDescription="@string/app_logo"
+                android:src="@drawable/cnrgi_logo" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingStart="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="20dp"
-                    android:text="Apoinment List"
-                    android:textColor="#ffff"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/permedic_id"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
-                android:weightSum="2">
+                android:text="ID:........"
+                android:textColor="#6C6C6C"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Middle Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:orientation="vertical"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <Button
+                    android:id="@+id/enter_Dbtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:text="Apoinment List"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/btn_bg_outline01"
+                    android:text="Enter"
                     android:textColor="#ffff"
-                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_shape"
-                    android:paddingStart="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="20dp"
-                    android:text="Apoinment List"
+                    android:background="@drawable/btn_bg_outline03"
+                    android:text="LogOut"
                     android:textColor="#ffff"
-                    android:textSize="18sp"
                     android:textStyle="bold" />
 
-            </TableRow>
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight=".5"
+                android:orientation="vertical">
 
-        </TableLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="USB Cam"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/inCam_view"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@color/green_wave" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="Keyboard"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/keyboard_view"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="#FF0000" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="Web Cam "
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/usbCam_view"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@color/green_wave" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/othresButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="Othres"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@color/green_wave" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/card_bg"
+                    android:elevation="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/stetho_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="Stetho"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@color/green_wave" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Bottom LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp"> <!-- Increased marginBottom for more lift -->
+
+            <!-- ECG -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:padding="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ECG"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/ecg_indicator"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/green_wave" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- BP -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:padding="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BP"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/nibp_indicator"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="8dp"
+                        android:background="#FB0000" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Temp2 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:padding="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Temp 2"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/temp_indicator"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/green_wave" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- SPO2 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SPO2"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/spo2_indicator"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/green_wave" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
 
     </LinearLayout>
-</FrameLayout>
+
+</LinearLayout>

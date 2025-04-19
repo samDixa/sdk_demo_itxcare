@@ -6,11 +6,27 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class GlobalVars {
+
+    private static GlobalVars instance;
+    private boolean isInternalCameraConnected = false;
+    private boolean isUSBCameraConnected = false;
+    private boolean isCameraPreviewActive = false;
+    private boolean keyboardConnected;// New flag
 
     // Authentication tokens
     private static String accessToken;
     private static String refreshToken;
+
+    // New variables for Berry sensors
+    private boolean isSpO2Connected = false;
+    private boolean isECGConnected = false;
+    private boolean isNIBPConnected = false;
+    private boolean isTempConnected = false;
 
     // Profile data
     private static int paramedicId;
@@ -36,6 +52,7 @@ public class GlobalVars {
     private static String profilePicture;
     private static String profilePhotoUrl;
     private static AppointmentDetails currentAppointmentDetails;
+
 
     // Device information
     private static String hardwareDeviceId;
@@ -69,6 +86,8 @@ public class GlobalVars {
     private static int customer_accountManager;
     private static String customer_accountManagerName;
     private static String customer_blobUrl;
+
+    public static final List<Byte> audioBuffer = Collections.synchronizedList(new ArrayList<>());
 
     // Authentication token getters and setters
     public static String getAccessToken() {
@@ -528,6 +547,78 @@ public class GlobalVars {
             e.printStackTrace();
             Log.e("GlobalVars", "Error updating device details: " + e.getMessage());
         }
+    }
+
+    public static GlobalVars getInstance() {
+        if (instance == null) {
+            instance = new GlobalVars();
+        }
+        return instance;
+    }
+
+    public boolean isInternalCameraConnected() {
+        return isInternalCameraConnected;
+    }
+
+    public void setInternalCameraConnected(boolean connected) {
+        this.isInternalCameraConnected = connected;
+    }
+
+    public boolean isUSBCameraConnected() {
+        return isUSBCameraConnected;
+    }
+
+    public void setUSBCameraConnected(boolean connected) {
+        this.isUSBCameraConnected = connected;
+    }
+
+    public boolean isCameraPreviewActive() {
+        return isCameraPreviewActive;
+    }
+
+    public void setCameraPreviewActive(boolean active) {
+        this.isCameraPreviewActive = active;
+    }
+
+    public void setKeyboardConnected(boolean connected) {
+        this.keyboardConnected = connected;
+    }
+
+    public boolean isKeyboardConnected() {
+        return keyboardConnected;
+    }
+
+    // Getters and setters for Berry sensors
+    public boolean isSpO2Connected() {
+        return isSpO2Connected;
+    }
+
+    public void setSpO2Connected(boolean connected) {
+        this.isSpO2Connected = connected;
+    }
+
+    public boolean isECGConnected() {
+        return isECGConnected;
+    }
+
+    public void setECGConnected(boolean connected) {
+        this.isECGConnected = connected;
+    }
+
+    public boolean isNIBPConnected() {
+        return isNIBPConnected;
+    }
+
+    public void setNIBPConnected(boolean connected) {
+        this.isNIBPConnected = connected;
+    }
+
+    public boolean isTempConnected() {
+        return isTempConnected;
+    }
+
+    public void setTempConnected(boolean connected) {
+        this.isTempConnected = connected;
     }
 
 }

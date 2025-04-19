@@ -71,10 +71,10 @@ class ComUnit extends Thread implements
     static {
         PATH_MAP = new java.util.LinkedHashMap<String, String>();
         PATH_MAP.put("ttyS0", "/dev/ttyS0");
-        PATH_MAP.put("ttyS1", "/dev/ttyS1");
-        PATH_MAP.put("ttyS2", "/dev/ttyS2");
-        PATH_MAP.put("ttyS3", "/dev/ttyS3");
-        PATH_MAP.put("ttyS4", "/dev/ttyS4");
+        PATH_MAP.put("ttyS9", "/dev/ttyS9");
+        PATH_MAP.put("ttyS5", "/dev/ttyS5");
+        PATH_MAP.put("ttyS8", "/dev/ttyS8");
+        PATH_MAP.put("ttyS10", "/dev/ttyS10");
 
         PATH_MAP.put("ttyP0", "/dev/ttyP0");
         PATH_MAP.put("ttyP1", "/dev/ttyP1");
@@ -160,19 +160,19 @@ class ComUnit extends Thread implements
                         public void run() {
                             if (mChbHex.isChecked()) {
 								/*
-								StringBuilder buffer = new StringBuilder( 
+								StringBuilder buffer = new StringBuilder(
 										mEditView.getLineCount() >= 32? "" : mEditView.getText().toString());
-								int lineNum = 3*16; // 16byte + \n  
-								for (byte b : data) { 
+								int lineNum = 3*16; // 16byte + \n
+								for (byte b : data) {
 									byte h = (byte) (0x0F & (b >> 4));
-									byte l = (byte) (0x0F & b); 
+									byte l = (byte) (0x0F & b);
 									if (buffer.length() % lineNum != 0) {
-										buffer.append(' '); 
+										buffer.append(' ');
 									}
 									buffer.append((char) (h > 9 ? 'A' + (h - 10) : '0' + h));
-									buffer.append((char) (l > 9 ? 'A' + (l - 10) : '0' + l)); 
+									buffer.append((char) (l > 9 ? 'A' + (l - 10) : '0' + l));
 									if (buffer.length() % lineNum == (lineNum-1)) {
-										buffer.append('\n'); 
+										buffer.append('\n');
 									}
 								}
 								mEditView.setText(buffer);
@@ -348,7 +348,7 @@ class ComUnit extends Thread implements
                 + "                           "
                 + "                      "
                 + "      ...");
-        //edtHex.setKeyListener(android.text.method.DigitsKeyListener.getInstance("0123456789abcdefABCDEF")); 
+        //edtHex.setKeyListener(android.text.method.DigitsKeyListener.getInstance("0123456789abcdefABCDEF"));
         builder.setTitle("  ");
         builder.setView(layout);
         builder.setPositiveButton(android.R.string.ok,

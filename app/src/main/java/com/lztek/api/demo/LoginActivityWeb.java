@@ -11,6 +11,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -34,6 +35,8 @@ public class LoginActivityWeb extends AppCompatActivity {
     private TextView statusText;
     private EditText usernameEditText;
     private EditText passwordEditText;
+    private Button backButton,nextButton;
+    private TextView viewButton;
 //    private CheckBox rememberMeCheckBox;
 
     private static final String TAG = "LoginActivityWeb";
@@ -46,13 +49,70 @@ public class LoginActivityWeb extends AppCompatActivity {
 
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 50, 50, 50);
+        layout.setPadding(50, 10, 50, 10);
         layout.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
         layout.setBackgroundColor(Color.parseColor("#F1F8FF")); // Set background color
 
+        LinearLayout topBarLayout = new LinearLayout(this);
+        topBarLayout.setOrientation(LinearLayout.HORIZONTAL);
+// Set layout params with bottom margin
+        LinearLayout.LayoutParams topBarParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        topBarParams.setMargins(0, 0, 0, 50); // Add 50px bottom margin
+        topBarLayout.setLayoutParams(topBarParams);
+        topBarLayout.setGravity(Gravity.CENTER_VERTICAL); // Optional: vertically center the buttons
+
+// Back Button with left alignment
+        backButton = new Button(this);
+        backButton.setTextColor(Color.WHITE);
+        backButton.setBackgroundColor(Color.BLUE);
+        backButton.setText("Back");
+// Set layout params for back button
+        LinearLayout.LayoutParams backParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        backParams.gravity = Gravity.START; // Align to left
+        backButton.setLayoutParams(backParams);
+        topBarLayout.addView(backButton);
+
+        viewButton = new TextView(this);
+        LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        viewParams.gravity = Gravity.CENTER;
+        viewParams.weight = 1;
+        viewButton.setLayoutParams(viewParams);
+        topBarLayout.addView(viewButton);
+
+
+
+
+// Next Button with right alignment
+        nextButton = new Button(this);
+        nextButton.setText("Next");
+        nextButton.setBackgroundColor(Color.BLUE);
+        nextButton.setTextColor(Color.WHITE);
+// Set layout params for next button
+        LinearLayout.LayoutParams nextParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        nextParams.gravity = Gravity.END; // Align to right
+//        nextParams.weight = 1; // This pushes the button to the right
+        nextButton.setLayoutParams(nextParams);
+        topBarLayout.addView(nextButton);
+
+        layout.addView(topBarLayout);
+        backButton.setOnClickListener(view -> finish());
+
+
         // Setting up Logo as ImageView
         ImageView logo = new ImageView(this);
-        logo.setImageResource(R.drawable.cnrgi_logo);
+        logo.setImageResource(R.drawable.hp_logo);
         logo.setAdjustViewBounds(true);
         logo.setMaxHeight(320);
         layout.addView(logo);
@@ -92,6 +152,7 @@ public class LoginActivityWeb extends AppCompatActivity {
         // Submit button
         Button submitButton = new Button(this);
         submitButton.setText("Submit");
+        submitButton.setBackgroundColor(Color.parseColor("#2196F3"));
         submitButton.setLayoutParams(params);  // Set limited width
         submitButton.setPadding(10,20,10,10);
         submitButton.setOnClickListener(new View.OnClickListener() {

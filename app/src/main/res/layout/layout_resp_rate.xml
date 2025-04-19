@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingTop="10dp">
+    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
 
     <LinearLayout
@@ -17,11 +18,14 @@
             android:orientation="vertical">
 
             <com.lztek.api.demo.view.WaveformView
-                android:id="@+id/wfTEMP"
+                android:id="@+id/wfResp"
+                app:maxValue="250"
                 android:layout_width="match_parent"
                 android:layout_height="120dp" />
 
+
         </LinearLayout>
+
 
     </LinearLayout>
 

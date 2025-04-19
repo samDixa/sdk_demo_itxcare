@@ -1,4 +1,4 @@
-package com.lztek.api.demo.view;
+package com.lztek.api.demo;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,7 +14,6 @@ import android.util.TypedValue;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.lztek.api.demo.R;
 
 
 /**
@@ -75,7 +74,7 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
         mWavePaint.setStrokeCap(Paint.Cap.ROUND);
         mWavePaint.setStrokeJoin(Paint.Join.ROUND);
 
-        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor,Color.rgb(0,0,0));
+        int backgroundColor = arr.getColor(R.styleable.WaveformView_backgroundColor,Color.rgb(46,148,216));
         mBackgroundPaint = new Paint();
         mBackgroundPaint.setColor(backgroundColor);
 
@@ -104,18 +103,6 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
 //        mHeight = (int) (MeasureSpec.getSize(heightMeasureSpec)*0.95);
 
         // Log.i(TAG, "onMeasure: " + mWidth +"-" + mHeight );
-    }
-
-    public void clear() {
-        if (mSurfaceHolder != null) {
-            Canvas c = mSurfaceHolder.lockCanvas();
-            if (c != null) {
-                c.drawRect(new Rect(0, 0, mWidth, mHeight), mBackgroundPaint);
-                mSurfaceHolder.unlockCanvasAndPost(c);
-            }
-        }
-        mDataBufferIndex = 0;
-        mLastPoint = new Point(0, (int) (mHeight - mHeight / (float) mMaxValue * 128));
     }
 
 

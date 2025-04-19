@@ -3,6 +3,42 @@
 
     <string name="app_name">Dev Demo</string>
 
+    <string-array name="graph_types">
+        <item>ECG Graph</item>
+        <item>SPO2 Graph</item>
+        <item>Temperature Graph</item>
+        <item>Blood Pressure Graph</item>
+    </string-array>
+
+    <!-- Sample Rate Options -->
+    <string-array name="sample_rate_options">
+        <item>4000</item>
+        <item>6000</item>
+        <item>8000</item>
+        <item>16000</item>
+        <item>22050</item>
+        <item>44100</item>
+    </string-array>
+
+    <!-- Gain Options -->
+    <string-array name="gain_options">
+        <item>1</item>
+        <item>2</item>
+        <item>4</item>
+        <item>8</item>
+        <item>12</item>
+        <item>16</item>
+        <item>20</item>
+        <item>24</item>
+    </string-array>
+
+    <!-- Filter Options -->
+    <string-array name="filter_options">
+        <item>200</item> <!-- Low Noise -->
+        <item>280</item> <!-- Optimum Noise -->
+        <item>400</item> <!-- No Reduction -->
+    </string-array>
+
     <string name="bluetooth_title" translatable="false">Bluetooth</string>
     <string name="search_devices" translatable="false">Search Devices</string>
 
@@ -79,7 +115,7 @@
     <string name="kernel_version">Kernel Version:</string>
     <string name="api_version">API Version:</string>
     <string name="running_memory">Running Memory:</string>
-    <string name="eth_mac">Ethernet MAC:</string>
+    <string name="eth_mac" translatable="false">Ethernet MAC:</string>
     <string name="wlan0_mac">WLAN MAC:</string>
 
     <string name="hdmiin_status">Signal:</string>

@@ -2,140 +2,204 @@ package com.lztek.api.demo;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
+import com.lztek.api.demo.data.DataParser;
+import com.lztek.api.demo.data.ECG;
+import com.lztek.api.demo.data.NIBP;
+import com.lztek.api.demo.data.SpO2;
+import com.lztek.api.demo.data.Temp;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements BerrySerialPort.OnDataReceivedListener, DataParser.onPackageReceivedListener {
 
-    private Button buttonAppoin, buttonCamra, buttonBerryDevice, buttonBerryUsbDevice;
-    private String statusMessage;
-    private final String PROFILE_URL = Constants.PARAMEDIC_MY_PROFILE;
+    private static final String TAG = "DashboardActivity";
+
+    private Button backButton, nextButton, enterButton;
+    private View internalCameraIndicator, usbCameraIndicator, keyboardIndicator;
+    private View spO2Indicator, ecgIndicator, nibpIndicator, tempIndicator;
+    private GlobalVars globalVars;
+    private CameraStatusChecker cameraStatusChecker;
+    private BerrySerialPort serialPort;
+    private DataParser dataParser;
+    private BerrySensorChecker berrySensorChecker;
+    private Handler handler;
+    private Runnable indicatorUpdater;
+    private TextView stethoBtn, othersButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        buttonAppoin = findViewById(R.id.btn_appoin);
-        buttonCamra = findViewById(R.id.btn_camra);
-        buttonBerryDevice = findViewById(R.id.berry_device);
-        buttonBerryUsbDevice = findViewById(R.id.usb_berry);
+        globalVars = GlobalVars.getInstance();
+        cameraStatusChecker = new CameraStatusChecker(this);
+        cameraStatusChecker.startChecking();
 
-        buttonAppoin.setOnClickListener(new View.OnClickListener() {
+        serialPort = new BerrySerialPort(this);
+        serialPort.setOnDataReceivedListener(this);
+        dataParser = new DataParser(this);
+        dataParser.start();
+        berrySensorChecker = new BerrySensorChecker(this, serialPort);
+        serialPort.connect();
+        berrySensorChecker.startChecking();
+
+        backButton = findViewById(R.id.top_back_button);
+        nextButton = findViewById(R.id.top_Next_button);
+        enterButton = findViewById(R.id.enter_Dbtn);
+        internalCameraIndicator = findViewById(R.id.inCam_view);
+        usbCameraIndicator = findViewById(R.id.usbCam_view);
+        keyboardIndicator = findViewById(R.id.keyboard_view);
+        spO2Indicator = findViewById(R.id.spo2_indicator);
+        ecgIndicator = findViewById(R.id.ecg_indicator);
+        nibpIndicator = findViewById(R.id.nibp_indicator);
+        tempIndicator = findViewById(R.id.temp_indicator);
+        stethoBtn = findViewById(R.id.stetho_btn);
+        othersButton = findViewById(R.id.othresButton);
+
+        handler = new Handler(Looper.getMainLooper());
+        indicatorUpdater = new Runnable() {
             @Override
-            public void onClick(View view) {
-                // ✅ Start AsyncTask
-                new FetchProfileTask(DashboardActivity.this).execute();
+            public void run() {
+                updateIndicators();
+                handler.postDelayed(this, 1000);
             }
+        };
+        handler.post(indicatorUpdater);
+
+        backButton.setOnClickListener(view -> finish());
+        enterButton.setOnClickListener(view -> {
+            Intent patientIntent = new Intent(DashboardActivity.this, PatientEntryActivity.class);
+            startActivity(patientIntent);
+        });
+        nextButton.setOnClickListener(view -> {
+            Intent cameraIntent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
+            startActivity(cameraIntent);
+        });
+        stethoBtn.setOnClickListener(view -> {
+            Intent chestoIntent = new Intent(DashboardActivity.this, ChestoDeviceActivity.class);
+            startActivity(chestoIntent);
+        });
+        othersButton.setOnClickListener(view -> {
+            Intent ointent = new Intent(DashboardActivity.this, OthersActivity.class);
+            startActivity(ointent);
         });
 
-        buttonCamra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        buttonBerryDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,BerryDeviceActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        buttonBerryUsbDevice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,SerialPortActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
         }
-
-
     }
 
-    // ✅ AsyncTask for Network Call
-    private class FetchProfileTask extends AsyncTask<Void, Void, String> {
-        private Context context;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cameraStatusChecker.stopChecking();
+        berrySensorChecker.stopChecking();
+        serialPort.disconnect();
+        dataParser.stop();
+        handler.removeCallbacks(indicatorUpdater);
+    }
 
-        public FetchProfileTask(Context context) {
-            this.context = context;
+    private void updateIndicators() {
+        boolean internalCam = globalVars.isInternalCameraConnected();
+        boolean usbCam = globalVars.isUSBCameraConnected();
+        boolean keyboard = globalVars.isKeyboardConnected();
+
+        internalCameraIndicator.setBackgroundColor(internalCam ? Color.GREEN : Color.RED);
+        usbCameraIndicator.setBackgroundColor(usbCam ? Color.GREEN : Color.RED);
+        keyboardIndicator.setBackgroundColor(keyboard ? Color.GREEN : Color.RED);
+
+        boolean spO2Connected = globalVars.isSpO2Connected();
+        boolean ecgConnected = globalVars.isECGConnected();
+        boolean nibpConnected = globalVars.isNIBPConnected();
+        boolean tempConnected = globalVars.isTempConnected();
+
+        spO2Indicator.setBackgroundColor(spO2Connected ? Color.GREEN : Color.RED);
+        ecgIndicator.setBackgroundColor(ecgConnected ? Color.GREEN : Color.RED);
+        nibpIndicator.setBackgroundColor(nibpConnected ? Color.GREEN : Color.RED);
+        tempIndicator.setBackgroundColor(tempConnected ? Color.GREEN : Color.RED);
+
+//        Log.d(TAG, "Indicators updated - Internal: " + internalCam +
+//                ", USB: " + usbCam + ", Keyboard: " + keyboard +
+//                ", SpO2: " + spO2Connected + ", ECG: " + ecgConnected +
+//                ", NIBP: " + nibpConnected + ", Temp: " + tempConnected);
+    }
+
+    @Override
+    public void onDataReceived(byte[] data) {
+//        Log.d(TAG, "📥 Received raw data: " + bytesToHex(data));
+        dataParser.add(data);
+    }
+
+    @Override
+    public void onConnectionStatusChanged(String status) {
+//        Log.d(TAG, "🔄 Connection status: " + status);
+//        runOnUiThread(() -> Toast.makeText(this, "Berry: " + status, Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    public void onSpO2WaveReceived(int dat) {
+//        Log.d(TAG, "📈 SpO2 Wave received: " + dat);
+        berrySensorChecker.onSpO2DataReceived();
+    }
+
+    @Override
+    public void onSpO2Received(SpO2 spo2) {
+//        Log.d(TAG, "📊 SpO2 received - SpO2: " + spo2.getSpO2() + ", Pulse: " + spo2.getPulseRate());
+        berrySensorChecker.onSpO2DataReceived();
+    }
+
+    @Override
+    public void onECGWaveReceived(int leadI, int leadII, int leadIII, int aVR, int aVL, int aVF, int vLead) {
+//        Log.d(TAG, "📈 ECG Wave received - I: " + leadI + ", II: " + leadII + ", III: " + leadIII);
+        berrySensorChecker.onECGDataReceived();
+    }
+
+    @Override
+    public void onRespWaveReceived(int dat) {
+//        Log.d(TAG, "📈 Resp Wave received: " + dat);
+        berrySensorChecker.onECGDataReceived();
+    }
+
+    @Override
+    public void onECGReceived(ECG ecg) {
+//        Log.d(TAG, "📊 ECG received - HR: " + ecg.getHeartRate());
+        berrySensorChecker.onECGDataReceived();
+    }
+
+    @Override
+    public void onTempReceived(Temp temp) {
+//        Log.d(TAG, "📊 Temp received: " + temp.toString());
+        berrySensorChecker.onTempDataReceived();
+    }
+
+    @Override
+    public void onNIBPReceived(NIBP nibp) {
+//        Log.d(TAG, "📊 NIBP received: " + nibp.toString());
+        berrySensorChecker.onNIBPDataReceived();
+    }
+
+    @Override
+    public void onFirmwareReceived(String str) {}
+    @Override
+    public void onHardwareReceived(String str) {}
+
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
         }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try {
-                URL url = new URL(PROFILE_URL);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", "Bearer " + GlobalVars.getAccessToken());
-                conn.setRequestProperty("App-Tenant", GlobalVars.getClientId());
-
-                InputStream inputStream = conn.getInputStream();
-                Scanner inStream = new Scanner(inputStream);
-                StringBuilder profileResponse = new StringBuilder();
-                while (inStream.hasNextLine()) {
-                    profileResponse.append(inStream.nextLine());
-                }
-                return profileResponse.toString();
-            } catch (Exception e) {
-                Log.e("DashboardActivity", "Error fetching profile data", e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result != null) {
-                try {
-                    JSONObject profileResponse = new JSONObject(result);
-                    boolean success = profileResponse.getBoolean("success");
-                    statusMessage = profileResponse.getString("message");
-
-                    if (success) {
-                        // ✅ Profile Fetch Successful
-                        Toast.makeText(context, "Profile Fetch Successful", Toast.LENGTH_SHORT).show();
-
-                        // ✅ Parse profile data
-                        JSONObject profileData = profileResponse.getJSONObject("data");
-                        GlobalVars.setUserId(profileData.getInt("user_ID"));
-                        GlobalVars.setFirstName(profileData.getString("first_name"));
-                        GlobalVars.setLastName(profileData.getString("last_name"));
-                        GlobalVars.setEmail(profileData.getString("email"));
-
-                        // ✅ Navigate to Appointment List
-                        Intent intent = new Intent(context, AppointmentListActivity.class);
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context, "Failed to fetch profile data", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    Log.e("DashboardActivity", "Error parsing profile response", e);
-                    Toast.makeText(context, "Failed to parse profile data", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(context, "Network error. Please try again.", Toast.LENGTH_SHORT).show();
-            }
-        }
+        return sb.toString().trim();
     }
 }

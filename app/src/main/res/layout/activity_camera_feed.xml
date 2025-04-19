@@ -32,7 +32,7 @@
             android:orientation="vertical">
 
             <SurfaceView
-                android:id="@+id/internalCameraView"
+                android:id="@+id/usbCameraView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
@@ -44,28 +44,6 @@
                 android:orientation="horizontal"
                 android:padding="10dp">
 
-                <Button
-                    android:id="@+id/btn_camera_on_internal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/holo_green_dark"
-                    android:padding="10dp"
-                    android:text="Camera ON"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:id="@+id/btn_camera_off_internal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/darker_gray"
-                    android:padding="10dp"
-                    android:text="Camera OFF"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:layout_marginStart="10dp" />
 
             </LinearLayout>
 
@@ -101,42 +79,11 @@
             android:orientation="vertical">
 
             <SurfaceView
-                android:id="@+id/usbCameraView"
+                android:id="@+id/internalCameraView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="10dp">
-
-                <Button
-                    android:id="@+id/btn_camera_on_front"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/holo_green_dark"
-                    android:padding="10dp"
-                    android:text="Camera ON"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:id="@+id/btn_camera_off_front"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/darker_gray"
-                    android:padding="10dp"
-                    android:text="Camera OFF"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:layout_marginStart="10dp" />
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -156,17 +103,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
-                <Button
-                    android:id="@+id/btn_start_video_usb"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/holo_red_light"
-                    android:padding="10dp"
-                    android:text="Start Recording"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:layout_marginStart="10dp" />
+
 
                 <Button
                     android:id="@+id/btn_stop_video_usb"

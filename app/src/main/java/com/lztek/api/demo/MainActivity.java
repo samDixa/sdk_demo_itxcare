@@ -1,10 +1,14 @@
 package com.lztek.api.demo;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -14,10 +18,12 @@ public class MainActivity extends Activity implements
 
     private android.util.SparseArray<Intent> mBtnIdMap;
 
+//    @TargetApi(Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
+//        startForegroundService(new Intent(this, SerialPortService.class));
         initview();
         mBtnIdMap = new android.util.SparseArray<Intent>();
         mBtnIdMap.put(R.id.power_demo, new Intent(this, PowerActivity.class));
@@ -42,6 +48,16 @@ public class MainActivity extends Activity implements
                 startActivity(new Intent(getApplicationContext(), NewMainActivity.class));
             }
         });
+
+
+//        // Service Start
+
+        Intent intent = new Intent(this, SerialPortService.class);
+        startService(intent);
+        Log.d("tag", "🚀 SerialPortService Started");
+//
+//        // Register Broadcast Receiver
+//        registerReceiver(serialReceiver, new IntentFilter("SerialDataReceived"));
     }
 
     private Button navigation, openslide, navigationautohidden, silentinstallation;
@@ -152,7 +168,9 @@ public class MainActivity extends Activity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+//        unregisterReceiver(serialReceiver);
         System.exit(0);
+
     }
 
     @Override

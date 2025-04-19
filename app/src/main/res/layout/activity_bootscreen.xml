@@ -17,7 +17,7 @@
         <!-- App Logo -->
         <ImageView
             android:id="@+id/app_logo"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="240dp"
             android:src="@drawable/cnrgi_logo"
             android:contentDescription="@string/app_logo"

@@ -71,6 +71,9 @@ public class NewMainActivity extends Activity {
 
 //        View view = this.getWindow().getDecorView();
 //        depthTravelView(view);
+
+//        Intent intent = new Intent(this, SerialPortService.class);
+//        startService(intent);
     }
 
     public void depthTravelView(View rootView) {

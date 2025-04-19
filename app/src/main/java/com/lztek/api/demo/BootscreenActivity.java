@@ -29,7 +29,7 @@ public class BootscreenActivity extends AppCompatActivity {
 
         // Set the content view directly from the XML layout
         setContentView(R.layout.activity_bootscreen);
-
+        startForegroundService(new Intent(this, SerialPortService.class));
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

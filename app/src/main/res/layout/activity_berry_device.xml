@@ -22,34 +22,15 @@
 
             <include layout="@layout/layout_bluetooth" />
 
-            <include layout="@layout/layout_about" />
+            <!--            <include layout="@layout/layout_about" />-->
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
-
-            <!--            graph -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.7"
-                android:orientation="vertical">
-
-                <include layout="@layout/layout_ecg" />
-
-                <include layout="@layout/layout_spo2" />
-
-                <include layout="@layout/layout_temp" />
-
-                <include layout="@layout/layout_hrbpm" />
-
-                <include layout="@layout/layout_nibp" />
-
-            </LinearLayout>
 
             <!--            ratings-->
             <LinearLayout
@@ -61,82 +42,98 @@
                 <TextView
                     android:id="@+id/tvECGinfo"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:background="@drawable/border_box"
                     android:padding="10dp"
                     android:text="Heart Rate:--"
-                    android:textColor="@color/green_wave"
-                    android:textSize="22sp" />
-
-
-                <TextView
-                    android:id="@+id/tvSPO2info"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_below="@id/btnBtCtr"
-                    android:background="@drawable/border_box"
-                    android:gravity="top"
-                    android:text="PulseRate:--"
-                    android:textColor="#FFFA00"
-                    android:textSize="18sp" />
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvTEMPinfo"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_below="@id/btnBtCtr"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:background="@drawable/border_box"
                     android:padding="10dp"
                     android:text="TEMP:--.- "
-
                     android:textColor="@color/wheel_selected_text_color"
                     android:textSize="22sp" />
 
-                <TextView
-                    android:id="@+id/tvBPMinfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_below="@id/btnBtCtr"
-                    android:background="@drawable/border_box"
-                    android:padding="10dp"
-                    android:text="HR bpm:--.- "
-
-                    android:textColor="@color/green_wave"
-                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tvNIBPinfo"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_below="@id/btnBtCtr"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:background="@drawable/border_box"
                     android:padding="10dp"
                     android:text="Cuff:--\nHigh:-- Low:-- Mean:--"
                     android:textColor="#FF0000"
-
                     android:textSize="22sp" />
 
+                <TextView
+                    android:id="@+id/tvRespRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_box"
+                    android:padding="10dp"
+                    android:text="RoR /min:--.- "
+                    android:textColor="@color/green_wave"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/tvSPO2info"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_box"
+                    android:padding="10dp"
+                    android:text="SpO2: --\nPulse Rate: --\nStatus: Unknown"
+                    android:textColor="#FFFA00"
+                    android:textSize="16sp" /> <!-- Added gravity="center" -->
+
+                <!--                <TextView-->
+                <!--                    android:id="@+id/tvSPO2info"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="0dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:background="@drawable/border_box"-->
+                <!--                    android:gravity="center"-->
+                <!--                    android:padding="10dp"-->
+                <!--                    android:text="PulseRate:&#45;&#45;"-->
+                <!--                    android:textColor="#FFFA00"-->
+                <!--                    android:textSize="16sp" />-->
 
             </LinearLayout>
+
+            <!--            graph -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7"
+                android:orientation="vertical">
+
+                <include layout="@layout/layout_ecg" />
+
+                <include layout="@layout/layout_ecg2" />
+
+                <include layout="@layout/layout_ecg3" />
+
+                <include layout="@layout/layout_resp_rate" />
+
+                <include layout="@layout/layout_spo2" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:orientation="vertical"-->
-    <!--        android:layout_height="wrap_content">-->
-
-    <!--        <include layout="@layout/layout_bluetooth"/> d &lt;!&ndash;Bluetooth&ndash;&gt;-->
-    <!--        <include layout="@layout/layout_ecg"/> d      &lt;!&ndash;ECG&ndash;&gt;-->
-    <!--        <include layout="@layout/layout_spo2"/> d     &lt;!&ndash;SPO2&ndash;&gt;-->
-    <!--            <include layout="@layout/layout_temp"/>   d   &lt;!&ndash;TEMP&ndash;&gt;-->
-    <!--        <include layout="@layout/layout_nibp"/>   d   &lt;!&ndash;NIBP&ndash;&gt;-->
-    <!--&lt;!&ndash;        <include layout="@layout/layout_about"/>  d   &lt;!&ndash;ABOUT&ndash;&gt;&ndash;&gt;-->
-
-    <!--    </LinearLayout>-->
 
 </LinearLayout>
 

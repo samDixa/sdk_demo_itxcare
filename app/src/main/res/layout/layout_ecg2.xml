@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:layout_height="120dp">
+
+                <com.lztek.api.demo.view.WaveformView
+                    android:id="@+id/wfECG2"
+                    app:waveColor="@color/opencolor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:maxValue="250"
+                    android:layout_marginTop="15dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerECG2"
+                    android:layout_width="50dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:elevation="30dp"
+                    android:translationZ="30dp"
+                    android:background="@drawable/spinner_background"
+                    android:textSize="10sp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
