@@ -22,6 +22,10 @@ public class GlobalVars {
     private static String accessToken;
     private static String refreshToken;
 
+    //
+    private static final String TAG = "GlobalVars";
+    public static boolean isVitalOn = false;
+
     // New variables for Berry sensors
     private boolean isSpO2Connected = false;
     private boolean isECGConnected = false;
@@ -621,4 +625,9 @@ public class GlobalVars {
         this.isTempConnected = connected;
     }
 
+    //
+    public static void setVitalOn(boolean value) {
+        isVitalOn = value;
+        Log.d(TAG, "🌡️ isVitalOn set to: " + isVitalOn);
+    }
 }

@@ -202,4 +202,13 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
     public void surfaceDestroyed(SurfaceHolder holder) {
         isSurfaceViewAvailable = false;
     }
+
+    public int[] getCurrentData() {
+        int[] currentData = new int[mDataBufferIndex];
+        System.arraycopy(mDataBuffer, 0, currentData, 0, mDataBufferIndex);
+        return currentData;
+    }
+    public int getMaxValue() {
+        return mMaxValue;
+    }
 }

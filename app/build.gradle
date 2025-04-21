@@ -78,7 +78,7 @@ dependencies {
     implementation 'com.github.felHR85:UsbSerial:6.1.0'
 //    implementation 'com.itextpdf:itext7-core:7.2.5'
 
-
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
 
 
 }
