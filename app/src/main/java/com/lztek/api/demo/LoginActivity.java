@@ -202,6 +202,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        maintenanceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(LoginActivity.this,NewMainActivity.class);
+                startActivity(intent1);
+            }
+        });
+
         // Load device details
         loadDeviceDetails();
 
@@ -393,7 +401,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Handles the Next button action
     private void submitCode() {
-        Intent intent = new Intent(LoginActivity.this, LoginActivityWeb.class);
+        Intent intent = new Intent(LoginActivity.this, BerryDeviceActivity.class);
         startActivity(intent);
     }
 

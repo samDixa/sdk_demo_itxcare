@@ -46,7 +46,6 @@ public class SerialPortService extends Service {
     public static synchronized Lztek getLztek(Context context) {
         if (mLztek == null) {
             mLztek = Lztek.create(context.getApplicationContext());
-            Log.d(TAG, "✅ Lztek instance created");
         }
         return mLztek;
     }
@@ -62,15 +61,15 @@ public class SerialPortService extends Service {
             InputStream inputStream = mSerialPort.getInputStream();
             mOutputStream = mSerialPort.getOutputStream();
             if (mOutputStream == null) {
-                Log.e(TAG, "❌ OutputStream initialization failed");
+                Log.e(TAG, "OutputStream initialization failed");
             } else {
-                Log.d(TAG, "✅ OutputStream initialized successfully");
+                Log.d(TAG, "OutputStream initialized successfully");
             }
             isRunning = true;
             new Thread(() -> readSerialData(inputStream)).start();
-            Log.d(TAG, "✅ Serial Port Opened Successfully");
+            Log.d(TAG, "Serial Port Opened Successfully");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Error opening serial port", e);
+            Log.e(TAG, "Error opening serial port", e);
             stopSelf();
         }
 
@@ -115,12 +114,12 @@ public class SerialPortService extends Service {
                             previousPacket = newPacket;
                         }
                     } else {
-                        Log.w(TAG, "⚠️ Partial packet received: " + bytesRead + " bytes");
+                        Log.w(TAG, "Partial packet received: " + bytesRead + " bytes");
                     }
                 }
                 Thread.sleep(50);
             } catch (IOException | InterruptedException e) {
-                Log.e(TAG, "❌ Error reading from serial port", e);
+                Log.e(TAG, "Error reading from serial port", e);
             }
         }
     }
@@ -130,7 +129,7 @@ public class SerialPortService extends Service {
         for (byte b : rawBuffer) {
             rawBytes.append(String.format("%02X ", b));
         }
-        Log.d(TAG, "📜 Raw Data Bytes: " + rawBytes.toString());
+
 
         Log.d(TAG, "----------- CPU Data -----------");
         Log.d(TAG, "Header             : " + data.header);
@@ -153,34 +152,28 @@ public class SerialPortService extends Service {
 
     private void checkVolumeChange(CPUData newPacket) {
         if (previousPacket == null) {
-            Log.d(TAG, "🔊 Initial Volume Packet: vol_up=" + newPacket.vol_up + ", vol_D=" + newPacket.vol_D);
             return;
         }
 
-        Log.d(TAG, "🔊 Volume Check - Previous vol_up: " + previousPacket.vol_up + ", New vol_up: " + newPacket.vol_up +
-                ", Previous vol_D: " + previousPacket.vol_D + ", New vol_D: " + newPacket.vol_D + ", Thread=" + Thread.currentThread().getId());
-
         if (previousPacket.vol_up == 0 && newPacket.vol_up == 1) {
-            Log.d(TAG, "🔼 Volume Up Pressed!");
             adjustVolume(true);
         } else if (newPacket.vol_up == 1) {
             try {
                 Thread.sleep(200);
                 adjustVolume(true);
             } catch (InterruptedException e) {
-                Log.e(TAG, "❌ Sleep interrupted in volume up", e);
+                Log.e(TAG, "Sleep interrupted in volume up", e);
             }
         }
 
         if (previousPacket.vol_D == 0 && newPacket.vol_D == 1) {
-            Log.d(TAG, "🔽 Volume Down Pressed!");
             adjustVolume(false);
         } else if (newPacket.vol_D == 1) {
             try {
                 Thread.sleep(200);
                 adjustVolume(false);
             } catch (InterruptedException e) {
-                Log.e(TAG, "❌ Sleep interrupted in volume down", e);
+                Log.e(TAG, "Sleep interrupted in volume down", e);
             }
         }
     }
@@ -197,40 +190,34 @@ public class SerialPortService extends Service {
 
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, AudioManager.FLAG_SHOW_UI);
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "🔊 Volume Changed: " + newVolume + " (Max: " + maxVolume + ") in " + (endTime - startTime) + "ms");
         }
     }
 
     private void checkMicChange(CPUData newPacket) {
         if (previousPacket == null) {
-            Log.d(TAG, "🎤 Initial Mic Packet: MIC_up=" + newPacket.MIC_up + ", MIC_D=" + newPacket.MIC_D);
             return;
         }
 
-        Log.d(TAG, "🎤 Mic Check - Previous MIC_up: " + previousPacket.MIC_up + ", New MIC_up: " + newPacket.MIC_up +
-                ", Previous MIC_D: " + previousPacket.MIC_D + ", New MIC_D: " + newPacket.MIC_D + ", Thread=" + Thread.currentThread().getId());
 
         if (previousPacket.MIC_up == 0 && newPacket.MIC_up == 1) {
-            Log.d(TAG, "🎤 Mic Up Pressed! Increasing Mic Level");
             adjustMicLevel(true);
         } else if (newPacket.MIC_up == 1) {
             try {
                 Thread.sleep(200);
                 adjustMicLevel(true);
             } catch (InterruptedException e) {
-                Log.e(TAG, "❌ Sleep interrupted in mic up", e);
+                Log.e(TAG, "Sleep interrupted in mic up", e);
             }
         }
 
         if (previousPacket.MIC_D == 0 && newPacket.MIC_D == 1) {
-            Log.d(TAG, "🎤 Mic Down Pressed! Decreasing Mic Level");
             adjustMicLevel(false);
         } else if (newPacket.MIC_D == 1) {
             try {
                 Thread.sleep(200);
                 adjustMicLevel(false);
             } catch (InterruptedException e) {
-                Log.e(TAG, "❌ Sleep interrupted in mic down", e);
+                Log.e(TAG, "Sleep interrupted in mic down", e);
             }
         }
     }
@@ -247,31 +234,25 @@ public class SerialPortService extends Service {
 
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newMicLevel, AudioManager.FLAG_SHOW_UI);
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "🎤 Mic Level Changed: " + newMicLevel + " (Max: " + maxMicLevel + ") in " + (endTime - startTime) + "ms");
         }
     }
 
     private void cpuOnMethod() {
-        Log.d(TAG, "🖥️ CPU ON method called at " + System.currentTimeMillis() + ", Thread=" + Thread.currentThread().getId());
         try {
             long startTime = System.currentTimeMillis();
             mLztek.setLcdBackLight(false);
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "🖥️ Screen turned OFF successfully in " + (endTime - startTime) + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Failed to turn screen OFF: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
+            Log.e(TAG, "Failed to turn screen OFF: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
         }
     }
 
     private void cpuOffMethod() {
-        Log.d(TAG, "🖥️ CPU OFF method called at " + System.currentTimeMillis() + ", Thread=" + Thread.currentThread().getId());
         try {
             long startTime = System.currentTimeMillis();
             mLztek.setLcdBackLight(true);
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "🖥️ Screen turned ON successfully in " + (endTime - startTime) + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Failed to turn screen ON: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
             try {
                 long startTime = System.currentTimeMillis();
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -281,177 +262,133 @@ public class SerialPortService extends Service {
                 wakeLock.acquire(10);
                 wakeLock.release();
                 long endTime = System.currentTimeMillis();
-                Log.d(TAG, "🖥️ Fallback: Screen turned ON using PowerManager in " + (endTime - startTime) + "ms");
             } catch (Exception pmException) {
-                Log.e(TAG, "❌ Fallback PowerManager failed: " + pmException.getMessage() + " at " + System.currentTimeMillis(), pmException);
+                Log.e(TAG, "Fallback PowerManager failed: " + pmException.getMessage() + " at " + System.currentTimeMillis(), pmException);
             }
         }
     }
 
     private void checkCpuChange(CPUData newPacket) {
         if (newPacket == null) {
-            Log.e(TAG, "❌ New CPU packet is null");
             return;
         }
 
-        Log.d(TAG, "🖥️ Processing CPU Packet: s_CPU=" + newPacket.s_CPU + ", Thread=" + Thread.currentThread().getId());
-
         if (previousPacket == null) {
-            Log.d(TAG, "🖥️ Initial CPU Packet: s_CPU=" + newPacket.s_CPU);
             if (newPacket.s_CPU == 1) {
-                Log.d(TAG, "🖥️ Initial CPU Button Pressed! Calling ON method");
                 cpuOnMethod();
             } else if (newPacket.s_CPU == 0) {
-                Log.d(TAG, "🖥️ Initial CPU Button Released! Calling OFF method");
                 cpuOffMethod();
             }
             return;
         }
-
-        Log.d(TAG, "🖥️ CPU Check - Previous s_CPU: " + previousPacket.s_CPU + ", New s_CPU: " + newPacket.s_CPU);
 
         if (previousPacket.s_CPU != newPacket.s_CPU) {
             if (newPacket.s_CPU == 1) {
-                Log.d(TAG, "🖥️ CPU Button Pressed! Calling ON method");
                 cpuOnMethod();
             } else if (newPacket.s_CPU == 0) {
-                Log.d(TAG, "🖥️ CPU Button Released! Calling OFF method");
                 cpuOffMethod();
             }
         } else {
-            Log.d(TAG, "🖥️ No CPU state change detected");
+            Log.d(TAG, "No CPU state change detected");
         }
     }
 
     private void vitalOnMethod() {
-        Log.d(TAG, "💉 VITAL ON method called at " + System.currentTimeMillis() + ", Thread=" + Thread.currentThread().getId());
         try {
             long startTime = System.currentTimeMillis();
             GlobalVars.setVitalOn(true);
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "💉 VITAL turned ON successfully in " + (endTime - startTime) + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Failed to turn VITAL ON: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
+            Log.e(TAG, "Failed to turn VITAL ON: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
         }
     }
 
     private void vitalOffMethod() {
-        Log.d(TAG, "💉 VITAL OFF method called at " + System.currentTimeMillis() + ", Thread=" + Thread.currentThread().getId());
         try {
             long startTime = System.currentTimeMillis();
             GlobalVars.setVitalOn(false);
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "💉 VITAL turned OFF successfully in " + (endTime - startTime) + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Failed to turn VITAL OFF: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
+            Log.e(TAG, "Failed to turn VITAL OFF: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
         }
     }
 
     private void checkVitalChange(CPUData newPacket) {
         if (newPacket == null) {
-            Log.e(TAG, "❌ New VITAL packet is null");
             return;
         }
-
-        Log.d(TAG, "💉 Processing VITAL Packet: VITAL=" + newPacket.VITAL + ", Thread=" + Thread.currentThread().getId());
-
         if (previousPacket == null) {
-            Log.d(TAG, "💉 Initial VITAL Packet: VITAL=" + newPacket.VITAL);
             if (newPacket.VITAL == 1) {
-                Log.d(TAG, "💉 Initial VITAL Button Pressed! Calling ON method");
                 vitalOnMethod();
             } else if (newPacket.VITAL == 0) {
-                Log.d(TAG, "💉 Initial VITAL Button Released! Calling OFF method");
                 vitalOffMethod();
             }
             return;
         }
-
-        Log.d(TAG, "💉 VITAL Check - Previous VITAL: " + previousPacket.VITAL + ", New VITAL: " + newPacket.VITAL);
 
         if (previousPacket.VITAL != newPacket.VITAL) {
             if (newPacket.VITAL == 1) {
-                Log.d(TAG, "💉 VITAL Button Pressed! Calling ON method");
                 vitalOnMethod();
             } else if (newPacket.VITAL == 0) {
-                Log.d(TAG, "💉 VITAL Button Released! Calling OFF method");
                 vitalOffMethod();
             }
         } else {
-            Log.d(TAG, "💉 No VITAL state change detected");
+            Log.d(TAG, "No VITAL state change detected");
         }
     }
 
     private void speakerOnMethod() {
-        Log.d(TAG, "🔊 SPEAKER ON method called at " + System.currentTimeMillis() + ", Thread=" + Thread.currentThread().getId());
         try {
             long startTime = System.currentTimeMillis();
             if (audioManager != null) {
                 audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true); // Mute
-                Log.d(TAG, "🔊 Speaker muted");
                 mainHandler.post(() -> {
                     Toast.makeText(getApplicationContext(), "Speaker Muted", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "🔊 Toast shown: Speaker Muted");
                 });
             }
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "🔊 SPEAKER turned ON successfully in " + (endTime - startTime) + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Failed to turn SPEAKER ON: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
+            Log.e(TAG, "Failed to turn SPEAKER ON: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
         }
     }
 
     private void speakerOffMethod() {
-        Log.d(TAG, "🔊 SPEAKER OFF method called at " + System.currentTimeMillis() + ", Thread=" + Thread.currentThread().getId());
         try {
             long startTime = System.currentTimeMillis();
             if (audioManager != null) {
                 audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false); // Unmute
-                Log.d(TAG, "🔊 Speaker unmuted");
                 mainHandler.post(() -> {
                     Toast.makeText(getApplicationContext(), "Speaker Unmuted", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "🔊 Toast shown: Speaker Unmuted");
                 });
             }
             long endTime = System.currentTimeMillis();
-            Log.d(TAG, "🔊 SPEAKER turned OFF successfully in " + (endTime - startTime) + "ms");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Failed to turn SPEAKER OFF: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
+            Log.e(TAG, "Failed to turn SPEAKER OFF: " + e.getMessage() + " at " + System.currentTimeMillis(), e);
         }
     }
 
     private void checkSpeakerChange(CPUData newPacket) {
         if (newPacket == null) {
-            Log.e(TAG, "❌ New SPEAKER packet is null");
             return;
         }
-
-        Log.d(TAG, "🔊 Processing SPEAKER Packet: SPK=" + newPacket.SPK + ", Thread=" + Thread.currentThread().getId());
-
         if (previousPacket == null) {
-            Log.d(TAG, "🔊 Initial SPEAKER Packet: SPK=" + newPacket.SPK);
+            Log.d(TAG, "Initial SPEAKER Packet: SPK=" + newPacket.SPK);
             if (newPacket.SPK == 1) {
-                Log.d(TAG, "🔊 Initial SPEAKER Button Pressed! Calling ON method");
                 speakerOnMethod();
             } else if (newPacket.SPK == 0) {
-                Log.d(TAG, "🔊 Initial SPEAKER Button Released! Calling OFF method");
                 speakerOffMethod();
             }
             return;
         }
-
-        Log.d(TAG, "🔊 SPEAKER Check - Previous SPK: " + previousPacket.SPK + ", New SPK: " + newPacket.SPK);
 
         if (previousPacket.SPK != newPacket.SPK) {
             if (newPacket.SPK == 1) {
-                Log.d(TAG, "🔊 SPEAKER Button Pressed! Calling ON method");
                 speakerOnMethod();
             } else if (newPacket.SPK == 0) {
-                Log.d(TAG, "🔊 SPEAKER Button Released! Calling OFF method");
                 speakerOffMethod();
             }
         } else {
-            Log.d(TAG, "🔊 No SPEAKER state change detected");
+            Log.d(TAG, "No SPEAKER state change detected");
         }
     }
 
@@ -462,13 +399,12 @@ public class SerialPortService extends Service {
         if (mSerialPort != null) {
             try {
                 mSerialPort.close();
-                Log.d(TAG, "✅ Serial Port Closed");
             } catch (Exception e) {
-                Log.e(TAG, "❌ Error closing serial port", e);
+                Log.e(TAG, "Error closing serial port", e);
             }
         }
         mLztek = null;
-        Log.d(TAG, "✅ Service Destroyed");
+        Log.d(TAG, "Service Destroyed");
     }
 
     @Override
