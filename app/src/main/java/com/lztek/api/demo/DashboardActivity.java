@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +26,10 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
 
     private static final String TAG = "DashboardActivity";
 
-    private Button backButton, nextButton, enterButton;
-    private View internalCameraIndicator, usbCameraIndicator, keyboardIndicator;
+    private Button backButton;
+    private Button appoimentButton;
+    private Button patienMonitorButton;
+    private ImageView internalCameraIndicator, usbCameraIndicator, keyboardIndicator;
     private View spO2Indicator, ecgIndicator, nibpIndicator, tempIndicator;
     private GlobalVars globalVars;
     private CameraStatusChecker cameraStatusChecker;
@@ -55,8 +58,6 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         berrySensorChecker.startChecking();
 
         backButton = findViewById(R.id.top_back_button);
-        nextButton = findViewById(R.id.top_Next_button);
-        enterButton = findViewById(R.id.enter_Dbtn);
         internalCameraIndicator = findViewById(R.id.inCam_view);
         usbCameraIndicator = findViewById(R.id.usbCam_view);
         keyboardIndicator = findViewById(R.id.keyboard_view);
@@ -66,6 +67,9 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         tempIndicator = findViewById(R.id.temp_indicator);
         stethoBtn = findViewById(R.id.stetho_btn);
         othersButton = findViewById(R.id.othresButton);
+
+        appoimentButton = findViewById(R.id.my_appointments);
+        patienMonitorButton = findViewById(R.id.patient_monitor);
 
         handler = new Handler(Looper.getMainLooper());
         indicatorUpdater = new Runnable() {
@@ -78,20 +82,29 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         handler.post(indicatorUpdater);
 
         backButton.setOnClickListener(view -> finish());
-        enterButton.setOnClickListener(view -> {
-            Intent patientIntent = new Intent(DashboardActivity.this, PatientEntryActivity.class);
-            startActivity(patientIntent);
+
+        appoimentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this,AppointmentListActivity.class);
+                startActivity(intent);
+            }
         });
-        nextButton.setOnClickListener(view -> {
-            Intent cameraIntent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
-            startActivity(cameraIntent);
+
+        patienMonitorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this,BerryDeviceActivity.class);
+                startActivity(intent);
+            }
         });
+
         stethoBtn.setOnClickListener(view -> {
             Intent chestoIntent = new Intent(DashboardActivity.this, ChestoDeviceActivity.class);
             startActivity(chestoIntent);
         });
         othersButton.setOnClickListener(view -> {
-            Intent ointent = new Intent(DashboardActivity.this, NewMainActivity.class);
+            Intent ointent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
             startActivity(ointent);
         });
 
@@ -99,6 +112,15 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         if (actionBar != null) {
             actionBar.hide();
         }
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        );
     }
 
     @Override
@@ -166,6 +188,11 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         berrySensorChecker.onECGDataReceived();
     }
 
+//    @Override
+//    public void onECGAllWaveReceived(int leadI) {
+//
+//    }
+
     @Override
     public void onRespWaveReceived(int dat) {
 //        Log.d(TAG, "📈 Resp Wave received: " + dat);
@@ -190,10 +217,10 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         berrySensorChecker.onNIBPDataReceived();
     }
 
-    @Override
-    public void onFirmwareReceived(String str) {}
-    @Override
-    public void onHardwareReceived(String str) {}
+//    @Override
+//    public void onFirmwareReceived(String str) {}
+//    @Override
+//    public void onHardwareReceived(String str) {}
 
     private String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -44,7 +45,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button nextButton;
     private Button calibrateButton;
     private Button helpButton;
-    private Button timeButton, dayButton, batteryButton, acSupplyButton, networkButton, remoteHelpButton, shutDownButton;
+    private View btnGapView;
+    private TextView timeTextView, dayTextView, batteryTextView, ftbtnGapView; // Changed to TextView
+    private Button acSupplyButton, networkButton, remoteHelpButton, shutDownButton;
 
     private LinearLayout footerLayout;
     private Handler timeHandler; // For real-time updates
@@ -61,21 +64,16 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         Intent intent = new Intent(this, SerialPortService.class);
         startService(intent);
-
-
-
-//        startForegroundService(new Intent(this, SerialPortService.class));
 
         // Main Layout (Vertical)
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(50, 10, 50, 0);
         layout.setGravity(Gravity.CENTER_HORIZONTAL);
-        layout.setBackgroundColor(Color.parseColor("#F1F8FF"));
         layout.setWeightSum(10);
+        layout.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_gradient));
 
         // Button Layout (Horizontal)
         LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(
@@ -91,37 +89,46 @@ public class LoginActivity extends AppCompatActivity {
 
         // Button Layout Params
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 2f
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f
         );
         btnParams.setMargins(10, 0, 10, 0);
 
+        // Button View Params
+        LinearLayout.LayoutParams btnViewParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 4f
+        );
+
         // Buttons
         maintenanceButton = new Button(this);
-        maintenanceButton.setText("Maintenance");
-        maintenanceButton.setBackgroundColor(Color.parseColor("#4CAF50"));
+        maintenanceButton.setText("Maintenance \uD83D\uDEE0");
         maintenanceButton.setTextColor(Color.WHITE);
         maintenanceButton.setLayoutParams(btnParams);
+        maintenanceButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gray_button));
         buttonLayout.addView(maintenanceButton);
 
         calibrateButton = new Button(this);
-        calibrateButton.setText("Calibrate");
-        calibrateButton.setBackgroundColor(Color.YELLOW);
-        calibrateButton.setTextColor(Color.BLACK);
+        calibrateButton.setText("Calibrate ⚙");
+        calibrateButton.setTextColor(Color.WHITE);
         calibrateButton.setLayoutParams(btnParams);
+        calibrateButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gray_button));
         buttonLayout.addView(calibrateButton);
 
         helpButton = new Button(this);
-        helpButton.setText("Help !");
-        helpButton.setBackgroundColor(Color.RED);
+        helpButton.setText("Help ?");
         helpButton.setTextColor(Color.WHITE);
         helpButton.setLayoutParams(btnParams);
+        helpButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gray_button));
         buttonLayout.addView(helpButton);
 
+        btnGapView = new View(this);
+        btnGapView.setLayoutParams(btnViewParams);
+        buttonLayout.addView(btnGapView);
+
         nextButton = new Button(this);
-        nextButton.setText("Next");
-        nextButton.setBackgroundColor(Color.parseColor("#2196F3"));
+        nextButton.setText("Next →");
         nextButton.setTextColor(Color.WHITE);
         nextButton.setLayoutParams(btnParams);
+        nextButton.setBackground(ContextCompat.getDrawable(this, R.drawable.blue_button));
         buttonLayout.addView(nextButton);
 
         layout.addView(buttonLayout);
@@ -146,6 +153,7 @@ public class LoginActivity extends AppCompatActivity {
         deviceInfoText.setLayoutParams(infoParams);
         layout.addView(deviceInfoText);
 
+
         // Footer Layout (Fixed Bottom)
         LinearLayout.LayoutParams footerParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 3
@@ -153,42 +161,98 @@ public class LoginActivity extends AppCompatActivity {
         footerLayout = new LinearLayout(this);
         footerLayout.setOrientation(LinearLayout.HORIZONTAL);
         footerLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-        footerLayout.setPadding(10, 10, 10, 10);
-        footerLayout.setWeightSum(7);
+        footerLayout.setPadding(0, 0, 0, 0); // Zero padding to eliminate external gaps
+        footerLayout.setWeightSum(8); // 7 items
         footerLayout.setLayoutParams(footerParams);
 
-        // Footer Button Layout Params
-        LinearLayout.LayoutParams footerBtnParams = new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1
-        );
-        footerBtnParams.setMargins(5, 200, 5, 0);
+// Footer Items
+        String[] itemNames = {"TIME", "Day and Date", "Battery %", "AC Supply", "Network", "Remote Access", "Shut Down"};
+        int[] itemDrawables = {
+                R.drawable.blue_button,
+                R.drawable.green_button,
+                R.drawable.gray_button,
+                R.drawable.green_button,
+                R.drawable.blue_button,
+                R.drawable.gray_button,
+                R.drawable.red_button
+        };
 
-        // Footer Buttons
-        String[] buttonNames = {"TIME", "Day and Date", "Battery %", "AC Supply", "Network", "Remote Access", "Shut Down"};
-        int[] buttonColors = {Color.BLUE, Color.GREEN, Color.MAGENTA, Color.CYAN, Color.DKGRAY, Color.RED, Color.BLACK};
-
-        // Initialize footer buttons
-        timeButton = new Button(this);
-        dayButton = new Button(this);
-        batteryButton = new Button(this);
+        View[] footerItems = new View[7];
+        timeTextView = new TextView(this);
+        dayTextView = new TextView(this);
+        batteryTextView = new TextView(this);
         acSupplyButton = new Button(this);
         networkButton = new Button(this);
         remoteHelpButton = new Button(this);
         shutDownButton = new Button(this);
 
-        Button[] footerButtons = {timeButton, dayButton, batteryButton, acSupplyButton, networkButton, remoteHelpButton, shutDownButton};
+        footerItems[0] = timeTextView;
+        footerItems[1] = dayTextView;
+        footerItems[2] = batteryTextView;
+        footerItems[3] = acSupplyButton;
+        footerItems[4] = networkButton;
+        footerItems[5] = remoteHelpButton;
+        footerItems[6] = shutDownButton;
 
-        for (int i = 0; i < buttonNames.length; i++) {
-            footerButtons[i].setText(buttonNames[i]);
-            footerButtons[i].setTextColor(Color.WHITE);
-            footerButtons[i].setBackgroundColor(buttonColors[i]);
-            footerButtons[i].setLayoutParams(footerBtnParams);
+        for (int i = 0; i < itemNames.length; i++) {
+            // Create new LayoutParams for each item
+            LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
+                    0, ViewGroup.LayoutParams.WRAP_CONTENT, i == 5 ? 1.2f : 1f // Increase weight for Network button
+            );
 
-            final int index = i;
-            footerButtons[i].setOnClickListener(v -> handleFooterClick(index));
-
-            footerLayout.addView(footerButtons[i]);
+            if (i < 3) {
+                // Configure TextView for first 3 items
+                TextView textView = (TextView) footerItems[i];
+                textView.setText(itemNames[i]);
+                // Custom text color
+                int textColor = Color.BLACK;
+                textView.setTextColor(textColor);
+                // Custom text size (in sp)
+                float textSize = i == 0 ? 16f : (i == 1 ? 16f : 18f);
+                textView.setTextSize(textSize);
+                textView.setGravity(Gravity.CENTER);
+                textView.setPadding(0, 0, 0, 0); // Zero padding for TextView
+                // No background to avoid drawable padding
+                // textView.setBackground(ContextCompat.getDrawable(this, itemDrawables[i]));
+                itemParams.setMargins(0, 200, 0, 0); // Zero margins for TextViews
+                if (i == 0) {
+                    itemParams.setMargins(-120, 200, 10, 0);
+                }
+                textView.setLayoutParams(itemParams);
+                final int index = i;
+                textView.setOnClickListener(v -> handleFooterClick(index));
+            } else {
+                // Configure Button for last 4 items
+                Button button = (Button) footerItems[i];
+                button.setText(itemNames[i]);
+                button.setTextColor(Color.WHITE);
+                button.setBackground(ContextCompat.getDrawable(this, itemDrawables[i]));
+                button.setPadding(0, 0, 0, 0); // Zero padding for Button
+                if (i == 4) { // Network button
+                    button.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_network, 0); // Icon on the left
+                    button.setCompoundDrawablePadding(2); // Space between icon and text
+                    button.setPadding(0,0,8,0);
+                }
+                if (i == 5) { // Network button
+                    button.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_remote, 0); // Icon on the left
+                    button.setCompoundDrawablePadding(2); // Space between icon and text
+                    button.setPadding(0,0,8,0);
+                }
+                if (i == 3) {
+                    itemParams.setMargins(250, 200, 30, 0); // Increased left margin for AC Supply
+                } else {
+                    itemParams.setMargins(30, 200, 30, 0); // Default margins for other buttons
+                }
+                if (i == 6) {
+                    itemParams.setMargins(120, 200, -70, 0);
+                }
+                button.setLayoutParams(itemParams);
+                final int index = i;
+                button.setOnClickListener(v -> handleFooterClick(index));
+            }
+            footerLayout.addView(footerItems[i]);
         }
+
 
         layout.addView(footerLayout);
 
@@ -205,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
         maintenanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(LoginActivity.this,NewMainActivity.class);
+                Intent intent1 = new Intent(LoginActivity.this, NewMainActivity.class);
                 startActivity(intent1);
             }
         });
@@ -213,42 +277,52 @@ public class LoginActivity extends AppCompatActivity {
         // Load device details
         loadDeviceDetails();
 
-        // Update TIME and Day/Date buttons initially
-        updateTimeButton();
-        updateDayDateButton();
+        // Update TIME and Day/Date TextViews initially
+        updateTimeTextView();
+        updateDayDateTextView();
 
         // Start real-time time updates
         startTimeUpdates();
 
         // Register BroadcastReceiver for battery updates
         registerBatteryReceiver();
+
+        // Set full-screen mode
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        );
     }
 
-    // Update TIME button with current time in 12-hour format (without seconds)
-    private void updateTimeButton() {
+    // Update TIME TextView with current time in 12-hour format (without seconds)
+    private void updateTimeTextView() {
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         String currentTime = timeFormat.format(new Date());
-        timeButton.setText(currentTime);
+        timeTextView.setText(currentTime);
     }
 
-    // Start real-time updates for the TIME button
+    // Start real-time updates for the TIME TextView
     private void startTimeUpdates() {
         timeHandler = new Handler(Looper.getMainLooper());
         timeRunnable = new Runnable() {
             @Override
             public void run() {
-                updateTimeButton();
+                updateTimeTextView();
                 timeHandler.postDelayed(this, 60000); // Update every minute (60000 ms)
             }
         };
         timeHandler.post(timeRunnable); // Start the updates
     }
 
-    // Update Day and Date button with current day and date
-    private void updateDayDateButton() {
-        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE, dd.MM.yyyy", Locale.getDefault());
+    // Update Day and Date TextView with current day and date
+    private void updateDayDateTextView() {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EE ,dd.MM.yyyy", Locale.getDefault());
         String currentDayDate = dayFormat.format(new Date());
-        dayButton.setText(currentDayDate);
+        dayTextView.setText(currentDayDate);
     }
 
     // Register BroadcastReceiver to get battery percentage from SerialPortService
@@ -260,9 +334,9 @@ public class LoginActivity extends AppCompatActivity {
                     long batteryPercentage = intent.getLongExtra("battery_percentage", -1);
                     long chargingStatus = intent.getLongExtra("charging_status", -1);
                     if (batteryPercentage >= 0) {
-                        batteryButton.setText(batteryPercentage + "%");
+                        batteryTextView.setText(batteryPercentage + "\uD83D\uDD0B");
                     } else {
-                        batteryButton.setText("Battery %\nN/A");
+                        batteryTextView.setText("Battery %\nN/A");
                     }
                     // Optionally, you can also use chargingStatus to show charging state
                     if (chargingStatus >= 0) {
@@ -297,7 +371,55 @@ public class LoginActivity extends AppCompatActivity {
         builder.show();
     }
 
-    // Show shutdown options dialog
+//    // Show shutdown options dialog
+//    private void showShutdownDialog() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Shutdown Options");
+//        builder.setMessage("Choose an option:");
+//
+//        builder.setPositiveButton("Reboot", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                rebootDevice();
+//            }
+//        });
+//
+//        builder.setNegativeButton("Power Off", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                powerOffDevice();
+//            }
+//        });
+//
+//        builder.setNeutralButton("Cancel", null);
+//        builder.show();
+//    }
+//
+//    // Function to reboot the device
+//    private void rebootDevice() {
+//        try {
+//            mLztek.softReboot();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Reboot failed!", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    // Function to power off the device
+//    private void powerOffDevice() {
+//        int min = -1;
+//        try {
+//            min = Integer.parseInt(mEtTime.getText().toString());
+//        } catch (Exception e) {
+//        }
+//        if (min <= 0) {
+//            mEtTime.requestFocus();
+//            return;
+//        }
+//
+//        mLztek.alarmPoweron(min * 60);
+//    }
+
     private void showShutdownDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Shutdown Options");
@@ -306,14 +428,14 @@ public class LoginActivity extends AppCompatActivity {
         builder.setPositiveButton("Reboot", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                rebootDevice();
+                rebootDevice(); // Directly call the reboot method
             }
         });
 
         builder.setNegativeButton("Power Off", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                powerOffDevice();
+                powerOffDevice(); // Directly call the power-off method
             }
         });
 
@@ -321,40 +443,38 @@ public class LoginActivity extends AppCompatActivity {
         builder.show();
     }
 
-    // Function to reboot the device
+
     private void rebootDevice() {
         try {
-            mLztek.softReboot();
+            // Reboot command (requires root permissions in most cases)
+            Runtime.getRuntime().exec(new String[] {"su", "-c", "reboot"});
+            Toast.makeText(this, "Rebooting...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Reboot failed!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // Function to power off the device
     private void powerOffDevice() {
-        int min = -1;
         try {
-            min = Integer.parseInt(mEtTime.getText().toString());
+            // Power off command (requires root permissions)
+            Runtime.getRuntime().exec(new String[] {"su", "-c", "reboot -p"});
+            Toast.makeText(this, "Powering off...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Power off failed!", Toast.LENGTH_SHORT).show();
         }
-        if (min <= 0) {
-            mEtTime.requestFocus();
-            return;
-        }
-
-        mLztek.alarmPoweron(min * 60);
     }
 
 
-    // Footer Button Click Handler
+    // Footer Item Click Handler
     private void handleFooterClick(int index) {
         switch (index) {
             case 0: // TIME
-                updateTimeButton();
+                updateTimeTextView();
                 break;
             case 1: // Day and Date
-                updateDayDateButton();
+                updateDayDateTextView();
                 break;
             case 2: // Battery % (Updated via broadcast, no action needed on click)
                 break;
@@ -401,7 +521,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // Handles the Next button action
     private void submitCode() {
-        Intent intent = new Intent(LoginActivity.this, BerryDeviceActivity.class);
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         startActivity(intent);
     }
 

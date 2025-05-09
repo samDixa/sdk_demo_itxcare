@@ -43,7 +43,7 @@
       </LinearLayout>
 
 
-      <include layout="@layout/layout_about"/>
+<!--      <include layout="@layout/layout_about"/>-->
 
 
       <LinearLayout

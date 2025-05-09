@@ -51,7 +51,6 @@ public class BluetoothService extends Service {
         void onConnected();
         void onDisconnected();
         void onError(String error);
-        void onBatteryUpdate(String batteryLevel);
     }
 
     public void setCallback(BluetoothCallback callback) {
@@ -92,7 +91,6 @@ public class BluetoothService extends Service {
                     adjustBluetoothPowerManually();
                 }
                 sendAudioConfiguration();
-                checkBatteryLevel();
                 monitorSignalStrength();
                 if (callback != null) callback.onConnected();
             } catch (IOException e) {
@@ -128,7 +126,7 @@ public class BluetoothService extends Service {
 
     private void sendAudioConfiguration() {
         try {
-            sendCommand("SRAT-16000");
+            sendCommand("SRAT-6000");
             sendCommand("GAIN-8");
             sendCommand("LSFC-280");
             Log.d(TAG, "Audio config sent: SRAT-16000, GAIN-8, LSFC-280");
@@ -137,27 +135,7 @@ public class BluetoothService extends Service {
         }
     }
 
-    private void checkBatteryLevel() {
-        backgroundHandler.post(() -> {
-            try {
-                if (isConnected && outputStream != null) {
-                    sendCommand("BATP?");
-                    Thread.sleep(1000);
-                    if (inputStream.available() > 0) {
-                        byte[] buffer = new byte[CHUNK_SIZE];
-                        int bytesRead = inputStream.read(buffer);
-                        String response = new String(buffer, 0, bytesRead).trim();
-                        if (response.startsWith("BATP:")) {
-                            String batteryLevel = response.split(":")[1].replace("%", "");
-                            if (callback != null) callback.onBatteryUpdate(batteryLevel);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                Log.d(TAG, "Battery check failed: " + e.getMessage());
-            }
-        });
-    }
+
 
     private void monitorSignalStrength() {
         signalHandler.postDelayed(new Runnable() {
@@ -211,6 +189,7 @@ public class BluetoothService extends Service {
         }, 3000);
     }
 
+
     public void startListening() {
         if (!isListening && isConnected) {
             isListening = true;
@@ -218,49 +197,46 @@ public class BluetoothService extends Service {
                 try {
                     sendCommand("START");
                     Log.d(TAG, "Sent START");
-                    int bufferSize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
+
+                    int bufferSize = AudioTrack.getMinBufferSize(
+                            SAMPLE_RATE,
                             AudioFormat.CHANNEL_OUT_MONO,
-                            AudioFormat.ENCODING_PCM_16BIT);
-                    audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                            AudioFormat.ENCODING_PCM_16BIT
+                    );
+
+                    audioTrack = new AudioTrack(
+                            AudioManager.STREAM_MUSIC,
                             SAMPLE_RATE,
                             AudioFormat.CHANNEL_OUT_MONO,
                             AudioFormat.ENCODING_PCM_16BIT,
                             bufferSize,
-                            AudioTrack.MODE_STREAM);
-                    audioTrack.setVolume(0.8f);
+                            AudioTrack.MODE_STREAM
+                    );
+                    audioTrack.setVolume(1.0f);
                     audioTrack.play();
                     isPlaying = true;
 
                     byte[] buffer = new byte[CHUNK_SIZE];
-                    int bytesRead;
 
                     while (isConnected && isListening) {
+                        int bytesRead;
                         try {
                             bytesRead = inputStream.read(buffer, 0, buffer.length);
-                            Log.d(TAG, "Bytes read: " + bytesRead);
                             if (bytesRead == -1) {
                                 Log.d(TAG, "Socket closed");
                                 cleanupConnection();
-                                return;
+                                break;
                             }
                             if (bytesRead > 0) {
-                                byte[] actualData = new byte[bytesRead];
-                                System.arraycopy(buffer, 0, actualData, 0, bytesRead);
+                                // GRAPH update
                                 if (callback != null) {
+                                    byte[] actualData = new byte[bytesRead];
+                                    System.arraycopy(buffer, 0, actualData, 0, bytesRead);
                                     callback.onDataReceived(actualData);
                                 }
-                                double[] rawAudio = AudioProcessor.convertToDoubleArray(actualData);
-                                double[] fftData = AudioProcessor.applyFFT(rawAudio);
-                                boolean hasNormalSounds = AudioProcessor.containsNormalSounds(fftData);
-                                if (!hasNormalSounds) {
-                                    double[] filteredData = AudioProcessor.applyMedicalBandPassFilter(fftData);
-                                    boolean isValidSignal = AudioProcessor.isValidMedicalSignal(filteredData);
-                                    if (isValidSignal) {
-                                        double[] timeData = AudioProcessor.applyInverseFFT(filteredData);
-                                        byte[] processedAudio = AudioProcessor.convertToByteArray(timeData);
-                                        audioTrack.write(processedAudio, 0, processedAudio.length);
-                                    }
-                                }
+
+                                // AUDIO play
+                                audioTrack.write(buffer, 0, bytesRead);
                             }
                         } catch (IOException e) {
                             Log.d(TAG, "Read error: " + e.getMessage());
@@ -276,6 +252,8 @@ public class BluetoothService extends Service {
             });
         }
     }
+
+
 
     public void stopListening() {
         isListening = false;

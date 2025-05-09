@@ -16,7 +16,7 @@
     <uses-feature android:name="android.hardware.microphone" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> -->
     <!-- <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/> -->
-<!--    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />-->
+    <!-- <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature
@@ -70,7 +70,7 @@
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".OthersActivity"
-            android:theme="@style/Theme.AppCompat.Light"/>
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".FinalPatientActivity"
             android:theme="@style/Theme.AppCompat.Light" />

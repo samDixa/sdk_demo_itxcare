@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#80000000"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/popupContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7-Lead ECG Graphs"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center" />
+
+        <!-- 7 WaveformViews for ECG Leads -->
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadI"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadII"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadIII"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadAVR"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadAVL"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadAVF"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+        <com.lztek.api.demo.view.WaveformView
+            android:id="@+id/wfLeadV"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:maxValue="250"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+    <!-- Cross Icon to Dismiss -->
+    <ImageView
+        android:id="@+id/ivClosePopup"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignTop="@id/popupContent"
+        android:layout_alignEnd="@id/popupContent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_margin="8dp"
+        android:contentDescription="Close" />
+
+</RelativeLayout>

@@ -1,30 +1,17 @@
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="120dp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:elevation="20dp"
-    android:translationZ="20dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"> <!-- Yahan elevation diya hai -->
+    android:translationZ="20dp">
 
     <com.lztek.api.demo.view.WaveformView
         android:id="@+id/wfECG1"
-        app:waveColor="@color/green_wave"
         android:layout_width="match_parent"
-        app:maxValue="250"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp" />
-
-    <Spinner
-        android:id="@+id/spinnerECG1"
-        android:layout_width="wrap_content"
-        android:layout_height="10dp"
-        android:layout_alignParentStart="true"
-        android:gravity="left"
-        android:elevation="30dp"
-        android:translationZ="30dp"
-        android:background="@drawable/spinner_background"
-        android:textSize="8sp" />
-
+        app:maxValue="250"
+        app:waveColor="@color/green_wave" />
 
 </RelativeLayout>

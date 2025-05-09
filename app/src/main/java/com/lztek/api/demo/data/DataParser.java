@@ -27,10 +27,11 @@ public class DataParser {
     private final int PKG_SPO2_WAVE = 0xfe;
     private final int PKG_RESP_WAVE = 0xFF;
 
+//    public static byte[] CMD_START_NIBP = new byte[]{0x55, (byte) 0xAA, 0x04, 0x09, 0x02, (byte) 0xF0};
     public static byte[] CMD_START_NIBP = new byte[]{0x55, (byte) 0xaa, 0x04, 0x02, 0x01, (byte) 0xf8};
     public static byte[] CMD_STOP_NIBP = new byte[]{0x55, (byte) 0xaa, 0x04, 0x02, 0x00, (byte) 0xf9};
-    public static byte[] CMD_FW_VERSION = new byte[]{0x55, (byte) 0xaa, 0x04, (byte) 0xfc, 0x00, (byte) 0xff};
-    public static byte[] CMD_HW_VERSION = new byte[]{0x55, (byte) 0xaa, 0x04, (byte) 0xfd, 0x00, (byte) 0xfe};
+//    public static byte[] CMD_FW_VERSION = new byte[]{0x55, (byte) 0xaa, 0x04, (byte) 0xfc, 0x00, (byte) 0xff};
+//    public static byte[] CMD_HW_VERSION = new byte[]{0x55, (byte) 0xaa, 0x04, (byte) 0xfd, 0x00, (byte) 0xfe};
 
     private ParseRunnable mParseRunnable;
     private volatile boolean isStop = true; // Volatile for thread safety
@@ -43,11 +44,12 @@ public class DataParser {
         void onSpO2WaveReceived(int dat);
         void onSpO2Received(SpO2 spo2);
         void onECGWaveReceived(int leadI, int leadII, int leadIII, int aVR, int aVL, int aVF, int vLead);
+//        void onECGAllWaveReceived(int leadI);
         void onECGReceived(ECG ecg);
         void onTempReceived(Temp temp);
         void onNIBPReceived(NIBP nibp);
-        void onFirmwareReceived(String str);
-        void onHardwareReceived(String str);
+//        void onFirmwareReceived(String str);
+//        void onHardwareReceived(String str);
         void onRespWaveReceived(int dat);
     }
 
@@ -60,13 +62,13 @@ public class DataParser {
         if (mParseRunnable == null) {
             mParseRunnable = new ParseRunnable();
             new Thread(mParseRunnable, "DataParserThread").start();
-            Log.d(TAG, "DataParser started");
+//            Log.d(TAG, "DataParser started");
         }
     }
 
     public void stop() {
         isStop = true;
-        Log.d(TAG, "DataParser stopping");
+//        Log.d(TAG, "DataParser stopping");
     }
 
     /**
@@ -99,10 +101,10 @@ public class DataParser {
                                 if (CheckSum(packageData)) {
                                     parsePackageInBackground(packageData);
                                 } else {
-                                    Log.w(TAG, "Checksum failed for packet: " + bytesToHex(packageData));
+//                                    Log.w(TAG, "Checksum failed for packet: " + bytesToHex(packageData));
                                 }
                             } else {
-                                Log.w(TAG, "Invalid package length: " + packageLen);
+//                                Log.w(TAG, "Invalid package length: " + packageLen);
                             }
                         }
                     }
@@ -118,7 +120,7 @@ public class DataParser {
     private void parsePackageInBackground(int[] pkgData) {
         new Thread(() -> {
             int pkgType = pkgData[3];
-            Log.d(TAG, "Parsing packet type: " + String.format("0x%02X", pkgType));
+//            Log.d(TAG, "Parsing packet type: " + String.format("0x%02X", pkgType));
 
             switch (pkgType) {
                 case PKG_ECG_WAVE:
@@ -132,6 +134,7 @@ public class DataParser {
                         int vLead = pkgData[10];
                         if (mListener != null) {
                             mListener.onECGWaveReceived(leadI, leadII, leadIII, aVR, aVL, aVF, vLead);
+//                            mListener.onECGAllWaveReceived(leadI);
                         }
                     }
                     break;
@@ -188,25 +191,25 @@ public class DataParser {
                     }
                     break;
 
-                case PKG_SW_VER:
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 4; i < pkgData.length - 1; i++) {
-                        sb.append((char) (pkgData[i] & 0xff));
-                    }
-                    if (mListener != null) {
-                        mListener.onFirmwareReceived(sb.toString());
-                    }
-                    break;
-
-                case PKG_HW_VER:
-                    StringBuilder sb1 = new StringBuilder();
-                    for (int i = 4; i < pkgData.length - 1; i++) {
-                        sb1.append((char) (pkgData[i] & 0xff));
-                    }
-                    if (mListener != null) {
-                        mListener.onHardwareReceived(sb1.toString());
-                    }
-                    break;
+//                case PKG_SW_VER:
+//                    StringBuilder sb = new StringBuilder();
+//                    for (int i = 4; i < pkgData.length - 1; i++) {
+//                        sb.append((char) (pkgData[i] & 0xff));
+//                    }
+//                    if (mListener != null) {
+//                        mListener.onFirmwareReceived(sb.toString());
+//                    }
+//                    break;
+//
+//                case PKG_HW_VER:
+//                    StringBuilder sb1 = new StringBuilder();
+//                    for (int i = 4; i < pkgData.length - 1; i++) {
+//                        sb1.append((char) (pkgData[i] & 0xff));
+//                    }
+//                    if (mListener != null) {
+//                        mListener.onHardwareReceived(sb1.toString());
+//                    }
+//                    break;
 
                 case PKG_RESP_WAVE:
                     if (pkgData.length >= 5) {
@@ -231,13 +234,13 @@ public class DataParser {
             for (byte b : dat) {
                 try {
                     if (!bufferQueue.offer(toUnsignedInt(b))) {
-                        Log.w(TAG, "Buffer queue full, dropping data");
+//                        Log.w(TAG, "Buffer queue full, dropping data");
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error adding to queue: " + e.getMessage());
                 }
             }
-            Log.d(TAG, "Added data to queue, size: " + bufferQueue.size());
+//            Log.d(TAG, "Added data to queue, size: " + bufferQueue.size());
         }
     }
 
@@ -303,6 +306,10 @@ public class DataParser {
         return sb.toString().trim();
     }
 }
+
+
+
+
 
 //package com.lztek.api.demo.data;
 //

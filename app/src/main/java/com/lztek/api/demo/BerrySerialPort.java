@@ -162,27 +162,6 @@ public class BerrySerialPort {
         }
     }
 
-//    private void readSerialData() {
-//        byte[] buffer = new byte[128]; // Reduced buffer size to avoid memory overhead
-//        while (isConnected) {
-//            try {
-//                int bytesRead = inputStream.read(buffer);
-//                if (bytesRead > 0) {
-//                    byte[] data = new byte[bytesRead];
-//                    System.arraycopy(buffer, 0, data, 0, bytesRead);
-//                    if (dataListener != null) {
-//                        // Post to listener on UI thread
-//                        new Handler(context.getMainLooper()).post(() -> dataListener.onDataReceived(data));
-//                    }
-//                }
-//            } catch (IOException e) {
-//                if (isConnected && dataListener != null) {
-//                    new Handler(context.getMainLooper()).post(() -> dataListener.onConnectionStatusChanged("Read error on " + SERIAL_PORT_PATH_RX + ": " + e.getMessage()));
-//                }
-//                break;
-//            }
-//        }
-//    }
 
     private String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();

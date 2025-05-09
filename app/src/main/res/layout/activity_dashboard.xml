@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/bg_gradient"
     android:orientation="vertical"
     android:padding="4dp"
     tools:context=".DashboardActivity">
@@ -27,8 +27,12 @@
             <Button
                 android:id="@+id/top_back_button"
                 android:layout_width="wrap_content"
+                android:padding="8dp"
+                android:drawableLeft="@drawable/ic_baseline_keyboard_backspace_24"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_bg_outline01"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
                 android:text="Back" />
 
             <View
@@ -37,11 +41,14 @@
                 android:layout_weight="3" />
 
             <Button
-                android:id="@+id/top_Next_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_bg_outline01"
-                android:text="Next" />
+                android:background="@drawable/btn_bg_outline03"
+                android:text=" LogOut"
+                android:padding="8dp"
+                android:drawableLeft="@drawable/logout"
+                android:textColor="#ffff"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -59,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="Paramedic Name"
                 android:textColor="#6C6C6C"
+                android:layout_weight="1"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -67,7 +75,7 @@
                 android:layout_width="250dp"
                 android:layout_height="120dp"
                 android:layout_marginBottom="16dp"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:contentDescription="@string/app_logo"
                 android:src="@drawable/cnrgi_logo" />
 
@@ -77,6 +85,9 @@
                 android:layout_height="wrap_content"
                 android:text="ID:........"
                 android:textColor="#6C6C6C"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                android:gravity="right"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -92,34 +103,111 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.5"
-                android:orientation="vertical"></LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:orientation="vertical">
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="60dp"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/enter_Dbtn"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:background="@drawable/btn_bg_outline01"
-                    android:text="Enter"
-                    android:textColor="#ffff"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/my_appointments"
+                        android:layout_width="250px"
+                        android:padding="8dp"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="30dp"
+                        android:drawableRight="@drawable/ic_baseline_event_note_24"
+                        android:background="@drawable/blue_button"
+                        android:text="My Appoinment"
+                        android:textColor="#ffff"
+                        android:layout_marginRight="20dp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:layout_width="250px"
+                        android:padding="8dp"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="30dp"
+                        android:drawableRight="@drawable/ic_baseline_assessment_24"
+                        android:background="@drawable/gray_button"
+                        android:text="Offline Sessions "
+                        android:textColor="#ffff"
+                        android:layout_marginRight="20dp"
+                        android:textStyle="bold"  />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_bg_outline03"
-                    android:text="LogOut"
-                    android:textColor="#ffff"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="250px"
+                        android:padding="8dp"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="30dp"
+                        android:drawableRight="@drawable/ic_baseline_fiber_new_24"
+                        android:background="@drawable/blue_button"
+                        android:text="New Appoinment "
+                        android:textColor="#ffff"
+                        android:layout_marginRight="20dp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:layout_width="250px"
+                        android:padding="8dp"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="30dp"
+                        android:drawableRight="@drawable/ambulance"
+                        android:background="@drawable/red_button"
+                        android:text="Ambulance Mode"
+                        android:textColor="#ffff"
+                        android:layout_marginRight="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/patient_monitor"
+                        android:layout_width="250px"
+                        android:padding="8dp"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="30dp"
+                        android:drawableRight="@drawable/vital_monitor"
+                        android:background="@drawable/green_button"
+                        android:text="Patient Monitor "
+                        android:textColor="#ffff"
+                        android:layout_marginRight="20dp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:layout_width="250px"
+                        android:padding="8dp"
+                        android:layout_height="100px"
+                        android:layout_marginBottom="30dp"
+                        android:drawableRight="@drawable/my_files"
+                        android:background="@drawable/gray_button"
+                        android:text="My Files / Storage"
+                        android:textColor="#ffff"
+                        android:layout_marginRight="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -135,7 +223,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/card_bg"
                     android:elevation="8dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -151,11 +238,13 @@
                         android:text="USB Cam"
                         android:textSize="18sp" />
 
-                    <View
+
+                    <ImageView
                         android:id="@+id/inCam_view"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@color/green_wave" />
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_background" />
+
 
                 </LinearLayout>
 
@@ -164,7 +253,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/card_bg"
                     android:elevation="8dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -180,11 +268,11 @@
                         android:text="Keyboard"
                         android:textSize="18sp" />
 
-                    <View
+                    <ImageView
                         android:id="@+id/keyboard_view"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="#FF0000" />
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_background" />
 
                 </LinearLayout>
 
@@ -193,7 +281,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/card_bg"
                     android:elevation="8dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -209,11 +296,12 @@
                         android:text="Web Cam "
                         android:textSize="18sp" />
 
-                    <View
+
+                    <ImageView
                         android:id="@+id/usbCam_view"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@color/green_wave" />
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_background" />
 
                 </LinearLayout>
 
@@ -222,7 +310,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/card_bg"
                     android:elevation="8dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -236,13 +323,14 @@
                         android:layout_marginRight="10dp"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:text="Othres"
+                        android:text="Temp 2"
                         android:textSize="18sp" />
 
-                    <View
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@color/green_wave" />
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_background" />
 
                 </LinearLayout>
 
@@ -251,7 +339,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/card_bg"
                     android:elevation="8dp"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -268,10 +355,11 @@
                         android:text="Stetho"
                         android:textSize="18sp" />
 
-                    <View
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@color/green_wave" />
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_background" />
 
                 </LinearLayout>
 

@@ -25,6 +25,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/timer_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="00:00"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:padding="8dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +77,30 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Capture USB"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btn_record_internal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Record Front Video"
+            android:enabled="false" />
+
+        <Button
+            android:id="@+id/btn_record_usb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Record USB Video"
             android:enabled="false" />
 
     </LinearLayout>

@@ -18,6 +18,7 @@ public class GlobalVars {
     private boolean isCameraPreviewActive = false;
     private boolean keyboardConnected;// New flag
 
+
     // Authentication tokens
     private static String accessToken;
     private static String refreshToken;
@@ -25,6 +26,9 @@ public class GlobalVars {
     //
     private static final String TAG = "GlobalVars";
     public static boolean isVitalOn = false;
+
+    private static boolean isCam1On = false;
+    private static boolean isCam2On = false;
 
     // New variables for Berry sensors
     private boolean isSpO2Connected = false;
@@ -628,6 +632,23 @@ public class GlobalVars {
     //
     public static void setVitalOn(boolean value) {
         isVitalOn = value;
-        Log.d(TAG, "🌡️ isVitalOn set to: " + isVitalOn);
+        Log.d(TAG, "isVitalOn set to: " + isVitalOn);
+    }
+
+
+    public static void setCam1On(boolean value) {
+        isCam1On = value;
+    }
+
+    public static boolean isCam1On() {
+        return isCam1On;
+    }
+
+    public static void setCam2On(boolean value) {
+        isCam2On = value;
+    }
+
+    public static boolean isCam2On() {
+        return isCam2On;
     }
 }

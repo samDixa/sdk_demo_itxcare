@@ -2,11 +2,15 @@ package com.lztek.api.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -27,17 +31,25 @@ import org.json.JSONObject;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class LoginActivityWeb extends AppCompatActivity {
 
-    private TextView titleText;
-    private TextView statusText;
+    private TextView timeTextView;
+    private TextView dateTextView;
+    private TextView bettryTextView;
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private Button backButton,nextButton;
-    private TextView viewButton;
+    private Button backButton;
+    private Button submitButton;
 //    private CheckBox rememberMeCheckBox;
+
+    private Handler timeHandler; // For real-time updates
+    private Runnable timeRunnable; // Runnable to update time
+    private BroadcastReceiver batteryReceiver; // To receive battery updates from SerialPortService
 
     private static final String TAG = "LoginActivityWeb";
     private String hardcodedUsername = "dipti@gmail.com";
@@ -46,132 +58,91 @@ public class LoginActivityWeb extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login_web);
 
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 10, 50, 10);
-        layout.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
-        layout.setBackgroundColor(Color.parseColor("#F1F8FF")); // Set background color
-
-        LinearLayout topBarLayout = new LinearLayout(this);
-        topBarLayout.setOrientation(LinearLayout.HORIZONTAL);
-// Set layout params with bottom margin
-        LinearLayout.LayoutParams topBarParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        topBarParams.setMargins(0, 0, 0, 50); // Add 50px bottom margin
-        topBarLayout.setLayoutParams(topBarParams);
-        topBarLayout.setGravity(Gravity.CENTER_VERTICAL); // Optional: vertically center the buttons
-
-// Back Button with left alignment
-        backButton = new Button(this);
-        backButton.setTextColor(Color.WHITE);
-        backButton.setBackgroundColor(Color.BLUE);
-        backButton.setText("Back");
-// Set layout params for back button
-        LinearLayout.LayoutParams backParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        backParams.gravity = Gravity.START; // Align to left
-        backButton.setLayoutParams(backParams);
-        topBarLayout.addView(backButton);
-
-        viewButton = new TextView(this);
-        LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        viewParams.gravity = Gravity.CENTER;
-        viewParams.weight = 1;
-        viewButton.setLayoutParams(viewParams);
-        topBarLayout.addView(viewButton);
+        backButton = findViewById(R.id.lgw_back_btn);
+        usernameEditText = findViewById(R.id.edit_userid);
+        passwordEditText = findViewById(R.id.edit_password);
+        submitButton = findViewById(R.id.btn_login);
+        timeTextView = findViewById(R.id.lgw_time);
+        dateTextView = findViewById(R.id.lgw_date);
+        bettryTextView = findViewById(R.id.lgw_bettry);
 
 
-
-
-// Next Button with right alignment
-        nextButton = new Button(this);
-        nextButton.setText("Next");
-        nextButton.setBackgroundColor(Color.BLUE);
-        nextButton.setTextColor(Color.WHITE);
-// Set layout params for next button
-        LinearLayout.LayoutParams nextParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        nextParams.gravity = Gravity.END; // Align to right
-//        nextParams.weight = 1; // This pushes the button to the right
-        nextButton.setLayoutParams(nextParams);
-        topBarLayout.addView(nextButton);
-
-        layout.addView(topBarLayout);
         backButton.setOnClickListener(view -> finish());
-
-
-        // Setting up Logo as ImageView
-        ImageView logo = new ImageView(this);
-        logo.setImageResource(R.drawable.hp_logo);
-        logo.setAdjustViewBounds(true);
-        logo.setMaxHeight(320);
-        layout.addView(logo);
-
-        titleText = new TextView(this);
-        titleText.setTextSize(24);
-        titleText.setText("WELCOME! Please Login");
-        titleText.setGravity(Gravity.CENTER);
-        titleText.setPadding(10,10,10,10);
-        layout.addView(titleText);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300, getResources().getDisplayMetrics()),
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-
-        // Username field
-        usernameEditText = new EditText(this);
-        usernameEditText.setHint("Username");
         usernameEditText.setText(hardcodedUsername);
-        usernameEditText.setGravity(Gravity.CENTER_HORIZONTAL);
-        usernameEditText.setLayoutParams(params);  // Set limited width
-        usernameEditText.setPadding(10,20,10,10);
-        layout.addView(usernameEditText);
-
-        // Password field
-        passwordEditText = new EditText(this);
-        passwordEditText.setHint("Password");
         passwordEditText.setText(hardcodedPassword);
-        passwordEditText.setInputType(0x00000081); // TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_PASSWORD
-        passwordEditText.setGravity(Gravity.CENTER_HORIZONTAL);
-        passwordEditText.setLayoutParams(params);  // Set limited width
-        passwordEditText.setPadding(10,20,10,10);
-        layout.addView(passwordEditText);
 
-        // Submit button
-        Button submitButton = new Button(this);
-        submitButton.setText("Submit");
-        submitButton.setBackgroundColor(Color.parseColor("#2196F3"));
-        submitButton.setLayoutParams(params);  // Set limited width
-        submitButton.setPadding(10,20,10,10);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 handleSubmit();
             }
         });
-        layout.addView(submitButton);
 
-        // Setting up Status text
-        statusText = new TextView(this);
-        statusText.setText("...");
-        statusText.setTextSize(16);
-        statusText.setGravity(Gravity.CENTER_HORIZONTAL);
-        layout.addView(statusText);
+        updateTimeTextView();
+        updateDayDateTextView();
 
-        // Adding layout to the content view
-        setContentView(layout);
+        startTimeUpdates();
+
+        registerBatteryReceiver();
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        );
+    }
+
+
+    // Update TIME TextView with current time in 12-hour format (without seconds)
+    private void updateTimeTextView() {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        String currentTime = timeFormat.format(new Date());
+        timeTextView.setText(currentTime);
+    }
+
+    // Start real-time updates for the TIME TextView
+    private void startTimeUpdates() {
+        timeHandler = new Handler(Looper.getMainLooper());
+        timeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateTimeTextView();
+                timeHandler.postDelayed(this, 60000); // Update every minute (60000 ms)
+            }
+        };
+        timeHandler.post(timeRunnable); // Start the updates
+    }
+
+    // Update Day and Date TextView with current day and date
+    private void updateDayDateTextView() {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EE ,dd.MM.yyyy", Locale.getDefault());
+        String currentDayDate = dayFormat.format(new Date());
+        dateTextView.setText(currentDayDate);
+    }
+
+    // Register BroadcastReceiver to get battery percentage from SerialPortService
+    private void registerBatteryReceiver() {
+        batteryReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("com.lztek.api.demo.STATUS_UPDATE".equals(intent.getAction())) {
+                    long batteryPercentage = intent.getLongExtra("battery_percentage", -1);
+                    long chargingStatus = intent.getLongExtra("charging_status", -1);
+                    if (batteryPercentage >= 0) {
+                        bettryTextView.setText(batteryPercentage + "\uD83D\uDD0B");
+                    } else {
+                        bettryTextView.setText("Battery %\nN/A");
+                    }
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter("com.lztek.api.demo.STATUS_UPDATE");
+        registerReceiver(batteryReceiver, filter);
     }
 
     private void handleSubmit() {

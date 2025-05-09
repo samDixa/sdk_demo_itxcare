@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#80000000"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/popupChContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/diloug_audioGraph"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"/>
+
+    </LinearLayout>
+
+    <!-- Cross Icon to Dismiss -->
+    <ImageView
+        android:id="@+id/ivClosechPopupp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignTop="@id/popupChContent"
+        android:layout_alignEnd="@id/popupChContent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_margin="8dp"
+        android:contentDescription="Close" />
+
+</RelativeLayout>

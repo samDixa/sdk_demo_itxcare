@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFF"
-            android:text="Demo Version: v2.3"
+            android:text="Demo Version: __"
             />
     </LinearLayout>
 

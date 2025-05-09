@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/textcolor"
+    android:scrollbars="none"
+    tools:context=".TextActivity">
+
+
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:background="@color/colorPrimary"-->
+
+<!--            android:orientation="horizontal">-->
+
+<!--            <include layout="@layout/layout_bluetooth" />-->
+
+<!--            &lt;!&ndash;            <include layout="@layout/layout_about" />&ndash;&gt;-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            &lt;!&ndash;            ratings&ndash;&gt;-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_weight=".3"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvECGinfo"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="@drawable/border_box"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:text="Heart Rate:&#45;&#45;"-->
+<!--                    android:textColor="@color/colorAccent"-->
+<!--                    android:textSize="16sp" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvTEMPinfo"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="@drawable/border_box"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:text="TEMP:&#45;&#45;.- "-->
+<!--                    android:textColor="@color/wheel_selected_text_color"-->
+<!--                    android:textSize="22sp" />-->
+
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvNIBPinfo"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="@drawable/border_box"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:text="Cuff:&#45;&#45;\nHigh:&#45;&#45; Low:&#45;&#45; Mean:&#45;&#45;"-->
+<!--                    android:textColor="#FF0000"-->
+<!--                    android:textSize="22sp" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvRespRate"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="@drawable/border_box"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:text="RoR /min:&#45;&#45;.- "-->
+<!--                    android:textColor="@color/green_wave"-->
+<!--                    android:textSize="22sp" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvSPO2info"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:background="@drawable/border_box"-->
+<!--                    android:padding="10dp"-->
+<!--                    android:text="SpO2: &#45;&#45;\nPulse Rate: &#45;&#45;\nStatus: Unknown"-->
+<!--                    android:textColor="#FFFA00"-->
+<!--                    android:textSize="16sp" /> &lt;!&ndash; Added gravity="center" &ndash;&gt;-->
+
+<!--                &lt;!&ndash;                <TextView&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:id="@+id/tvSPO2info"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:layout_width="match_parent"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:layout_height="0dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:layout_weight="1"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:background="@drawable/border_box"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:gravity="center"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:padding="10dp"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:text="PulseRate:&#45;&#45;"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:textColor="#FFFA00"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:textSize="16sp" />&ndash;&gt;-->
+
+<!--            </LinearLayout>-->
+
+<!--            &lt;!&ndash;            graph &ndash;&gt;-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1.7"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <include layout="@layout/layout_ecg" />-->
+
+<!--                <include layout="@layout/layout_ecg2" />-->
+
+<!--                <include layout="@layout/layout_ecg3" />-->
+
+<!--                <include layout="@layout/layout_resp_rate" />-->
+
+<!--                <include layout="@layout/layout_spo2" />-->
+
+<!--            </LinearLayout>-->
+
+
+<!--        </LinearLayout>-->
+
+
+<!--    </LinearLayout>-->
+
+
+</LinearLayout>
+
+    <!---->

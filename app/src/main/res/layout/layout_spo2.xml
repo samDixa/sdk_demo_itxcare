@@ -16,16 +16,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
-            android:padding="5dp"
             android:orientation="vertical">
 
             <com.lztek.api.demo.view.WaveformView
                 android:id="@+id/wfSpO2"
                 app:maxValue="100"
                 app:pointStep="5.0dp"
-                app:waveColor="@color/green_wave"
+                app:waveColor="@color/colorAccent"
                 android:layout_width="match_parent"
-                android:layout_height="120dp" />
+                android:layout_height="70dp" />
 
         </LinearLayout>
 

@@ -115,13 +115,6 @@ public class ChestoDeviceActivity extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(ChestoDeviceActivity.this, error, Toast.LENGTH_SHORT).show());
             }
 
-            @Override
-            public void onBatteryUpdate(String batteryLevel) {
-                runOnUiThread(() -> {
-                    statusText.setText("Connected to Chesto | Battery: " + batteryLevel + "%");
-                    Log.d("ChestoDeviceActivity", "Battery Level: " + batteryLevel + "%");
-                });
-            }
         });
 
         connectButton.setOnClickListener(v -> {
@@ -145,6 +138,9 @@ public class ChestoDeviceActivity extends AppCompatActivity {
                     isListening = true;
                     Toast.makeText(this, "Started Listening", Toast.LENGTH_SHORT).show();
                     graphUpdateHandler.post(graphUpdater);
+
+//                    recordButton.setEnabled(false);
+//                    playPauseButton.setEnabled(false);
                 } else {
                     Toast.makeText(this, "Not Connected!", Toast.LENGTH_SHORT).show();
                 }
@@ -154,6 +150,9 @@ public class ChestoDeviceActivity extends AppCompatActivity {
                 isListening = false;
                 Toast.makeText(this, "Stopped Listening", Toast.LENGTH_SHORT).show();
                 graphUpdateHandler.removeCallbacks(graphUpdater);
+
+//                recordButton.setEnabled(true);
+//                playPauseButton.setEnabled(true);
             }
         });
 
@@ -164,9 +163,15 @@ public class ChestoDeviceActivity extends AppCompatActivity {
                 bluetoothService.startRecording();
                 recordButton.setText("Stop Recording");
                 Toast.makeText(this, "Recording Started", Toast.LENGTH_SHORT).show();
+
+//                chestoButton.setEnabled(false);
+//                playPauseButton.setEnabled(false);
             } else {
                 isRecording = false;
                 recordButton.setText("Start Recording");
+
+//                chestoButton.setEnabled(true);
+
                 byte[] recordedData = audioBuffer.toByteArray();
                 if (recordedData.length == 0) {
                     Toast.makeText(this, "Recording Failed: No Data", Toast.LENGTH_SHORT).show();
@@ -246,6 +251,8 @@ public class ChestoDeviceActivity extends AppCompatActivity {
         });
     }
 
+//
+
     private void connectToChesto() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
@@ -270,14 +277,23 @@ public class ChestoDeviceActivity extends AppCompatActivity {
         try {
             File file = new File(getExternalFilesDir(null), "recorded_audio.wav");
             FileOutputStream fos = new FileOutputStream(file);
-            byte[] pcmData = convertUint8ToPCM16(recordedData);
-            byte[] header = getWavHeader(pcmData.length, 16000);
+
+            // 6000 Hz sample rate, 16-bit PCM mono
+            byte[] header = getWavHeader(recordedData.length, 6000);
             fos.write(header);
-            fos.write(pcmData);
+            fos.write(recordedData);  // direct write, no conversion
+            fos.flush();
             fos.close();
-            runOnUiThread(() -> Toast.makeText(this, "Audio Saved!", Toast.LENGTH_SHORT).show());
+
+            final String filePath = file.getAbsolutePath();
+            runOnUiThread(() ->
+                    Toast.makeText(this, "Audio saved at: " + filePath, Toast.LENGTH_LONG).show()
+            );
         } catch (IOException e) {
             Log.d("ChestoDeviceActivity", "Save failed: " + e.getMessage());
+            runOnUiThread(() ->
+                    Toast.makeText(this, "Failed to save audio: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+            );
         }
     }
 
@@ -286,76 +302,77 @@ public class ChestoDeviceActivity extends AppCompatActivity {
             try {
                 File file = new File(getExternalFilesDir(null), "recorded_audio.wav");
                 if (!file.exists()) {
-                    runOnUiThread(() -> Toast.makeText(this, "No Audio Found!", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() ->
+                            Toast.makeText(this, "No Audio Found!", Toast.LENGTH_SHORT).show()
+                    );
                     return;
                 }
 
                 FileInputStream fis = new FileInputStream(file);
-                byte[] wavHeader = new byte[44];
-                fis.read(wavHeader, 0, 44);
+                fis.skip(44);  // skip WAV header
 
                 byte[] audioData = new byte[(int) (file.length() - 44)];
                 fis.read(audioData);
                 fis.close();
 
-                audioTrack = new AudioTrack(
+                AudioTrack audioTrack = new AudioTrack(
                         AudioManager.STREAM_MUSIC,
-                        16000,
+                        6000,
                         AudioFormat.CHANNEL_OUT_MONO,
                         AudioFormat.ENCODING_PCM_16BIT,
                         audioData.length,
                         AudioTrack.MODE_STREAM
                 );
 
-                audioTrack.write(audioData, 0, audioData.length);
                 audioTrack.play();
-                runOnUiThread(() -> Toast.makeText(this, "Playing Audio...", Toast.LENGTH_SHORT).show());
+                audioTrack.write(audioData, 0, audioData.length);
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Playing Audio...", Toast.LENGTH_SHORT).show()
+                );
             } catch (IOException e) {
                 Log.d("ChestoDeviceActivity", "Play failed: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(this, "Play failed", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Play failed", Toast.LENGTH_SHORT).show()
+                );
             }
         }).start();
     }
 
-    private byte[] convertUint8ToPCM16(byte[] uint8Data) {
-        byte[] pcm16Data = new byte[uint8Data.length * 2];
-        for (int i = 0; i < uint8Data.length; i++) {
-            short sample = (short) ((uint8Data[i] & 0xFF) - 128);
-            pcm16Data[i * 2] = (byte) (sample & 0xFF);
-            pcm16Data[i * 2 + 1] = (byte) ((sample >> 8) & 0xFF);
-        }
-        return pcm16Data;
-    }
+    private byte[] getWavHeader(int totalAudioLen, int sampleRate) {
+        int channels = 1;
+        int byteRate = sampleRate * 2;  // 16-bit = 2 bytes * 1 channel
 
-    private byte[] getWavHeader(int dataLength, int sampleRate) {
+        int totalDataLen = totalAudioLen + 36;
+
         byte[] header = new byte[44];
-        String[] riff = {"RIFF", "WAVEfmt ", "data"};
-        System.arraycopy(riff[0].getBytes(), 0, header, 0, 4);
-        System.arraycopy(BitConverter.getBytes(dataLength + 36), 0, header, 4, 4);
-        System.arraycopy(riff[1].getBytes(), 0, header, 8, 8);
-        System.arraycopy(BitConverter.getBytes(16), 0, header, 16, 4);
-        System.arraycopy(BitConverter.getBytes((short) 1), 0, header, 20, 2);
-        System.arraycopy(BitConverter.getBytes((short) 1), 0, header, 22, 2);
-        System.arraycopy(BitConverter.getBytes(sampleRate), 0, header, 24, 4);
-        System.arraycopy(BitConverter.getBytes(sampleRate * 2), 0, header, 28, 4);
-        System.arraycopy(BitConverter.getBytes((short) 2), 0, header, 32, 2);
-        System.arraycopy(BitConverter.getBytes((short) 16), 0, header, 34, 2);
-        System.arraycopy(riff[2].getBytes(), 0, header, 36, 4);
-        System.arraycopy(BitConverter.getBytes(dataLength), 0, header, 40, 4);
-        return header;
-    }
+        header[0] = 'R';  header[1] = 'I';  header[2] = 'F';  header[3] = 'F';
+        header[4] = (byte) (totalDataLen & 0xff);
+        header[5] = (byte) ((totalDataLen >> 8) & 0xff);
+        header[6] = (byte) ((totalDataLen >> 16) & 0xff);
+        header[7] = (byte) ((totalDataLen >> 24) & 0xff);
+        header[8] = 'W';  header[9] = 'A';  header[10] = 'V';  header[11] = 'E';
+        header[12] = 'f'; header[13] = 'm'; header[14] = 't'; header[15] = ' ';
+        header[16] = 16;  header[17] = 0;   header[18] = 0;   header[19] = 0;   // Subchunk1Size
+        header[20] = 1;   header[21] = 0;   // PCM format
+        header[22] = (byte) channels;
+        header[23] = 0;
+        header[24] = (byte) (sampleRate & 0xff);
+        header[25] = (byte) ((sampleRate >> 8) & 0xff);
+        header[26] = (byte) ((sampleRate >> 16) & 0xff);
+        header[27] = (byte) ((sampleRate >> 24) & 0xff);
+        header[28] = (byte) (byteRate & 0xff);
+        header[29] = (byte) ((byteRate >> 8) & 0xff);
+        header[30] = (byte) ((byteRate >> 16) & 0xff);
+        header[31] = (byte) ((byteRate >> 24) & 0xff);
+        header[32] = 2;   header[33] = 0;   // Block align = 2 bytes
+        header[34] = 16;  header[35] = 0;   // Bits per sample
+        header[36] = 'd'; header[37] = 'a'; header[38] = 't'; header[39] = 'a';
+        header[40] = (byte) (totalAudioLen & 0xff);
+        header[41] = (byte) ((totalAudioLen >> 8) & 0xff);
+        header[42] = (byte) ((totalAudioLen >> 16) & 0xff);
+        header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
 
-    public static class BitConverter {
-        public static byte[] getBytes(int value) {
-            ByteBuffer buffer = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN);
-            buffer.putInt(value);
-            return buffer.array();
-        }
-        public static byte[] getBytes(short value) {
-            ByteBuffer buffer = ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN);
-            buffer.putShort(value);
-            return buffer.array();
-        }
+        return header;
     }
 
     @Override

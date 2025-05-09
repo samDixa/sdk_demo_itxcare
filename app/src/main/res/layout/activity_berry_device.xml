@@ -1,132 +1,653 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/textcolor"
-    android:scrollbars="none"
+    android:background="@drawable/vital_bg"
+    android:orientation="vertical"
     tools:context=".BerryDeviceActivity">
 
+
     <LinearLayout
+        android:id="@+id/sec_01"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="#0094EA"
+        android:orientation="horizontal"
+        android:paddingLeft="70dp"
+        android:paddingTop="16dp"
+        android:paddingRight="70dp"
+        android:paddingBottom="16dp"
+        android:weightSum="3">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:background="@color/colorPrimary"
-
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <include layout="@layout/layout_bluetooth" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="Doctor Name :"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
 
-            <!--            <include layout="@layout/layout_about" />-->
+            <TextView
+                android:id="@+id/doctor_name_vital"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sam Bisht"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:orientation="horizontal">
 
-            <!--            ratings-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="Paramedic Name :"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/paramedic_name_vital"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ajay Singh"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="Patient Name :"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/patient_name_vital"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dinesh Kumar"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--    /-->
+
+    <LinearLayout
+        android:id="@+id/sec_02"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="30dp"
+        android:paddingRight="8dp"
+        android:weightSum="2">
+
+
+        <LinearLayout
+            android:id="@+id/vital_screen"
+            android:layout_width="0dp"
+            android:layout_height="580dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1.7"
+            android:background="@drawable/vital_shape"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:weightSum="2">
+
             <LinearLayout
+                android:id="@+id/vitals_value_sec"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".3"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvECGinfo"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_box"
-                    android:padding="10dp"
-                    android:text="Heart Rate:--"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="16sp" />
+                    android:layout_height="95dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvTEMPinfo"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/thermometer" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Temp"
+                            android:textColor="#FFB936"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvTEMPinfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="30C,91F"
+                            android:textColor="#FFB936"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_box"
-                    android:padding="10dp"
-                    android:text="TEMP:--.- "
-                    android:textColor="@color/wheel_selected_text_color"
-                    android:textSize="22sp" />
+                    android:layout_height="95dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/nibp_logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="NIBP - SYS/DIA"
+                            android:textColor="#F9415B"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvNIBPinfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="127/97"
+                            android:textColor="#F9415B"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MAP : 100"
+                            android:textColor="#F9415B"
+                            android:textSize="8sp" />
+
+                    </LinearLayout>
 
 
-                <TextView
-                    android:id="@+id/tvNIBPinfo"
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_box"
-                    android:padding="10dp"
-                    android:text="Cuff:--\nHigh:-- Low:-- Mean:--"
-                    android:textColor="#FF0000"
-                    android:textSize="22sp" />
+                    android:layout_height="95dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvRespRate"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/spo2_logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Spo2"
+                            android:textColor="#3ADADC"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvSPO2info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="98%\n89/min"
+                            android:textColor="#3ADADC"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_box"
-                    android:padding="10dp"
-                    android:text="RoR /min:--.- "
-                    android:textColor="@color/green_wave"
-                    android:textSize="22sp" />
+                    android:layout_height="95dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvSPO2info"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/resp_logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RESP"
+                            android:textColor="#BABA37"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvRespRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="14"
+                            android:textColor="#BABA37"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_box"
-                    android:padding="10dp"
-                    android:text="SpO2: --\nPulse Rate: --\nStatus: Unknown"
-                    android:textColor="#FFFA00"
-                    android:textSize="16sp" /> <!-- Added gravity="center" -->
+                    android:layout_height="95dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <!--                <TextView-->
-                <!--                    android:id="@+id/tvSPO2info"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="0dp"-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    android:background="@drawable/border_box"-->
-                <!--                    android:gravity="center"-->
-                <!--                    android:padding="10dp"-->
-                <!--                    android:text="PulseRate:&#45;&#45;"-->
-                <!--                    android:textColor="#FFFA00"-->
-                <!--                    android:textSize="16sp" />-->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/bpm_plus_logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="BPM Pluse"
+                            android:textColor="#40C040"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/tvECGinfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="66"
+                            android:textColor="#40C040"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="4dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ecg_logo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ECG "
+                            android:textColor="#2C63B6"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:id="@+id/btnShowAllLeads"                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ecg_arrow"/>
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!--            graph -->
             <LinearLayout
+                android:id="@+id/vitals_graphs"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="500dp"
                 android:layout_weight="1.7"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ECG L1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
                 <include layout="@layout/layout_ecg" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ECG L2"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
 
                 <include layout="@layout/layout_ecg2" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ECG L3"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
                 <include layout="@layout/layout_ecg3" />
+
+                <Spinner
+                    android:id="@+id/spinnerECG4"
+                    android:layout_width="60dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/spinner_background"
+                    android:gravity="center"
+                    android:textSize="8sp" />
+
+                <include layout="@layout/layout_ecg4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Respiration"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
 
                 <include layout="@layout/layout_resp_rate" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blood Oyygen"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
                 <include layout="@layout/layout_spo2" />
 
+
             </LinearLayout>
+
+            <!-- Audio Graph Overlay -->
+            <RelativeLayout
+                android:id="@+id/audio_graph_container"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="2dp"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:background="@drawable/audio_graph_shape"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="vertical">
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/cAudioGraph"
+                        android:layout_width="match_parent"
+                        android:layout_height="110dp" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bp_screen"
+            android:layout_width="0dp"
+            android:layout_height="577dp"
+            android:layout_weight=".3"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_below="@+id/llbttitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:textAllCaps="false"
+                    android:id="@+id/btnBtCtr"
+                    android:textSize="11sp"
+                    android:onClick="onClick"
+                    android:background="@drawable/border_box"
+                    android:text=""/>
+
+
+               <Button
+                   android:id="@+id/chesto_connect_vt"
+                   android:layout_width="90dp"
+                   android:layout_height="30dp"
+                   android:onClick="onClick"
+                   android:background="@drawable/border_box"
+                   android:textSize="10sp"
+                   android:drawableRight="@drawable/chesto_bt"
+                   android:text="Connect"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="BP Trigger"
+                android:textColor="#000000"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btnNIBPStart"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:background="@drawable/blue_button"
+                    android:text="Start NIBP"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginRight="18dp"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnNIBPStop"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:background="@drawable/gray_button"
+                    android:text="Stop NIBP"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/nibp5minbtn"
+                android:layout_marginTop="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="5 Min"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/blue_button"/>
+
+            <Button
+                android:id="@+id/nibp15minbtn"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="15 Min"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/gray_button"/>
+
+            <Button
+                android:id="@+id/nibp30minbtn"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="30 Min"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/gray_button"/>
+
+            <Button
+                android:id="@+id/btnGenerateReport"
+                android:layout_marginTop="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="Create Vital Report"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/blue_button"/>
+
+
+            <TextView
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Medical Report"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:background="@drawable/input_box"
+                android:padding="8dp"
+                android:gravity="center_vertical"
+                android:backgroundTint="#FFFFFF"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Upload Document"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="16sp" />
+
+                <ImageButton
+                    android:id="@+id/uploadButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@android:drawable/stat_sys_upload"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="Upload Document"
+                    android:tint="#2196F3" />
+            </LinearLayout>
+
+
+
+            <Button
+                android:layout_marginTop="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="medical.pdf"
+                android:padding="8dp"
+                android:drawableRight="@drawable/download"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/gray_button"/>
 
 
         </LinearLayout>
@@ -134,7 +655,158 @@
 
     </LinearLayout>
 
+    <!--    -->
+    <LinearLayout
+        android:id="@+id/sec_03"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:padding="8dp"
+        android:gravity="right"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_weight=".5"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/vital_sec_box"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/vital_sec_button"
+                android:text="Cam 1"/>
+
+            <Button
+                android:layout_marginLeft="50dp"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/vital_sec_button"
+                android:text="Cam 2"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight=".8"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:background="@drawable/vital_sec_box"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:textColor="#FFFFFF"
+                android:layout_marginRight="10dp"
+                android:textSize="12sp"
+                android:background="@drawable/vital_sec_button"
+                android:text="Cam Photo R"/>
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:textColor="#FFFFFF"
+                android:layout_marginRight="10dp"
+                android:textSize="12sp"
+                android:background="@drawable/vital_sec_button"
+                android:text="Cam Video R"/>
+
+
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:background="@drawable/vital_gray_button"
+                android:text="UPLOAD"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:background="@drawable/vital_sec_box"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/live_chesto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/live_stream"
+                android:layout_marginRight="18dp"/>
+
+            <ImageButton
+                android:id="@+id/record_chesto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/play"
+                android:layout_marginRight="18dp"/>
+
+            <TextView
+                android:id="@+id/recording_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01:56:00"
+                android:textSize="12sp"
+                android:textColor="#000000"
+                android:layout_marginRight="18dp"/>
+
+            <ImageButton
+                android:id="@+id/record_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/pause"
+                android:layout_marginRight="18dp"/>
+
+            <ImageButton
+                android:id="@+id/play_or_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/stopo"
+                android:layout_marginRight="18dp"/>
+
+            <ImageButton
+                android:id="@+id/save_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/save"
+                android:layout_marginRight="18dp"/>
+
+            <ImageButton
+                android:id="@+id/refresh_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/refresh"
+                android:layout_marginRight="18dp"/>
+
+            <ImageButton
+                android:id="@+id/upload_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/upload"/>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>
-
-    <!---->

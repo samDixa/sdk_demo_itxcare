@@ -6,7 +6,7 @@ import android.util.Log;
 import org.jtransforms.fft.DoubleFFT_1D;
 
 public class AudioProcessor {
-    private static final int SAMPLE_RATE = 16000;
+    private static final int SAMPLE_RATE = 6000;
 
     public static double[] convertToDoubleArray(byte[] audioData) {
         int length = Math.min(audioData.length / 2, 128);

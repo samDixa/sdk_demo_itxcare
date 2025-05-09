@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -15,33 +14,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2dp"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:layout_height="120dp">
+                android:layout_height="80dp">
 
                 <com.lztek.api.demo.view.WaveformView
                     android:id="@+id/wfECG2"
-                    app:waveColor="@color/opencolor"
+                    app:waveColor="@color/green_wave"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:maxValue="250"
-                    android:layout_marginTop="15dp" />
+                    app:maxValue="250"/>
 
-                <Spinner
-                    android:id="@+id/spinnerECG2"
-                    android:layout_width="50dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center"
-                    android:elevation="30dp"
-                    android:translationZ="30dp"
-                    android:background="@drawable/spinner_background"
-                    android:textSize="10sp" />
             </RelativeLayout>
 
         </LinearLayout>
