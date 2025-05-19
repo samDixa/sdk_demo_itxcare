@@ -2,72 +2,42 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.lztek.api.demo">
-
+    <!-- Permissions required for Bluetooth, audio, storage, and screen recording -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /> <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- <uses-permission android:name="android.permission.RECORD_AUDIO"/> -->
-    <uses-feature android:name="android.hardware.bluetooth" />
-    <uses-feature android:name="android.hardware.microphone" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> -->
-    <!-- <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/> -->
-    <!-- <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" /> -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- Features required for Bluetooth and microphone -->
+    <uses-feature android:name="android.hardware.bluetooth" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
-    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- <uses-feature android:name="android.hardware.Camera" /> -->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_MOCK_LOCATION"
-        tools:ignore="MockLocation,ProtectedPermissions" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission
-        android:name="android.permission.ACCESS_SURFACE_FLINGER"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission
-        android:name="android.permission.CONNECTIVITY_INTERNAL"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.DEVICE_POWER"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.READFRAMEBUFFER" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.UPDATE_DEVICE_STATS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission
-        android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-feature android:name="android.hardware.microphone" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true">
+
+        <activity android:name=".TextActivity"
+            android:theme="@style/Theme.AppCompat.Light">
+        </activity>
+        <!-- Activities -->
         <activity
             android:name=".OthersActivity"
             android:theme="@style/Theme.AppCompat.Light" />
@@ -109,13 +79,7 @@
         <activity
             android:name=".ConsultationActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".AppointmentListActivity"
             android:screenOrientation="landscape"
@@ -127,13 +91,7 @@
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
@@ -141,24 +99,21 @@
         <activity
             android:name=".NewMainActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity android:name=".PowerActivity" />
         <activity
             android:name=".SerialPortActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.Light" />
-
+            android:theme="@style/Theme.AppCompat.Light" /> <!-- Services -->
         <service
             android:name=".SerialPortService"
             android:enabled="true"
-            android:exported="false" />
-
+            android:exported="false" /> <!-- Added ScreenRecordingService with foregroundServiceType for MediaProjection -->
+        <service
+            android:name=".ScreenRecordingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" /> <!-- Receivers -->
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
@@ -166,8 +121,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
-
+        </receiver> <!-- Other Activities -->
         <activity android:name=".WatchDogActivity" />
         <activity android:name=".GPIOActivity" />
         <activity android:name=".ScreenActivity" />
@@ -176,8 +130,7 @@
         <activity android:name=".ApkActivity" />
         <activity android:name=".SystemActivity" />
         <activity android:name=".HdmiInActivity" />
-        <activity android:name=".OtaUpdateActivity" />
-
+        <activity android:name=".OtaUpdateActivity" /> <!-- File Provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

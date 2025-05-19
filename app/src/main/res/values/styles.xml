@@ -17,8 +17,32 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="colorPrimary">#6200EA</item>
+        <item name="colorPrimaryDark">#3700B3</item>
+        <item name="colorAccent">#03DAC5</item>
+        <item name="alertDialogTheme">@style/CustomDialog</item>
     </style>
 
+    <style name="CustomDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@drawable/dialog_background</item>
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="buttonBarPositiveButtonStyle">@style/DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DialogButton</item>
+    </style>
+
+    <style name="DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:background">@drawable/button_dialog</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="NetworkButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_network</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
 
     <!--  parent="android:Theme.Dialog" -->
     <style name="DialogAcivity" parent="android:Theme.Dialog">

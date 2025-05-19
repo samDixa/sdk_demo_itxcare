@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/bg_gradient"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg_outline01"
+            android:text="\u2190 Back"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="100dp"
+            android:layout_weight="3"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cnrgi_logo" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_bg_outline01"
+            android:text="Next \u2192"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Paramedic Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Paramedic Name : T.Kishore"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Paramedic Id : 0123456"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!--       serch bar-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="700dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@drawable/edit_text_background"
+                android:drawableLeft="@drawable/ic_baseline_search_24"
+                android:hint="        Mobile Number, Order Id"
+                android:padding="10dp" />
+
+            <Button
+                android:layout_width="90dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/gray_button"
+                android:padding="8dp"
+                android:text="Search"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!--    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="600dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="2dp">
+
+            <!-- Create New Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Create New"
+                android:textColor="#007BFF"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="22dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+
+                    <!-- Name of Patient Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="Name" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Name of patient"
+                            android:background="@drawable/edittext_background"
+                            android:textSize="14sp"
+                            android:text="Sarath" />
+                    </LinearLayout>
+
+                    <!-- Mobile Number Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="Mobile Number" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Mobile number"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="7894561230" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <!-- Name of Gender Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.5"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="Gender" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Gender"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="Male" />
+                    </LinearLayout>
+
+                    <!-- Mobile Weight Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="Weight" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Weight"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="65" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="3"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <!-- Name of Height Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="Height" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Height"
+                            android:textSize="14sp"
+                            android:drawableRight="@drawable/cm"
+                            android:background="@drawable/edittext_background"
+                            android:text="177" />
+                    </LinearLayout>
+
+                    <!-- Mobile Age Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="Age" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Age"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="22" />
+                    </LinearLayout>
+
+                    <!-- Mobile place Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="place" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="place"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="Uttrakhand" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="3"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <!-- Name of ABHA ID Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="ABHA ID" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="ABHA ID"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="XX-XXXX-XXXXXX-XXXX" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="3"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <!-- Name of ORDER ID Section -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="9sp"
+                            android:padding="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:text="ORDER ID" />
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="ORDER ID"
+                            android:textSize="14sp"
+                            android:background="@drawable/edittext_background"
+                            android:text="" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+<!--                -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text="Save"
+                        android:padding="4dp"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:background="@drawable/btn_bg_outline01"/>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:src="@drawable/sm_cnrg_logo"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="0dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:text="16:00" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:text="21-03-2025" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="65\uD83D\uDD0B" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+    <!--    &lt;!&ndash; Patient Form &ndash;&gt;-->
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:orientation="vertical"-->
+    <!--android:background="#F2F2F2"-->
+    <!--android:padding="16dp"-->
+    <!--android:layout_marginBottom="8dp">-->
+
+
+    <!--<LinearLayout-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:orientation="horizontal"-->
+    <!--    android:layout_marginTop="8dp">-->
+
+    <!--    <EditText-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:hint="Gender"-->
+    <!--        android:text="Male" />-->
+
+    <!--    <EditText-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:hint="Weight"-->
+    <!--        android:text="32 Kgs"-->
+    <!--        android:layout_marginStart="8dp" />-->
+    <!--</LinearLayout>-->
+
+    <!--<LinearLayout-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:orientation="horizontal"-->
+    <!--    android:layout_marginTop="8dp">-->
+
+    <!--    <EditText-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:hint="Height"-->
+    <!--        android:text="556 cm" />-->
+
+    <!--    <EditText-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:hint="Age"-->
+    <!--        android:text="26"-->
+    <!--        android:layout_marginStart="8dp" />-->
+    <!--</LinearLayout>-->
+
+    <!--<EditText-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:hint="Place"-->
+    <!--    android:text="Hyderabad"-->
+    <!--    android:layout_marginTop="8dp" />-->
+
+    <!--<EditText-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:hint="ABHA ID"-->
+    <!--    android:text="XX-XXXX-XXXXXX-XXXX"-->
+    <!--    android:layout_marginTop="8dp" />-->
+
+    <!--<EditText-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:hint="Order Id"-->
+    <!--    android:layout_marginTop="8dp" />-->
+
+    <!--<Button-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:text="Save"-->
+    <!--    android:layout_marginTop="16dp"-->
+    <!--    android:backgroundTint="#007BFF"-->
+    <!--    android:textColor="@android:color/white" />-->
+
+    <!--</LinearLayout>-->

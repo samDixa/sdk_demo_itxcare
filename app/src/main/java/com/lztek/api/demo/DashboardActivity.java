@@ -104,7 +104,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
             startActivity(chestoIntent);
         });
         othersButton.setOnClickListener(view -> {
-            Intent ointent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
+            Intent ointent = new Intent(DashboardActivity.this, NewMainActivity.class);
             startActivity(ointent);
         });
 

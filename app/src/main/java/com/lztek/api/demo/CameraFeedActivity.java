@@ -891,7 +891,6 @@
 //-----------------------------------------------
 
 
-
 package com.lztek.api.demo;
 
 import android.Manifest;
@@ -900,15 +899,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -928,14 +932,18 @@ import java.util.concurrent.Executors;
 
 public class CameraFeedActivity extends AppCompatActivity {
 
-    private SurfaceView frontCameraView, usbCameraView;
+    private TextureView frontCameraView, usbCameraView;
+    private TextView timerView;
     private Camera frontCamera, usbCamera;
-    private Button btnCaptureFront, btnCaptureUSB, btnToggleFront, btnToggleUSB;
-    private GlobalVars globalVars;
-    private SurfaceHolder frontHolder, usbHolder;
+    private MediaRecorder frontRecorder, usbRecorder;
+    private Button btnCaptureFront, btnCaptureUsb, btnToggleFront, btnToggleUsb, btnRecordFront, btnRecordUsb;
+    private SurfaceTexture frontSurfaceTexture, usbSurfaceTexture;
     private BroadcastReceiver usbReceiver;
     private ExecutorService frontCameraExecutor;
     private ExecutorService usbCameraExecutor;
+    private Handler timerHandler;
+    private Runnable timerRunnable;
+    private long recordingStartTime;
 
     private static final String TAG = "CameraFeed";
     private static final long CLEANUP_DELAY_MS = 500;
@@ -945,41 +953,42 @@ public class CameraFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_feed);
 
-        globalVars = GlobalVars.getInstance();
-        globalVars.setCameraPreviewActive(true);
+        GlobalVars.getInstance().setCameraPreviewActive(true);
 
         // Initialize UI components
-        frontCameraView = findViewById(R.id.usbCameraView); // Front camera (mapped to USB view)
-        usbCameraView = findViewById(R.id.internalCameraView); // USB camera (mapped to internal view)
-
-        btnCaptureFront = findViewById(R.id.btn_capture_usb); // Capture front camera
-        btnCaptureUSB = findViewById(R.id.btn_capture_internal); // Capture USB camera
-
-        btnToggleFront = findViewById(R.id.btn_toggle_usb); // Toggle front camera
-        btnToggleUSB = findViewById(R.id.btn_toggle_front); // Toggle USB camera
-
-        frontHolder = frontCameraView.getHolder();
-        usbHolder = usbCameraView.getHolder();
+        frontCameraView = findViewById(R.id.frontCameraView);
+        usbCameraView = findViewById(R.id.usbCameraView);
+        timerView = findViewById(R.id.timerView);
+        btnCaptureFront = findViewById(R.id.btnCaptureFront);
+        btnCaptureUsb = findViewById(R.id.btnCaptureUsb);
+        btnToggleFront = findViewById(R.id.btnToggleFront);
+        btnToggleUsb = findViewById(R.id.btnToggleUsb);
+        btnRecordFront = findViewById(R.id.btnRecordFront);
+        btnRecordUsb = findViewById(R.id.btnRecordUsb);
 
         // Separate executors for each camera
         frontCameraExecutor = Executors.newSingleThreadExecutor();
         usbCameraExecutor = Executors.newSingleThreadExecutor();
 
+        // Timer for recording duration
+        timerHandler = new Handler(Looper.getMainLooper());
+
         // Check permissions
         if (checkPermissions()) {
             setupCameraCallbacks();
             logCameraInfo();
-            syncCameraStateWithGlobalVars(); // Sync cameras with GlobalVars
+            syncCameraStateWithGlobalVars();
         } else {
             requestPermissions();
         }
 
         // Set button listeners
         btnCaptureFront.setOnClickListener(view -> captureFrontCameraPhoto());
-        btnCaptureUSB.setOnClickListener(view -> captureUSBCameraPhoto());
-
+        btnCaptureUsb.setOnClickListener(view -> captureUSBCameraPhoto());
         btnToggleFront.setOnClickListener(view -> toggleFrontCamera());
-        btnToggleUSB.setOnClickListener(view -> toggleUSBCamera());
+        btnToggleUsb.setOnClickListener(view -> toggleUSBCamera());
+        btnRecordFront.setOnClickListener(view -> toggleFrontCameraRecording());
+        btnRecordUsb.setOnClickListener(view -> toggleUSBCameraRecording());
 
         updateToggleButtons();
 
@@ -994,7 +1003,7 @@ public class CameraFeedActivity extends AppCompatActivity {
 
     private void syncCameraStateWithGlobalVars() {
         frontCameraExecutor.submit(() -> {
-            if (GlobalVars.isCam1On() && frontCamera == null) {
+            if (GlobalVars.isCam1On() && frontCamera == null && !GlobalVars.isCam2On()) {
                 startFrontCamera();
             } else if (!GlobalVars.isCam1On() && frontCamera != null) {
                 stopFrontCamera();
@@ -1002,7 +1011,7 @@ public class CameraFeedActivity extends AppCompatActivity {
         });
 
         usbCameraExecutor.submit(() -> {
-            if (GlobalVars.isCam2On() && usbCamera == null) {
+            if (GlobalVars.isCam2On() && usbCamera == null && !GlobalVars.isCam1On()) {
                 startUSBCamera();
             } else if (!GlobalVars.isCam2On() && usbCamera != null) {
                 stopUSBCamera();
@@ -1017,16 +1026,47 @@ public class CameraFeedActivity extends AppCompatActivity {
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         for (int i = 0; i < cameraCount; i++) {
             Camera.getCameraInfo(i, cameraInfo);
-            Log.d(TAG, "Camera ID " + i + ": facing=" + (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "FRONT" : "BACK/USB"));
+            String facing = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT ? "FRONT" : "BACK/USB";
+            Log.d(TAG, "Camera ID " + i + ": facing=" + facing);
+            try {
+                Camera tempCam = Camera.open(i);
+                if (tempCam != null) {
+                    Camera.Parameters params = tempCam.getParameters();
+                    String flashMode = params.getFlashMode();
+                    List<Camera.Size> previewSizes = params.getSupportedPreviewSizes();
+                    List<Camera.Size> videoSizes = params.getSupportedVideoSizes();
+                    tempCam.release();
+                    Log.d(TAG, "Camera ID " + i + ": flash=" + (flashMode != null ? flashMode : "none") +
+                            ", previewSizes=" + (previewSizes != null ? previewSizes.size() : 0) +
+                            ", videoSizes=" + (videoSizes != null ? videoSizes.size() : 0));
+                    if (previewSizes != null) {
+                        for (Camera.Size size : previewSizes) {
+                            Log.d(TAG, "Camera ID " + i + ": previewSize=" + size.width + "x" + size.height);
+                        }
+                    }
+                    if (videoSizes != null) {
+                        for (Camera.Size size : videoSizes) {
+                            Log.d(TAG, "Camera ID " + i + ": videoSize=" + size.width + "x" + size.height);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Error inspecting Camera ID " + i + ": " + e.getMessage());
+            }
         }
     }
 
     private void updateToggleButtons() {
         runOnUiThread(() -> {
             btnToggleFront.setText(frontCamera != null ? "Turn Off Front Camera" : "Turn On Front Camera");
-            btnToggleUSB.setText(usbCamera != null ? "Turn Off USB Camera" : "Turn On USB Camera");
+            btnToggleUsb.setText(usbCamera != null ? "Turn Off USB Camera" : "Turn On USB Camera");
             btnCaptureFront.setEnabled(frontCamera != null);
-            btnCaptureUSB.setEnabled(usbCamera != null);
+            btnCaptureUsb.setEnabled(usbCamera != null);
+            btnRecordFront.setEnabled(frontCamera != null);
+            btnRecordUsb.setEnabled(usbCamera != null);
+            btnRecordFront.setText(GlobalVars.isFrontRecording() ? "Stop Front Recording" : "Record Front Video");
+            btnRecordUsb.setText(GlobalVars.isUsbRecording() ? "Stop USB Recording" : "Record USB Video");
+            timerView.setVisibility(GlobalVars.isFrontRecording() || GlobalVars.isUsbRecording() ? TextView.VISIBLE : TextView.GONE);
         });
     }
 
@@ -1041,10 +1081,10 @@ public class CameraFeedActivity extends AppCompatActivity {
                     Toast.makeText(CameraFeedActivity.this, "Front Camera Off", Toast.LENGTH_SHORT).show();
                 });
             } else {
+                stopUSBCamera();
+                GlobalVars.setCam2On(false);
                 startFrontCamera();
-                GlobalVars.setCam1On(true);
-                GlobalVars.setCam2On(false); // Ensure USB camera is off
-                usbCameraExecutor.submit(() -> stopUSBCamera());
+                GlobalVars.setCam1On(frontCamera != null);
                 runOnUiThread(() -> {
                     updateToggleButtons();
                     frontCameraView.invalidate();
@@ -1069,10 +1109,10 @@ public class CameraFeedActivity extends AppCompatActivity {
                     Toast.makeText(CameraFeedActivity.this, "USB Camera Off", Toast.LENGTH_SHORT).show();
                 });
             } else {
+                stopFrontCamera();
+                GlobalVars.setCam1On(false);
                 startUSBCamera();
-                GlobalVars.setCam2On(true);
-                GlobalVars.setCam1On(false); // Ensure front camera is off
-                frontCameraExecutor.submit(() -> stopFrontCamera());
+                GlobalVars.setCam2On(usbCamera != null);
                 runOnUiThread(() -> {
                     updateToggleButtons();
                     usbCameraView.invalidate();
@@ -1086,73 +1126,133 @@ public class CameraFeedActivity extends AppCompatActivity {
         });
     }
 
+    private void toggleFrontCameraRecording() {
+        frontCameraExecutor.submit(() -> {
+            if (GlobalVars.isFrontRecording()) {
+                stopFrontCameraRecording();
+                runOnUiThread(() -> {
+                    updateToggleButtons();
+                    Toast.makeText(CameraFeedActivity.this, "Front Recording Stopped", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                startFrontCameraRecording();
+                runOnUiThread(() -> {
+                    updateToggleButtons();
+                    if (GlobalVars.isFrontRecording()) {
+                        Toast.makeText(CameraFeedActivity.this, "Front Recording Started", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(CameraFeedActivity.this, "Failed to Start Front Recording", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    private void toggleUSBCameraRecording() {
+        usbCameraExecutor.submit(() -> {
+            if (GlobalVars.isUsbRecording()) {
+                stopUSBCameraRecording();
+                runOnUiThread(() -> {
+                    updateToggleButtons();
+                    Toast.makeText(CameraFeedActivity.this, "USB Recording Stopped", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                startUSBCameraRecording();
+                runOnUiThread(() -> {
+                    updateToggleButtons();
+                    if (GlobalVars.isUsbRecording()) {
+                        Toast.makeText(CameraFeedActivity.this, "USB Recording Started", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(CameraFeedActivity.this, "Failed to Start USB Recording", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
     private boolean checkPermissions() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
         }, 100);
     }
 
     private void setupCameraCallbacks() {
-        frontHolder.addCallback(new SurfaceHolder.Callback() {
+        frontCameraView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                Log.d(TAG, "Front camera surface created");
+            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                Log.d(TAG, "Front camera surface texture available");
+                frontSurfaceTexture = surface;
                 frontCameraExecutor.submit(() -> {
-                    if (GlobalVars.isCam1On()) {
+                    if (GlobalVars.isCam1On() && !GlobalVars.isCam2On()) {
                         startFrontCamera();
                     }
                 });
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {}
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                Log.d(TAG, "Front camera surface destroyed");
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                Log.d(TAG, "Front camera surface texture destroyed");
                 frontCameraExecutor.submit(() -> stopFrontCamera());
+                frontSurfaceTexture = null;
+                return true;
             }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {}
         });
 
-        usbHolder.addCallback(new SurfaceHolder.Callback() {
+        usbCameraView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                Log.d(TAG, "USB camera surface created");
+            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                Log.d(TAG, "USB camera surface texture available");
+                usbSurfaceTexture = surface;
                 usbCameraExecutor.submit(() -> {
-                    if (GlobalVars.isCam2On()) {
+                    if (GlobalVars.isCam2On() && !GlobalVars.isCam1On()) {
                         startUSBCamera();
                     }
                 });
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {}
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                Log.d(TAG, "USB camera surface destroyed");
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                Log.d(TAG, "USB camera surface texture destroyed");
                 usbCameraExecutor.submit(() -> stopUSBCamera());
+                usbSurfaceTexture = null;
+                return true;
             }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surface) {}
         });
     }
 
-    // Completely separate method for front camera // this usb cam view
     private void startFrontCamera() {
         if (frontCamera != null) {
             Log.d(TAG, "Front camera already initialized, skipping");
+            return;
+        }
+        if (frontSurfaceTexture == null) {
+            Log.w(TAG, "Front camera surface texture not available");
             return;
         }
         try {
             int frontCameraId = -1;
             int cameraCount = Camera.getNumberOfCameras();
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            // Strictly find front-facing camera
             for (int i = 0; i < cameraCount; i++) {
                 Camera.getCameraInfo(i, cameraInfo);
                 if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
@@ -1161,98 +1261,303 @@ public class CameraFeedActivity extends AppCompatActivity {
                 }
             }
             if (frontCameraId != -1) {
-                frontCamera = Camera.open(frontCameraId);
+                frontCamera = openCameraWithRetry(frontCameraId, 3);
                 if (frontCamera != null) {
                     Camera.Parameters parameters = frontCamera.getParameters();
                     List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
-                    if (sizes != null && !sizes.isEmpty()) {
-                        parameters.setPreviewSize(sizes.get(0).width, sizes.get(0).height);
+                    Camera.Size selectedSize = getCompatibleSize(sizes, 1280, 720); // Prefer 720p
+                    if (selectedSize != null) {
+                        parameters.setPreviewSize(selectedSize.width, selectedSize.height);
+                        Log.d(TAG, "Front camera preview size: " + selectedSize.width + "x" + selectedSize.height);
                     } else {
-                        throw new RuntimeException("No supported preview sizes for front camera");
+                        throw new RuntimeException("No compatible preview sizes for front camera");
                     }
                     frontCamera.setParameters(parameters);
-
-                    frontCamera.setPreviewDisplay(frontHolder); // Strictly frontHolder
+                    frontCamera.setPreviewTexture(frontSurfaceTexture);
                     frontCamera.startPreview();
-                    globalVars.setInternalCameraConnected(true);
-                    Log.d(TAG, "Front camera started, ID: " + frontCameraId + ", Thread: " + Thread.currentThread().getName());
+                    GlobalVars.getInstance().setInternalCameraConnected(true);
+                    Log.d(TAG, "Front camera started, ID: " + frontCameraId);
                 } else {
                     throw new RuntimeException("Failed to open front camera ID: " + frontCameraId);
                 }
             } else {
-                globalVars.setInternalCameraConnected(false);
+                GlobalVars.getInstance().setInternalCameraConnected(false);
                 Log.w(TAG, "No front-facing camera found");
                 runOnUiThread(() -> {
                     Toast.makeText(CameraFeedActivity.this, "No front camera available", Toast.LENGTH_SHORT).show();
-                    frontCameraView.invalidate(); // Ensure view is cleared
+                    frontCameraView.invalidate();
                 });
             }
         } catch (Exception e) {
             Log.e(TAG, "Front Camera Error: " + e.getMessage(), e);
             runOnUiThread(() -> {
-                Toast.makeText(CameraFeedActivity.this, "Front Camera Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraFeedActivity.this, "Front Camera Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 frontCameraView.invalidate();
             });
             stopFrontCamera();
         }
     }
 
-    // Completely separate method for USB camera // this is internal cam view
     private void startUSBCamera() {
         if (usbCamera != null) {
             Log.d(TAG, "USB camera already initialized, skipping");
             return;
         }
+        if (usbSurfaceTexture == null) {
+            Log.w(TAG, "USB camera surface texture not available");
+            return;
+        }
         try {
             int usbCameraId = -1;
+            int frontCameraId = -1;
             int cameraCount = Camera.getNumberOfCameras();
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-            // Strictly find non-front-facing camera (assumed USB)
             for (int i = 0; i < cameraCount; i++) {
                 Camera.getCameraInfo(i, cameraInfo);
-                if (cameraInfo.facing != Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    usbCameraId = i;
-                    break;
+                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    frontCameraId = i;
+                } else {
+                    try {
+                        Camera tempCam = Camera.open(i);
+                        if (tempCam != null) {
+                            Camera.Parameters params = tempCam.getParameters();
+                            String flashMode = params.getFlashMode();
+                            tempCam.release();
+                            if (flashMode == null) {
+                                usbCameraId = i;
+                                break;
+                            } else if (usbCameraId == -1) {
+                                usbCameraId = i;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Error checking camera ID " + i + ": " + e.getMessage());
+                    }
                 }
             }
-            if (usbCameraId != -1) {
-                usbCamera = Camera.open(usbCameraId);
+            if (usbCameraId != -1 && usbCameraId != frontCameraId) {
+                usbCamera = openCameraWithRetry(usbCameraId, 3);
                 if (usbCamera != null) {
                     Camera.Parameters parameters = usbCamera.getParameters();
                     List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
-                    if (sizes != null && !sizes.isEmpty()) {
-                        parameters.setPreviewSize(sizes.get(0).width, sizes.get(0).height);
+                    Camera.Size selectedSize = getCompatibleSize(sizes, 1280, 720); // Prefer 720p
+                    if (selectedSize != null) {
+                        parameters.setPreviewSize(selectedSize.width, selectedSize.height);
+                        Log.d(TAG, "USB camera preview size: " + selectedSize.width + "x" + selectedSize.height);
                     } else {
-                        throw new RuntimeException("No supported preview sizes for USB camera");
+                        throw new RuntimeException("No compatible preview sizes for USB camera");
                     }
                     usbCamera.setParameters(parameters);
-
-                    usbCamera.setPreviewDisplay(usbHolder); // Strictly usbHolder
+                    usbCamera.setPreviewTexture(usbSurfaceTexture);
                     usbCamera.startPreview();
-                    globalVars.setUSBCameraConnected(true);
-                    Log.d(TAG, "USB camera started, ID: " + usbCameraId + ", Thread: " + Thread.currentThread().getName());
+                    GlobalVars.getInstance().setUSBCameraConnected(true);
+                    Log.d(TAG, "USB camera started, ID: " + usbCameraId);
                 } else {
                     throw new RuntimeException("Failed to open USB camera ID: " + usbCameraId);
                 }
             } else {
-                globalVars.setUSBCameraConnected(false);
-                Log.w(TAG, "No USB camera found");
+                GlobalVars.getInstance().setUSBCameraConnected(false);
+                Log.w(TAG, "No distinct USB camera found (usbCameraId=" + usbCameraId + ", frontCameraId=" + frontCameraId + ")");
                 runOnUiThread(() -> {
                     Toast.makeText(CameraFeedActivity.this, "No USB camera available", Toast.LENGTH_SHORT).show();
-                    usbCameraView.invalidate(); // Ensure view is cleared
+                    usbCameraView.invalidate();
                 });
             }
         } catch (Exception e) {
             Log.e(TAG, "USB Camera Error: " + e.getMessage(), e);
             runOnUiThread(() -> {
-                Toast.makeText(CameraFeedActivity.this, "USB Camera Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraFeedActivity.this, "USB Camera Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 usbCameraView.invalidate();
             });
             stopUSBCamera();
         }
     }
 
-    // Separate method for front camera photo capture
+    private Camera openCameraWithRetry(int cameraId, int retries) {
+        for (int i = 0; i < retries; i++) {
+            try {
+                Camera camera = Camera.open(cameraId);
+                if (camera != null) {
+                    return camera;
+                }
+                Log.w(TAG, "Camera ID " + cameraId + " open failed, retry " + (i + 1));
+                Thread.sleep(100);
+            } catch (Exception e) {
+                Log.w(TAG, "Camera ID " + cameraId + " open error: " + e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    private Camera.Size getCompatibleSize(List<Camera.Size> sizes, int preferredWidth, int preferredHeight) {
+        if (sizes == null || sizes.isEmpty()) return null;
+        Camera.Size fallback = sizes.get(0);
+        for (Camera.Size size : sizes) {
+            if (size.width == preferredWidth && size.height == preferredHeight) {
+                return size;
+            }
+            if (size.width <= preferredWidth && size.height <= preferredHeight) {
+                fallback = size;
+            }
+        }
+        return fallback;
+    }
+
+    private void startFrontCameraRecording() {
+        if (frontCamera == null || GlobalVars.isFrontRecording()) {
+            Log.w(TAG, "Front camera not available or already recording");
+            runOnUiThread(() -> Toast.makeText(CameraFeedActivity.this, "Front camera not ready", Toast.LENGTH_SHORT).show());
+            return;
+        }
+        if (frontSurfaceTexture == null) {
+            Log.w(TAG, "Front camera surface texture not available");
+            runOnUiThread(() -> Toast.makeText(CameraFeedActivity.this, "Front camera surface not ready", Toast.LENGTH_SHORT).show());
+            return;
+        }
+        try {
+            Log.d(TAG, "Attempting to unlock front camera");
+            frontCamera.unlock();
+            frontRecorder = new MediaRecorder();
+            frontRecorder.setCamera(frontCamera);
+            frontRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            frontRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            // Try lower quality for front camera compatibility
+            CamcorderProfile profile;
+            if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
+                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+            } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_LOW)) {
+                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+            } else {
+                profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+            }
+            frontRecorder.setProfile(profile);
+            File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+                    "Front_VID_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".mp4");
+            frontRecorder.setOutputFile(outputFile.getAbsolutePath());
+            frontRecorder.setPreviewDisplay(new android.view.Surface(frontSurfaceTexture));
+            Log.d(TAG, "Preparing MediaRecorder for front camera");
+            frontRecorder.prepare();
+            Log.d(TAG, "Starting MediaRecorder for front camera");
+            frontRecorder.start();
+            GlobalVars.setFrontRecording(true);
+            recordingStartTime = System.currentTimeMillis();
+            startTimer();
+            Log.d(TAG, "Front camera recording started with profile: " + profile.quality);
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting front recording: " + e.getMessage(), e);
+            releaseFrontRecorder();
+            GlobalVars.setFrontRecording(false);
+            if (frontCamera != null) {
+                try {
+                    frontCamera.lock();
+                } catch (Exception lockEx) {
+                    Log.e(TAG, "Error locking front camera: " + lockEx.getMessage(), lockEx);
+                }
+            }
+            runOnUiThread(() -> Toast.makeText(CameraFeedActivity.this, "Front Recording Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+        }
+    }
+
+    private void stopFrontCameraRecording() {
+        if (frontRecorder != null && GlobalVars.isFrontRecording()) {
+            try {
+                frontRecorder.stop();
+                Log.d(TAG, "Front camera recording stopped");
+            } catch (Exception e) {
+                Log.e(TAG, "Error stopping front recording: " + e.getMessage(), e);
+            }
+            releaseFrontRecorder();
+            GlobalVars.setFrontRecording(false);
+            if (frontCamera != null) {
+                try {
+                    frontCamera.lock();
+                    if (frontSurfaceTexture != null) {
+                        frontCamera.setPreviewTexture(frontSurfaceTexture);
+                        frontCamera.startPreview();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error restarting front preview: " + e.getMessage(), e);
+                }
+            }
+            stopTimer();
+        }
+    }
+
+    private void startUSBCameraRecording() {
+        if (usbCamera == null || GlobalVars.isUsbRecording()) {
+            Log.w(TAG, "USB camera not available or already recording");
+            runOnUiThread(() -> Toast.makeText(CameraFeedActivity.this, "USB camera not ready", Toast.LENGTH_SHORT).show());
+            return;
+        }
+        if (usbSurfaceTexture == null) {
+            Log.w(TAG, "USB camera surface texture not available");
+            runOnUiThread(() -> Toast.makeText(CameraFeedActivity.this, "USB camera surface not ready", Toast.LENGTH_SHORT).show());
+            return;
+        }
+        try {
+            Log.d(TAG, "Attempting to unlock USB camera");
+            usbCamera.unlock();
+            usbRecorder = new MediaRecorder();
+            usbRecorder.setCamera(usbCamera);
+            usbRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            usbRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            // Use same profile as working USB recording
+            CamcorderProfile profile = CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P) ?
+                    CamcorderProfile.get(CamcorderProfile.QUALITY_720P) :
+                    CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+            usbRecorder.setProfile(profile);
+            File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+                    "USB_VID_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".mp4");
+            usbRecorder.setOutputFile(outputFile.getAbsolutePath());
+            usbRecorder.setPreviewDisplay(new android.view.Surface(usbSurfaceTexture));
+            Log.d(TAG, "Preparing MediaRecorder for USB camera");
+            usbRecorder.prepare();
+            Log.d(TAG, "Starting MediaRecorder for USB camera");
+            usbRecorder.start();
+            GlobalVars.setUsbRecording(true);
+            recordingStartTime = System.currentTimeMillis();
+            startTimer();
+            Log.d(TAG, "USB camera recording started with profile: " + profile.quality);
+        } catch (Exception e) {
+            Log.e(TAG, "Error starting USB recording: " + e.getMessage(), e);
+            releaseUsbRecorder();
+            GlobalVars.setUsbRecording(false);
+            if (usbCamera != null) {
+                try {
+                    usbCamera.lock();
+                } catch (Exception lockEx) {
+                    Log.e(TAG, "Error locking USB camera: " + lockEx.getMessage(), lockEx);
+                }
+            }
+            runOnUiThread(() -> Toast.makeText(CameraFeedActivity.this, "USB Recording Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+        }
+    }
+
+    private void stopUSBCameraRecording() {
+        if (usbRecorder != null && GlobalVars.isUsbRecording()) {
+            try {
+                usbRecorder.stop();
+                Log.d(TAG, "USB camera recording stopped");
+            } catch (Exception e) {
+                Log.e(TAG, "Error stopping USB recording: " + e.getMessage(), e);
+            }
+            releaseUsbRecorder();
+            GlobalVars.setUsbRecording(false);
+            if (usbCamera != null) {
+                try {
+                    usbCamera.lock();
+                    if (usbSurfaceTexture != null) {
+                        usbCamera.setPreviewTexture(usbSurfaceTexture);
+                        usbCamera.startPreview();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error restarting USB preview: " + e.getMessage(), e);
+                }
+            }
+            stopTimer();
+        }
+    }
+
     private void captureFrontCameraPhoto() {
         if (frontCamera == null) {
             Toast.makeText(this, "Front Camera not available", Toast.LENGTH_SHORT).show();
@@ -1260,19 +1565,18 @@ public class CameraFeedActivity extends AppCompatActivity {
         }
         frontCamera.takePicture(null, null, (data, cam) -> {
             File pictureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                    "USB_IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg"); // usb image path name
+                    "Front_IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg");
             try (FileOutputStream fos = new FileOutputStream(pictureFile)) {
                 fos.write(data);
                 fos.flush();
-                Toast.makeText(CameraFeedActivity.this, "Photo Saved: " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraFeedActivity.this, "Front Photo Saved: " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-                Toast.makeText(CameraFeedActivity.this, "Error saving photo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraFeedActivity.this, "Error saving front photo", Toast.LENGTH_SHORT).show();
             }
             cam.startPreview();
         });
     }
 
-    // Separate method for USB camera photo capture
     private void captureUSBCameraPhoto() {
         if (usbCamera == null) {
             Toast.makeText(this, "USB Camera not available", Toast.LENGTH_SHORT).show();
@@ -1280,53 +1584,93 @@ public class CameraFeedActivity extends AppCompatActivity {
         }
         usbCamera.takePicture(null, null, (data, cam) -> {
             File pictureFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                    "Front_IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg");
+                    "USB_IMG_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + ".jpg");
             try (FileOutputStream fos = new FileOutputStream(pictureFile)) {
                 fos.write(data);
                 fos.flush();
-                Toast.makeText(CameraFeedActivity.this, "Photo Saved: " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraFeedActivity.this, "USB Photo Saved: " + pictureFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
-                Toast.makeText(CameraFeedActivity.this, "Error saving photo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CameraFeedActivity.this, "Error saving USB photo", Toast.LENGTH_SHORT).show();
             }
             cam.startPreview();
         });
     }
 
-    // Separate method to stop front camera
     private void stopFrontCamera() {
+        stopFrontCameraRecording();
         if (frontCamera != null) {
             try {
                 frontCamera.stopPreview();
-                frontCamera.setPreviewDisplay(null);
                 frontCamera.release();
                 frontCamera = null;
-                globalVars.setInternalCameraConnected(false);
+                GlobalVars.getInstance().setInternalCameraConnected(false);
                 runOnUiThread(() -> frontCameraView.invalidate());
+                Log.d(TAG, "Front camera stopped and released");
             } catch (Exception e) {
+                Log.e(TAG, "Error stopping front camera: " + e.getMessage(), e);
                 runOnUiThread(() -> frontCameraView.invalidate());
             }
         }
     }
 
-    // Separate method to stop USB camera
     private void stopUSBCamera() {
+        stopUSBCameraRecording();
         if (usbCamera != null) {
             try {
                 usbCamera.stopPreview();
-                usbCamera.setPreviewDisplay(null);
                 usbCamera.release();
                 usbCamera = null;
-                globalVars.setUSBCameraConnected(false);
+                GlobalVars.getInstance().setUSBCameraConnected(false);
                 try {
                     Thread.sleep(CLEANUP_DELAY_MS);
                 } catch (InterruptedException e) {
                     Log.e(TAG, "Cleanup delay interrupted: " + e.getMessage(), e);
                 }
                 runOnUiThread(() -> usbCameraView.invalidate());
+                Log.d(TAG, "USB camera stopped and released");
             } catch (Exception e) {
                 Log.e(TAG, "Error stopping USB camera: " + e.getMessage(), e);
                 runOnUiThread(() -> usbCameraView.invalidate());
             }
+        }
+    }
+
+    private void releaseFrontRecorder() {
+        if (frontRecorder != null) {
+            frontRecorder.reset();
+            frontRecorder.release();
+            frontRecorder = null;
+            Log.d(TAG, "Front recorder released");
+        }
+    }
+
+    private void releaseUsbRecorder() {
+        if (usbRecorder != null) {
+            usbRecorder.reset();
+            usbRecorder.release();
+            usbRecorder = null;
+            Log.d(TAG, "USB recorder released");
+        }
+    }
+
+    private void startTimer() {
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = System.currentTimeMillis() - recordingStartTime;
+                int seconds = (int) (elapsed / 1000) % 60;
+                int minutes = (int) (elapsed / (1000 * 60)) % 60;
+                timerView.setText(String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds));
+                timerHandler.postDelayed(this, 1000);
+            }
+        };
+        timerHandler.post(timerRunnable);
+    }
+
+    private void stopTimer() {
+        if (timerRunnable != null) {
+            timerHandler.removeCallbacks(timerRunnable);
+            timerView.setText("00:00");
         }
     }
 
@@ -1340,8 +1684,11 @@ public class CameraFeedActivity extends AppCompatActivity {
                     Log.d(TAG, "USB Device Attached: " + device.getDeviceName());
                     usbCameraExecutor.submit(() -> {
                         stopUSBCamera();
-                        globalVars.setUSBCameraConnected(false);
-                        syncCameraStateWithGlobalVars(); // Sync with GlobalVars
+                        GlobalVars.getInstance().setUSBCameraConnected(false);
+                        if (GlobalVars.isCam2On()) {
+                            startUSBCamera();
+                            GlobalVars.getInstance().setUSBCameraConnected(true);
+                        }
                         runOnUiThread(() -> {
                             updateToggleButtons();
                             logCameraInfo();
@@ -1353,8 +1700,8 @@ public class CameraFeedActivity extends AppCompatActivity {
                     Log.d(TAG, "USB Device Detached: " + device.getDeviceName());
                     usbCameraExecutor.submit(() -> {
                         stopUSBCamera();
-                        globalVars.setUSBCameraConnected(false);
-                        syncCameraStateWithGlobalVars(); // Sync with GlobalVars
+                        GlobalVars.getInstance().setUSBCameraConnected(false);
+                        GlobalVars.setCam2On(false);
                         runOnUiThread(() -> {
                             updateToggleButtons();
                             logCameraInfo();
@@ -1378,25 +1725,16 @@ public class CameraFeedActivity extends AppCompatActivity {
         usbCameraExecutor.submit(() -> stopUSBCamera());
         frontCameraExecutor.shutdown();
         usbCameraExecutor.shutdown();
-        globalVars.setCameraPreviewActive(false);
+        GlobalVars.getInstance().setCameraPreviewActive(false);
         if (usbReceiver != null) {
             unregisterReceiver(usbReceiver);
         }
+        stopTimer();
         Log.d(TAG, "CameraFeedActivity destroyed, threads shut down");
     }
 }
 
-
-
-
-
-
-
-
-
 //------------------
-
-
 
 
 //package com.lztek.api.demo;

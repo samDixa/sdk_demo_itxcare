@@ -5,19 +5,20 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Horizontal LinearLayout for side-by-side camera views -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <SurfaceView
-            android:id="@+id/internalCameraView"
+        <TextureView
+            android:id="@+id/frontCameraView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <SurfaceView
+        <TextureView
             android:id="@+id/usbCameraView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -26,83 +27,74 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/timer_view"
+        android:id="@+id/timerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:text="00:00"
-        android:textSize="18sp"
         android:visibility="gone"
-        android:padding="8dp" />
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:layout_marginTop="8dp">
 
         <Button
-            android:id="@+id/btn_toggle_front"
+            android:id="@+id/btnToggleFront"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Turn On Front Camera" />
+            android:layout_height="wrap_content"
+            android:text="Toggle Front Camera" />
 
         <Button
-            android:id="@+id/btn_toggle_usb"
+            android:id="@+id/btnToggleUsb"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Turn On USB Camera" />
-
+            android:layout_height="wrap_content"
+            android:text="Toggle USB Camera" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:layout_marginTop="8dp">
 
         <Button
-            android:id="@+id/btn_capture_internal"
+            android:id="@+id/btnCaptureFront"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Capture Front"
-            android:enabled="false" />
+            android:layout_height="wrap_content"
+            android:text="Capture Front Photo" />
 
         <Button
-            android:id="@+id/btn_capture_usb"
+            android:id="@+id/btnCaptureUsb"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Capture USB"
-            android:enabled="false" />
-
+            android:layout_height="wrap_content"
+            android:text="Capture USB Photo" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:layout_marginTop="8dp">
 
         <Button
-            android:id="@+id/btn_record_internal"
+            android:id="@+id/btnRecordFront"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Record Front Video"
-            android:enabled="false" />
+            android:layout_height="wrap_content"
+            android:text="Record Front Video" />
 
         <Button
-            android:id="@+id/btn_record_usb"
+            android:id="@+id/btnRecordUsb"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Record USB Video"
-            android:enabled="false" />
-
+            android:layout_height="wrap_content"
+            android:text="Record USB Video" />
     </LinearLayout>
-
 </LinearLayout>

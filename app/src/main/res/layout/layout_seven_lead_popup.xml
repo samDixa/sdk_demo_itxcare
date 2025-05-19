@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#80000000"
-    android:padding="16dp">
+    android:background="#80000000">
 
     <LinearLayout
         android:id="@+id/popupContent"
@@ -12,17 +11,60 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@android:color/white"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Title -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="7-Lead ECG Graphs"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_gravity="center" />
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:weightSum="4"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:background="@color/opencolor">
+
+            <TextView
+                android:id="@+id/hrD_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="HeartRate"/>
+
+            <TextView
+                android:id="@+id/respDrate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="RespRate"/>
+
+            <TextView
+                android:id="@+id/stDlevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="ST Level"/>
+
+            <TextView
+                android:id="@+id/arDcode"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:text="AR code"/>
+
+        </LinearLayout>
 
         <!-- 7 WaveformViews for ECG Leads -->
         <com.lztek.api.demo.view.WaveformView
@@ -30,6 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:maxValue="250"
+            app:waveColor="@color/green_wave"
             android:layout_marginTop="8dp" />
 
         <com.lztek.api.demo.view.WaveformView
@@ -37,42 +80,49 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:maxValue="250"
-            android:layout_marginTop="8dp" />
+            app:waveColor="@color/green_wave"
+            android:layout_marginTop="1dp" />
 
         <com.lztek.api.demo.view.WaveformView
             android:id="@+id/wfLeadIII"
             android:layout_width="match_parent"
+            app:waveColor="@color/green_wave"
             android:layout_height="80dp"
             app:maxValue="250"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="1dp" />
 
         <com.lztek.api.demo.view.WaveformView
             android:id="@+id/wfLeadAVR"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:maxValue="250"
-            android:layout_marginTop="8dp" />
+            app:waveColor="@color/green_wave"
+            android:layout_marginTop="1dp" />
 
         <com.lztek.api.demo.view.WaveformView
             android:id="@+id/wfLeadAVL"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:maxValue="250"
-            android:layout_marginTop="8dp" />
+            app:waveColor="@color/green_wave"
+            android:layout_marginTop="1dp" />
 
         <com.lztek.api.demo.view.WaveformView
             android:id="@+id/wfLeadAVF"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:maxValue="250"
-            android:layout_marginTop="8dp" />
+            app:waveColor="@color/green_wave"
+            android:layout_marginTop="1dp" />
 
         <com.lztek.api.demo.view.WaveformView
             android:id="@+id/wfLeadV"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:maxValue="250"
-            android:layout_marginTop="8dp" />
+            app:waveColor="@color/green_wave"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="1dp" />
 
     </LinearLayout>
 

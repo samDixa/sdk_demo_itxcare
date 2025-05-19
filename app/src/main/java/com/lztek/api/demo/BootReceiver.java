@@ -12,9 +12,16 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            Log.d("BootReceiver", "Device Boot Completed - Starting SerialPortService");
+            Log.d("BootReceiver", "Device Boot Completed - Starting SerialPortService and App");
+
+            // Start SerialPortService
             Intent serviceIntent = new Intent(context, SerialPortService.class);
             context.startForegroundService(serviceIntent);
+
+            // Start MainActivity (ya jo bhi teri UI activity hai)
+            Intent activityIntent = new Intent(context, LoginActivity.class); // ya MainActivity.class
+            activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(activityIntent);
         }
     }
 }
