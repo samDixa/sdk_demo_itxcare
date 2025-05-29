@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
         );
         btnParams.setMargins(10, 0, 10, 0);
 
+        float buttonTextSize = 14f;
+
         // Button View Params
         LinearLayout.LayoutParams btnViewParams = new LinearLayout.LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT, 4f
@@ -120,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         maintenanceButton.setText("Maintenance \uD83D\uDEE0");
         maintenanceButton.setTextColor(Color.WHITE);
         maintenanceButton.setLayoutParams(btnParams);
+        maintenanceButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonTextSize);
         maintenanceButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gray_button));
         buttonLayout.addView(maintenanceButton);
 
@@ -127,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         calibrateButton.setText("Calibrate ⚙");
         calibrateButton.setTextColor(Color.WHITE);
         calibrateButton.setLayoutParams(btnParams);
+        calibrateButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonTextSize);
         calibrateButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gray_button));
         buttonLayout.addView(calibrateButton);
 
@@ -134,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
         helpButton.setText("Help ?");
         helpButton.setTextColor(Color.WHITE);
         helpButton.setLayoutParams(btnParams);
+        helpButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonTextSize);
         helpButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gray_button));
         buttonLayout.addView(helpButton);
 
@@ -145,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         nextButton.setText("Next →");
         nextButton.setTextColor(Color.WHITE);
         nextButton.setLayoutParams(btnParams);
+        nextButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonTextSize);
         nextButton.setBackground(ContextCompat.getDrawable(this, R.drawable.blue_button));
         buttonLayout.addView(nextButton);
 
@@ -182,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
         footerLayout.setLayoutParams(footerParams);
 
         // Footer Items
-        String[] itemNames = {"TIME", "Day and Date", "Battery %", "AC Supply", "Network", "Remote Access", "Shut Down"};
+        String[] itemNames = {"TIME", "Day and Date", "Battery %", "AC SUPPLY", "Network", "RM ACCESS", "SHUT DOWN"};
         int[] itemDrawables = {
                 R.drawable.blue_button,
                 R.drawable.green_button,
@@ -212,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
 
         for (int i = 0; i < itemNames.length; i++) {
             LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
-                    0, ViewGroup.LayoutParams.WRAP_CONTENT, i == 5 ? 1.2f : 1f
+                    0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f //i == 5 ? 1.2f : 1f
             );
 
             if (i < 3) {
@@ -226,7 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                 textView.setPadding(0, 0, 0, 0);
                 itemParams.setMargins(0, 200, 0, 0);
                 if (i == 0) {
-                    itemParams.setMargins(-120, 200, 10, 0);
+                    itemParams.setMargins(-100, 200, 10, 0);
                 }
                 textView.setLayoutParams(itemParams);
                 final int index = i;
@@ -235,6 +242,7 @@ public class LoginActivity extends AppCompatActivity {
                 Button button = (Button) footerItems[i];
                 button.setText(itemNames[i]);
                 button.setTextColor(Color.WHITE);
+                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonTextSize);
                 button.setBackground(ContextCompat.getDrawable(this, itemDrawables[i]));
                 button.setPadding(0, 0, 0, 0);
                 if (i == 4) {
@@ -242,17 +250,15 @@ public class LoginActivity extends AppCompatActivity {
                     button.setCompoundDrawablePadding(2);
                     button.setPadding(8, 0, 8, 0);
 //                    itemParams.setMargins(30, 0, 30, 0);
-                    button.setTextSize(12);
-                }
-                if (i == 5) {
-                    button.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_remote, 0);
-                    button.setCompoundDrawablePadding(2);
-                    button.setPadding(0, 0, 8, 0);
+//                    button.setTextSize(12);
                 }
                 if (i == 3) {
-                    itemParams.setMargins(250, 200, 30, 0);
+                    itemParams.setMargins(100, 200, 30, 0);
                 } else {
                     itemParams.setMargins(30, 200, 30, 0);
+                }
+                if (i == 5) {
+                    itemParams.setMargins(30, 200, 140, 0);
                 }
                 if (i == 6) {
                     itemParams.setMargins(120, 200, -70, 0);
@@ -279,8 +285,16 @@ public class LoginActivity extends AppCompatActivity {
         maintenanceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(LoginActivity.this, NewMainActivity.class);
+                Intent intent1 = new Intent(LoginActivity.this, MaintenanceLoginActivity.class);
                 startActivity(intent1);
+            }
+        });
+
+        helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(LoginActivity.this, HelpActivity.class);
+                startActivity(intent2);
             }
         });
 
@@ -343,7 +357,7 @@ public class LoginActivity extends AppCompatActivity {
                     long batteryPercentage = intent.getLongExtra("battery_percentage", -1);
                     long chargingStatus = intent.getLongExtra("charging_status", -1);
                     if (batteryPercentage >= 0) {
-                        batteryTextView.setText(batteryPercentage + "\uD83D\uDD0B");
+                        batteryTextView.setText(batteryPercentage + "%");
                     } else {
                         batteryTextView.setText("Battery %\nN/A");
                     }
@@ -362,7 +376,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showNetworkModeDialog() {
-        String[] networkModes = {"Wi-Fi", "Mobile Data"};
+        String[] networkModes = {"Wi-Fi", "SIM"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Network Mode");
         builder.setItems(networkModes, new DialogInterface.OnClickListener() {
@@ -440,7 +454,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             // Update button text
-            networkButton.setText("Mobile Data: " + (!isMobileDataEnabled ? "On" : "Off"));
+            networkButton.setText("SIM" + (!isMobileDataEnabled ? "On" : "Off"));
             Toast.makeText(this, "Mobile Data " + (!isMobileDataEnabled ? "enabled" : "disabled"), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -459,7 +473,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             boolean isMobileDataEnabled = mobileNetwork != null && mobileNetwork.isConnectedOrConnecting();
-            networkButton.setText("Mobile Data: " + (isMobileDataEnabled ? "On" : "Off"));
+            networkButton.setText("SIM: " + (isMobileDataEnabled ? "On" : "Off"));
         }
     }
 
@@ -1006,56 +1020,56 @@ public class LoginActivity extends AppCompatActivity {
 //        builder.setNegativeButton("Cancel", null);
 //        builder.show();
 //    }
+
+//    // Show shutdown options dialog
+//    private void showShutdownDialog() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Shutdown Options");
+//        builder.setMessage("Choose an option:");
 //
-////    // Show shutdown options dialog
-////    private void showShutdownDialog() {
-////        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-////        builder.setTitle("Shutdown Options");
-////        builder.setMessage("Choose an option:");
-////
-////        builder.setPositiveButton("Reboot", new DialogInterface.OnClickListener() {
-////            @Override
-////            public void onClick(DialogInterface dialog, int which) {
-////                rebootDevice();
-////            }
-////        });
-////
-////        builder.setNegativeButton("Power Off", new DialogInterface.OnClickListener() {
-////            @Override
-////            public void onClick(DialogInterface dialog, int which) {
-////                powerOffDevice();
-////            }
-////        });
-////
-////        builder.setNeutralButton("Cancel", null);
-////        builder.show();
-////    }
-////
-////    // Function to reboot the device
-////    private void rebootDevice() {
-////        try {
-////            mLztek.softReboot();
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////            Toast.makeText(this, "Reboot failed!", Toast.LENGTH_SHORT).show();
-////        }
-////    }
-////
-////    // Function to power off the device
-////    private void powerOffDevice() {
-////        int min = -1;
-////        try {
-////            min = Integer.parseInt(mEtTime.getText().toString());
-////        } catch (Exception e) {
-////        }
-////        if (min <= 0) {
-////            mEtTime.requestFocus();
-////            return;
-////        }
-////
-////        mLztek.alarmPoweron(min * 60);
-////    }
+//        builder.setPositiveButton("Reboot", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                rebootDevice();
+//            }
+//        });
 //
+//        builder.setNegativeButton("Power Off", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                powerOffDevice();
+//            }
+//        });
+//
+//        builder.setNeutralButton("Cancel", null);
+//        builder.show();
+//    }
+//
+//    // Function to reboot the device
+//    private void rebootDevice() {
+//        try {
+//            mLztek.softReboot();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Toast.makeText(this, "Reboot failed!", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    // Function to power off the device
+//    private void powerOffDevice() {
+//        int min = -1;
+//        try {
+//            min = Integer.parseInt(mEtTime.getText().toString());
+//        } catch (Exception e) {
+//        }
+//        if (min <= 0) {
+//            mEtTime.requestFocus();
+//            return;
+//        }
+//
+//        mLztek.alarmPoweron(min * 60);
+//    }
+
 //    private void showShutdownDialog() {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //        builder.setTitle("Shutdown Options");
@@ -1155,7 +1169,7 @@ public class LoginActivity extends AppCompatActivity {
 //
 //    // Handles the Next button action
 //    private void submitCode() {
-//        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+//        Intent intent = new Intent(LoginActivity.this, LoginActivityWeb.class);
 //        startActivity(intent);
 //    }
 //

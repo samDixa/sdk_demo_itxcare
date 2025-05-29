@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/session_item_background"
+    android:layout_marginBottom="8dp">
+
+    <!-- Session Name -->
+    <TextView
+        android:id="@+id/tv_session_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Session Name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#212121" />
+
+    <!-- Patient Name -->
+    <TextView
+        android:id="@+id/tv_patient_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Patient Name"
+        android:textSize="16sp"
+        android:textColor="#616161"
+        android:paddingTop="4dp" />
+
+    <!-- Location Name -->
+    <TextView
+        android:id="@+id/tv_location_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location Name"
+        android:textSize="14sp"
+        android:textColor="#616161"
+        android:paddingTop="4dp" />
+
+    <!-- Date and Time -->
+    <TextView
+        android:id="@+id/tv_date_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date and Time"
+        android:textSize="14sp"
+        android:textColor="#616161"
+        android:paddingTop="4dp" />
+
+    <!-- Status -->
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textSize="14sp"
+        android:textColor="#0288D1"
+        android:paddingTop="4dp" />
+
+    <!-- Edit and Delete Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="8dp">
+
+        <Button
+            android:id="@+id/btn_edit_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:textSize="14sp"
+            android:backgroundTint="#FFC107"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btn_delete_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:textSize="14sp"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+</LinearLayout>

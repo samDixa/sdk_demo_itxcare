@@ -19,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver {
             context.startForegroundService(serviceIntent);
 
             // Start MainActivity (ya jo bhi teri UI activity hai)
-            Intent activityIntent = new Intent(context, LoginActivity.class); // ya MainActivity.class
+            Intent activityIntent = new Intent(context, BootscreenActivity.class); // ya MainActivity.class
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(activityIntent);
         }

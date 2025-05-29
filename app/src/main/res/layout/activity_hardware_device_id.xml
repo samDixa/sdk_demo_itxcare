@@ -42,7 +42,7 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:hint="Enter Hardware Device ID"
-            android:inputType="number"
+            android:inputType="text"
             android:padding="12dp"
             android:background="@drawable/edittext_background"
             android:textColor="#000000"

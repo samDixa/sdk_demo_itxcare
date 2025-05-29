@@ -49,6 +49,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation files('libs\\sdkapi.jar')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.room:room-runtime:2.2.2'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -79,9 +80,19 @@ dependencies {
 //    implementation 'com.itextpdf:itext7-core:7.2.5'
 
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    annotationProcessor 'androidx.room:room-compiler:2.2.2'
 
 //    implementation 'com.itextpdf:itext7-core:7.1.15'
 
+//    implementation 'com.opentok.android:opentok-android-sdk:2.25.0'
+
+    // Add Room dependencies
+//    implementation "androidx.room:room-runtime:2.6.1"
+//    annotationProcessor "androidx.room:room-compiler:2.6.1" // For Java
+
+
+// vonage
+//    implementation 'com.vonage:vonage-video-sdk:2.25.1'
 
 
 }

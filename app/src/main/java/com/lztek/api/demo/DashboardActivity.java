@@ -29,6 +29,8 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
     private Button backButton;
     private Button appoimentButton;
     private Button patienMonitorButton;
+    private Button newAppoinmentButton;
+    private Button offlineButton;
     private ImageView internalCameraIndicator, usbCameraIndicator, keyboardIndicator;
     private View spO2Indicator, ecgIndicator, nibpIndicator, tempIndicator;
     private GlobalVars globalVars;
@@ -68,8 +70,12 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         stethoBtn = findViewById(R.id.stetho_btn);
         othersButton = findViewById(R.id.othresButton);
 
+        offlineButton = findViewById(R.id.offline_button);
+
         appoimentButton = findViewById(R.id.my_appointments);
         patienMonitorButton = findViewById(R.id.patient_monitor);
+
+        newAppoinmentButton = findViewById(R.id.new_appoinments);
 
         handler = new Handler(Looper.getMainLooper());
         indicatorUpdater = new Runnable() {
@@ -99,12 +105,28 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
             }
         });
 
+        newAppoinmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this,TextActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        offlineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this,OfflineModeActivity.class);
+                startActivity(intent);
+            }
+        });
+
         stethoBtn.setOnClickListener(view -> {
             Intent chestoIntent = new Intent(DashboardActivity.this, ChestoDeviceActivity.class);
             startActivity(chestoIntent);
         });
         othersButton.setOnClickListener(view -> {
-            Intent ointent = new Intent(DashboardActivity.this, NewMainActivity.class);
+            Intent ointent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
             startActivity(ointent);
         });
 

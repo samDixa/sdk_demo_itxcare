@@ -57,12 +57,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <TextView
                 android:id="@+id/pramedic_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Paramedic Name"
                 android:textColor="#6C6C6C"
@@ -81,7 +83,7 @@
 
             <TextView
                 android:id="@+id/permedic_id"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="ID:........"
                 android:textColor="#6C6C6C"
@@ -98,25 +100,30 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.3"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_height="match_parent"
-                android:layout_marginTop="60dp"
-                android:layout_weight="1.2"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -135,6 +142,7 @@
                         android:textStyle="bold" />
 
                     <Button
+                        android:id="@+id/offline_button"
                         android:layout_width="250px"
                         android:padding="8dp"
                         android:layout_height="100px"
@@ -148,11 +156,14 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <Button
+                        android:id="@+id/new_appoinments"
                         android:layout_width="250px"
                         android:padding="8dp"
                         android:layout_height="100px"
@@ -178,6 +189,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -214,17 +227,17 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight=".5"
+                android:gravity="right"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="right"
                     android:layout_marginBottom="20dp"
                     android:elevation="8dp"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -232,9 +245,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginRight="10dp"
                         android:layout_weight="2"
-                        android:gravity="center"
+                        android:gravity="right"
+                        android:layout_marginRight="10dp"
                         android:text="USB Cam"
                         android:textSize="18sp" />
 
@@ -254,7 +267,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
                     android:elevation="8dp"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -264,7 +277,7 @@
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
                         android:layout_weight="2"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:text="Keyboard"
                         android:textSize="18sp" />
 
@@ -282,7 +295,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
                     android:elevation="8dp"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -292,7 +305,7 @@
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
                         android:layout_weight="2"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:text="Web Cam "
                         android:textSize="18sp" />
 
@@ -311,7 +324,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
                     android:elevation="8dp"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -322,7 +335,7 @@
                         android:layout_gravity="center"
                         android:layout_marginRight="10dp"
                         android:layout_weight="2"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:text="Temp 2"
                         android:textSize="18sp" />
 
@@ -340,7 +353,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
                     android:elevation="8dp"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -348,10 +361,10 @@
                         android:id="@+id/stetho_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="right"
                         android:layout_marginRight="10dp"
                         android:layout_weight="2"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:text="Stetho"
                         android:textSize="18sp" />
 

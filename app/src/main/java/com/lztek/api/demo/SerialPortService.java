@@ -30,6 +30,7 @@ import java.nio.ByteOrder;
 public class SerialPortService extends Service {
     private static final String TAG = "SerialPortService";
 //    private static final String SERIAL_PORT_PATH = "/dev/ttyS4";
+//    private static final String SERIAL_PORT_PATH = "/dev/ttyS4";
     private static final String SERIAL_PORT_PATH = "/dev/ttyS8";
     private static final int BAUD_RATE = 115200;
     private static final int STRUCT_SIZE = 60;
