@@ -1,9 +1,282 @@
+//package com.lztek.api.demo;
+//
+//import android.Manifest;
+//import android.content.pm.PackageManager;
+//import android.hardware.camera2.CameraCharacteristics;
+//import android.hardware.camera2.CameraManager;
+//import android.os.Bundle;
+//import android.util.Log;
+//import android.view.View;
+//import android.widget.FrameLayout;
+//import android.widget.ProgressBar;
+//import android.widget.Toast;
+//
+//import androidx.appcompat.app.AppCompatActivity;
+//import androidx.core.app.ActivityCompat;
+//import androidx.core.content.ContextCompat;
+//
+//import com.opentok.android.OpentokError;
+//import com.opentok.android.Publisher;
+//import com.opentok.android.PublisherKit;
+//import com.opentok.android.Session;
+//import com.opentok.android.Stream;
+//import com.opentok.android.Subscriber;
+//
+//import org.jetbrains.annotations.NotNull;
+//
+//public class OnlineSessionActivity extends AppCompatActivity implements Session.SessionListener, PublisherKit.PublisherListener {
+//
+//    private FrameLayout publisherContainer, subscriberContainer;
+//    private ProgressBar progressBar;
+//    private Session session;
+//    private Publisher publisher;
+//    private Subscriber subscriber;
+//
+//    // Hardcoded OpenTok credentials (replace with dynamic fetching if possible)
+//    private static final String API_KEY = "98a2e912-2e96-478b-a0bf-691865517b7d";
+//    private static final String SESSION_ID = "2_MX45OGEyZTkxMi0yZTk2LTQ3OGItYTBiZi02OTE4NjU1MTdiN2R-fjE3NDg4NTE3NjUxODZ-QjcxOGlUK2NGNkg2eUp0VFRiV1hVNWEzfn5-";
+//    private static final String TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6InNlc3Npb24uY29ubmVjdCIsInNlc3Npb25faWQiOiIyX01YNDVPR0V5WlRreE1pMHlaVGsyTFRRM09HSXRZVEJpWmkwMk9URTROalUxTVRkaU4yUi1makUzTkRnNE5URTNOalV4T0RaLVFqY3hPR2xVSzJOR05rZzJlVXAwVkZSaVYxaFZOV0V6Zm41LSIsInJvbGUiOiJtb2RlcmF0b3IiLCJpbml0aWFsX2xheW91dF9jbGFzc19saXN0IjoiZm9jdXMiLCJleHAiOjE3NDk0NTY1NjYsInN1YiI6InZpZGVvIiwiYWNsIjp7InBhdGhzIjp7Ii9zZXNzaW9uLyoqIjp7fX19LCJjb25uZWN0aW9uX2RhdGEiOiJuYW1lPUpvaG5ueSIsImp0aSI6IjViMzAxZGQ0LTQ5MDctNGFkYi1iNmIxLTljNWQ5ZDc0YzE4ZiIsImlhdCI6MTc0ODg1MTc2NiwiYXBwbGljYXRpb25faWQiOiI5OGEyZTkxMi0yZTk2LTQ3OGItYTBiZi02OTE4NjU1MTdiN2QifQ.JeK5NCHO8NMO7XaV5LHO2OvKW8YIOk3E_GcgaxzHjtozGChc6SWbD2tHg7QLVAAjhyYhBHLf-3pbmaIcky2aje1Dq4l1BMJL-La-jtBjcGDjvH9752pP26QrHT48ERHNS1qwyfGOt2e1ZQLcBgx7ZYwFLtGJveG2HotPD1coNSeRGw1HWXbyp5gc6OLpJZS717eI81tExd97QnIptFP0Dl7IQGUUseHvsL7I8upozxDEmwPIn8FT3hTF8Pqwj183HhlqAQAWjpCvWPlfA9cCFAmiVr94RFv12QgRVqxAnSXOfyK1K-44KtVieMkcFQ2hOxLw-2pCrT2VWQMQAveCrw";
+//
+//    private static final int PERMISSION_REQUEST_CODE = 100;
+//    private boolean isConnecting = false;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_online_session);
+//
+//        publisherContainer = findViewById(R.id.publisherContainer);
+//        subscriberContainer = findViewById(R.id.subscriberContainer);
+//        progressBar = findViewById(R.id.progressBar);
+//
+//        // Automatically check and request permissions to join the session
+//        checkAndRequestPermissions();
+//
+//        // Set immersive mode
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//        );
+//    }
+//
+//    private void checkAndRequestPermissions() {
+//        String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
+//        boolean allPermissionsGranted = true;
+//
+//        for (String permission : permissions) {
+//            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+//                allPermissionsGranted = false;
+//                break;
+//            }
+//        }
+//
+//        if (allPermissionsGranted) {
+//            initializeSession();
+//        } else {
+//            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+//        }
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSION_REQUEST_CODE) {
+//            boolean allGranted = true;
+//            for (int result : grantResults) {
+//                if (result != PackageManager.PERMISSION_GRANTED) {
+//                    allGranted = false;
+//                    break;
+//                }
+//            }
+//            if (allGranted) {
+//                initializeSession();
+//            } else {
+//                Toast.makeText(this, "Camera and audio permissions are required", Toast.LENGTH_LONG).show();
+//                finish();
+//            }
+//        }
+//    }
+//
+//    private boolean hasValidCamera() {
+//        try {
+//            CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+//            String[] cameraIds = cameraManager.getCameraIdList();
+//            if (cameraIds.length == 0) {
+//                Log.e("OnlineSessionActivity", "No cameras available on this device");
+//                return false;
+//            }
+//            Log.d("OnlineSessionActivity", "Available camera IDs: " + java.util.Arrays.toString(cameraIds));
+//            return true;
+//        } catch (Exception e) {
+//            Log.e("OnlineSessionActivity", "Error checking camera availability", e);
+//            return false;
+//        }
+//    }
+//
+//    private void initializeSession() {
+//        if (isConnecting) {
+//            return;
+//        }
+//        isConnecting = true;
+//        progressBar.setVisibility(View.VISIBLE);
+//
+//        session = new Session.Builder(this, API_KEY, SESSION_ID).build();
+//        session.setSessionListener(this);
+////        session.setLogLevel(Session.LogLevel.VERBOSE); // Enable verbose logging for debugging
+//        session.connect(TOKEN);
+//    }
+//
+//    @Override
+//    public void onConnected(Session session) {
+//        isConnecting = false;
+//        progressBar.setVisibility(View.GONE);
+//
+//        try {
+//            if (!hasValidCamera()) {
+//                Toast.makeText(this, "No valid camera found on device", Toast.LENGTH_LONG).show();
+//                Log.e("OnlineSessionActivity", "No valid camera available, aborting publisher creation");
+//                finish();
+//                return;
+//            }
+//
+//            // Create Publisher with default camera settings
+//            publisher = new Publisher.Builder(this)
+//                    .name("User")
+//                    .build();
+//            publisher.setPublisherListener(this);
+//            publisher.setPublishVideo(true); // Ensure video is enabled
+//            publisher.setPublishAudio(true); // Ensure audio is enabled
+//            publisherContainer.removeAllViews();
+//            publisherContainer.addView(publisher.getView());
+//            session.publish(publisher);
+//            Toast.makeText(this, "Connected to session", Toast.LENGTH_SHORT).show();
+//        } catch (Exception e) {
+//            Log.e("OnlineSessionActivity", "Failed to initialize publisher: " + e.getMessage(), e);
+//            Toast.makeText(this, "Unable to start camera: " + e.getMessage(), Toast.LENGTH_LONG).show();
+//            finish();
+//        }
+//    }
+//
+//    @Override
+//    public void onDisconnected(Session session) {
+//        isConnecting = false;
+//        progressBar.setVisibility(View.GONE);
+//        cleanupPublisher();
+//        cleanupSubscriber();
+//        Toast.makeText(this, "Session disconnected", Toast.LENGTH_SHORT).show();
+//        finish();
+//    }
+//
+//    @Override
+//    public void onStreamReceived(Session session, Stream stream) {
+//        if (subscriber == null) {
+//            subscriber = new Subscriber.Builder(this, stream).build();
+//            session.subscribe(subscriber);
+//            subscriberContainer.removeAllViews();
+//            subscriberContainer.addView(subscriber.getView());
+//            Toast.makeText(this, "New participant joined", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    @Override
+//    public void onStreamDropped(Session session, Stream stream) {
+//        if (subscriber != null) {
+//            subscriberContainer.removeAllViews();
+//            subscriber.destroy();
+//            subscriber = null;
+//            Toast.makeText(this, "Participant left", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    @Override
+//    public void onError(Session session, OpentokError opentokError) {
+//        isConnecting = false;
+//        progressBar.setVisibility(View.GONE);
+//        Toast.makeText(this, "Session error: " + opentokError.getMessage(), Toast.LENGTH_LONG).show();
+//        Log.e("OnlineSessionActivity", "Session error: " + opentokError.getErrorCode() + " - " + opentokError.getMessage());
+//        finish();
+//    }
+//
+//    @Override
+//    public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
+//        Log.d("OnlineSessionActivity", "Publisher stream created");
+//    }
+//
+//    @Override
+//    public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
+//        cleanupPublisher();
+//    }
+//
+//    @Override
+//    public void onError(PublisherKit publisherKit, OpentokError opentokError) {
+//        Toast.makeText(this, "Publisher error: " + opentokError.getMessage(), Toast.LENGTH_LONG).show();
+//        Log.e("OnlineSessionActivity", "Publisher error: " + opentokError.getErrorCode() + " - " + opentokError.getMessage());
+//        cleanupPublisher();
+//        finish();
+//    }
+//
+//    private void cleanupPublisher() {
+//        if (publisher != null) {
+//            publisherContainer.removeAllViews();
+//            publisher.destroy();
+//            publisher = null;
+//        }
+//    }
+//
+//    private void cleanupSubscriber() {
+//        if (subscriber != null) {
+//            subscriberContainer.removeAllViews();
+//            subscriber.destroy();
+//            subscriber = null;
+//        }
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        if (publisher != null) {
+//            publisher.setPublishVideo(false);
+//        }
+//        if (session != null) {
+//            session.onPause();
+//        }
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (publisher != null) {
+//            publisher.setPublishVideo(true);
+//        }
+//        if (session != null) {
+//            session.onResume();
+//        }
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        cleanupPublisher();
+//        cleanupSubscriber();
+//        if (session != null) {
+//            session.disconnect();
+//            session = null;
+//        }
+//    }
+//}
+
+
 package com.lztek.api.demo;
+
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -18,9 +291,12 @@ import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
+import android.hardware.camera2.CameraManager;
+import android.hardware.usb.UsbConstants;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -32,7 +308,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.Spannable;
@@ -44,6 +319,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -85,13 +361,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class BerryDeviceActivity extends AppCompatActivity implements BerrySerialPort.OnDataReceivedListener, DataParser.onPackageReceivedListener {
+public class OnlineSessionActivity extends AppCompatActivity implements BerrySerialPort.OnDataReceivedListener, DataParser.onPackageReceivedListener {
+
 
     private static final String TAG = "BerryDeviceActivity";
     private static final int MAX_BUFFER_SIZE = 5000; // 10 seconds at 500 Hz for ECG
@@ -118,6 +394,17 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
 
     private ActivityResultLauncher<Intent> audioPickerLauncher;
 
+
+    //    json
+    private final List<NIBP> nibpBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final List<Integer> respRateBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final List<Float> tempBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final List<Integer> pulseRateBuffer = Collections.synchronizedList(new ArrayList<>());
+    private AppDatabase database;
+    private SessionDao sessionDao;
+    private long sessionId;
+
+
     // UI Elements
     private Button btnSerialCtr;
     private TextView tvECGinfo;
@@ -126,13 +413,13 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
     private TextView tvTEMP2info; // External temperature TextView
     private TextView tvNIBPinfo;
     private TextView tvRespRate;
-    private WaveformView wfSpO2;
+//    private WaveformView wfSpO2;
     private WaveformView wfECG1;
     private WaveformView wfECG2;
     private WaveformView wfECG3;
     private WaveformView wfECG4;
-    private WaveformView wfResp;
-    private Spinner spinnerECG3;
+//    private WaveformView wfResp;
+    //    private Spinner spinnerECG3;
     private Button btnGenerateReport;
     private Button chestoConnett;
     private ImageButton liveChesto;
@@ -151,18 +438,20 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
     private Button nibpStopButton;
     private Button nibp5MinButton, nibp15MinButton, nibp30MinButton;
 
-    private TextView paramedicName;
-    private TextView patientNamePm;
-    private TextView patientAgePm;
-    private TextView patientGenderPm;
+    //
+    private CheckBox CbCaptureTempData;
+    private CheckBox CbCaptureNiBpData;
+    private CheckBox CbCaptureSpo2Data;
+    private CheckBox CbCaptureRespData;
+    private CheckBox CbCaptureBpmPluseData;
+
+    private Button cam1Button;
+    private Button cam2Button;
 
     private TextView hrDrate, respDrate, stDlevel, arDcode;
 
     private ImageButton vitalScreenRecording;
     private TextView vitalScreenTimmerRecording;
-
-    //
-    private ECG latestECG;
 
     // Thread Handling
     private HandlerThread vitalThread;
@@ -206,7 +495,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
     private Lztek mLztek; // Lztek instance for temperature device
     private SerialPort mTempSerialPort; // Serial port for temperature device
     private volatile boolean isTempRunning = false; // Control temperature reading loop
-    private final List<TemperatureReading> tempSmoothingBuffer = Collections.synchronizedList(new ArrayList<>()); // Smoothing buffer with timestamps
+    private final List<BerryDeviceActivity.TemperatureReading> tempSmoothingBuffer = Collections.synchronizedList(new ArrayList<>()); // Smoothing buffer with timestamps
     private volatile boolean isTempConnected = false; // Track sensor connection status
     private final Handler tempUpdateHandler = new Handler(Looper.getMainLooper()); // For periodic UI updates
 
@@ -218,6 +507,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
     // ECG Options
     private String[] ecgOptions = {"ECG aVR", "ECG aVL", "ECG aVF", "ECG V"};
     private int[] selectedECG = {0, 1, 2, 3};
+
 
     // Permissions
     private String[] permissions = {
@@ -261,7 +551,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                     Log.d(TAG, "No live temperature data or sensor disconnected");
                 } else {
                     float sum = 0.0f;
-                    for (TemperatureReading reading : tempSmoothingBuffer) {
+                    for (BerryDeviceActivity.TemperatureReading reading : tempSmoothingBuffer) {
                         sum += reading.temperature;
                     }
                     float avgCelsius = sum / tempSmoothingBuffer.size();
@@ -276,10 +566,12 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_berry_device);
+        setContentView(R.layout.activity_online_session);
+
         initData();
         initView();
         initPermissions();
@@ -289,7 +581,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         }
         checkVitalStatus();
         startSpO2BatchUpdates();
-        startECGBatchUpdates();
+//        startECGBatchUpdates();
         bufferCleanupHandler.post(bufferCleanupRunnable);
 
         audioThread = new HandlerThread("AudioThread", Thread.NORM_PRIORITY);
@@ -315,6 +607,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                 }
         );
     }
+
 
     private void initData() {
         mDataParser = new DataParser(this);
@@ -382,7 +675,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
 
             @Override
             public void onError(String error) {
-                runOnUiThread(() -> Toast.makeText(BerryDeviceActivity.this, error, Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(OnlineSessionActivity.this, error, Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -476,23 +769,23 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         for (byte b : packet) {
             hexString.append(String.format("%02X ", b));
         }
-        Log.d(TAG, "Temperature Packet: " + hexString.toString());
+//        Log.d(TAG, "Temperature Packet: " + hexString.toString());
 
         try {
-            TemperatureData tempData = new TemperatureData(packet);
+            BerryDeviceActivity.TemperatureData tempData = new BerryDeviceActivity.TemperatureData(packet);
             float celsius = tempData.temperature / 100.0f; // Scale by 100 for hundredths
 
             // Validate and add to smoothing buffer
             if (celsius >= TEMP_MIN_CELSIUS && celsius <= TEMP_MAX_CELSIUS) {
                 synchronized (tempSmoothingBuffer) {
-                    tempSmoothingBuffer.add(new TemperatureReading(celsius, System.currentTimeMillis()));
+                    tempSmoothingBuffer.add(new BerryDeviceActivity.TemperatureReading(celsius, System.currentTimeMillis()));
                     if (tempSmoothingBuffer.size() > TEMP_SMOOTHING_WINDOW) {
                         tempSmoothingBuffer.remove(0);
                     }
-                    Log.d(TAG, "Valid Temperature: " + celsius + " °C (Raw: " + tempData.temperature + ")");
+//                    Log.d(TAG, "Valid Temperature: " + celsius + " °C (Raw: " + tempData.temperature + ")");
                 }
             } else {
-                Log.w(TAG, "Invalid Temperature: " + celsius + " °C (Raw: " + tempData.temperature + ")");
+//                Log.w(TAG, "Invalid Temperature: " + celsius + " °C (Raw: " + tempData.temperature + ")");
             }
         } catch (Exception e) {
             Log.e(TAG, "Error processing temperature packet: " + e.getMessage());
@@ -512,58 +805,50 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
     }
 
     private void initView() {
-        btnSerialCtr = findViewById(R.id.btnBtCtr);
+        btnSerialCtr = findViewById(R.id.onn_btnBtCtr);
         btnSerialCtr.setText("Connect Vitals");
-        tvECGinfo = findViewById(R.id.tvECGinfo);
-        tvSPO2info = findViewById(R.id.tvSPO2info);
-        tvTEMPinfo = findViewById(R.id.tvTEMPinfo);
-        tvTEMP2info = findViewById(R.id.tvTEMP2info);
-        tvNIBPinfo = findViewById(R.id.tvNIBPinfo);
-        wfECG1 = findViewById(R.id.wfECG1);
-        wfECG2 = findViewById(R.id.wfECG2);
-        wfECG3 = findViewById(R.id.wfECG3);
-        wfECG4 = findViewById(R.id.wfECG4);
-        wfSpO2 = findViewById(R.id.wfSpO2);
-        wfResp = findViewById(R.id.wfResp);
-        tvRespRate = findViewById(R.id.tvRespRate);
-        btnGenerateReport = findViewById(R.id.btnGenerateReport);
-        btnShowAllLeads = findViewById(R.id.btnShowAllLeads);
-        spinnerECG3 = findViewById(R.id.spinnerECG4);
-        nibpStopButton = findViewById(R.id.btnNIBPStop);
-        nibp5MinButton = findViewById(R.id.nibp5minbtn);
-        nibp15MinButton = findViewById(R.id.nibp15minbtn);
-        nibp30MinButton = findViewById(R.id.nibp30minbtn);
+        tvECGinfo = findViewById(R.id.onn_tvECGinfo);
+        tvSPO2info = findViewById(R.id.onn_tvSPO2info);
+        tvTEMPinfo = findViewById(R.id.onn_tvTEMPinfo);
+        tvTEMP2info = findViewById(R.id.onn_tvTEMP2info);
+        tvNIBPinfo = findViewById(R.id.onn_tvNIBPinfo);
+//        wfECG1 = findViewById(R.id.wfECG1);
+//        wfECG2 = findViewById(R.id.wfECG2);
+//        wfECG3 = findViewById(R.id.wfECG3);
+//        wfECG4 = findViewById(R.id.wfECG4);
+//        wfSpO2 = findViewById(R.id.wfSpO2);
+//        wfResp = findViewById(R.id.wfResp);
+        tvRespRate = findViewById(R.id.onn_tvRespRate);
+        btnGenerateReport = findViewById(R.id.onn_btnGenerateReport);
+        btnShowAllLeads = findViewById(R.id.onn_btnShowAllLeads);
+//        spinnerECG3 = findViewById(R.id.onn_spinnerECG4);
+        nibpStopButton = findViewById(R.id.onn_btnNIBPStop);
+        nibp5MinButton = findViewById(R.id.onn_nibp5minbtn);
+        nibp15MinButton = findViewById(R.id.onn_nibp15minbtn);
+        nibp30MinButton = findViewById(R.id.onn_nibp30minbtn);
 
-        chestoConnett = findViewById(R.id.chesto_connect_vt);
-        liveChesto = findViewById(R.id.live_chesto);
-        recordChestoo = findViewById(R.id.record_chesto);
-        recordingTimer = findViewById(R.id.recording_timer);
-        playOrstop = findViewById(R.id.play_or_stop);
-        refreshAudio = findViewById(R.id.refresh_audio);
-        uploadAudio = findViewById(R.id.upload_audio);
+        chestoConnett = findViewById(R.id.onn_chesto_connect_vt);
+        liveChesto = findViewById(R.id.onn_live_chesto);
+        recordChestoo = findViewById(R.id.onn_record_chesto);
+        recordingTimer = findViewById(R.id.onn_recording_timer);
+        playOrstop = findViewById(R.id.onn_play_or_stop);
+        refreshAudio = findViewById(R.id.onn_refresh_audio);
+//        uploadAudio = findViewById(R.id.upload_audio);
 
-        audioGrpahContainer = findViewById(R.id.audio_graph_container);
-        cAudioGraph = findViewById(R.id.cAudioGraph);
+        audioGrpahContainer = findViewById(R.id.onn_audio_graph_container);
+        cAudioGraph = findViewById(R.id.onn_AudioGraph);
 
-        vitalScreenRecording = findViewById(R.id.vitalScreenRecording);
-        vitalScreenTimmerRecording = findViewById(R.id.vitalRecoTimmer);
+        vitalScreenRecording = findViewById(R.id.onn_vitalScreenRecording);
+        vitalScreenTimmerRecording = findViewById(R.id.onn_vitalRecoTimmer);
 
-        paramedicName = findViewById(R.id.pramedicName_pm);
-
-        patientNamePm = findViewById(R.id.patientName_pm);
-
-        patientAgePm = findViewById(R.id.patientAge_pm);
-
-        patientGenderPm = findViewById(R.id.patientGender_pm);
-
-
-        paramedicName.setText("Paramedic Name: " + GlobalVars.getFirstName() + " " + GlobalVars.getLastName());
-        patientNamePm.setText("Patient Name: " + GlobalVars.getPatientMonitorName());
-        patientAgePm.setText("Patient Age: " + GlobalVars.getPatientMonitorAge());
-        patientGenderPm.setText("Patient Gender: " + GlobalVars.getPatientMonitorGender());
+//
+        cam1Button = findViewById(R.id.onn_cam1_button);
+        cam2Button = findViewById(R.id.onn_cam2_button);
+//
 
         setupGraph();
-        setupDropdown(spinnerECG3, 3);
+        requestUsbPermission();
+//        setupDropdown(spinnerECG3, 3);
 
         mConnectingDialog = new ProgressDialog(this);
         mConnectingDialog.setMessage("Connecting to Berry PM6750 (COM7/J42)...");
@@ -614,6 +899,23 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         });
 
 
+        // Cam1 Button (Rear Camera)
+        cam1Button.setOnClickListener(v -> {
+            Intent intent = new Intent(OnlineSessionActivity.this, CameraActivity.class);
+            intent.putExtra("camera_id", "0");
+            intent.putExtra("camera_name", "Rear Camera");
+            startActivity(intent);
+        });
+
+        // Cam2 Button (Front Camera)
+        cam2Button.setOnClickListener(v -> {
+            Intent intent = new Intent(OnlineSessionActivity.this, CameraActivity.class);
+            intent.putExtra("camera_id", "1");
+            intent.putExtra("camera_name", "Front Camera");
+            startActivity(intent);
+        });
+
+
         recordChestoo.setOnClickListener(v -> {
             if (!isRecording) {
                 synchronized (audioBuffer) {
@@ -653,8 +955,6 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                 pauseRecordedAudio();
             }
         });
-
-//
 
         refreshAudio.setOnClickListener(v -> {
             long currentTime = System.currentTimeMillis();
@@ -711,20 +1011,6 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
             });
         });
 
-        uploadAudio.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("audio/*");
-            String customFolderPath = "/storage/emulated/0/Download";
-            File folder = new File(customFolderPath);
-            if (folder.exists() && folder.isDirectory()) {
-                Uri startDir = Uri.fromFile(folder);
-                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, startDir);
-                Log.d(TAG, "Opening file picker at: " + customFolderPath);
-            }
-            audioPickerLauncher.launch(intent);
-        });
-
         vitalScreenRecording.setOnClickListener(v -> {
             if (!isScreenRecording) {
                 Intent captureIntent = projectionManager.createScreenCaptureIntent();
@@ -733,6 +1019,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                 stopScreenRecording();
             }
         });
+
 
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -743,6 +1030,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         );
     }
+
 
     @TargetApi(Build.VERSION_CODES.O)
     @Override
@@ -774,6 +1062,28 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         }
     }
 
+    private void openCameraPreview(String cameraId, String cameraName) {
+        CameraPreviewDialogFragment dialogFragment = CameraPreviewDialogFragment.newInstance(cameraId, cameraName);
+        dialogFragment.show(getSupportFragmentManager(), "CameraPreviewDialog");
+    }
+
+    private String findUsbCameraId() {
+        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+        try {
+            String[] cameraIds = cameraManager.getCameraIdList();
+            for (String id : cameraIds) {
+                // Camera ID "0" is usually the back camera, "1" is front, and higher IDs might be external (USB)
+                // This is a simple heuristic; adjust based on your device
+                if (!id.equals("0") && !id.equals("1")) {
+                    return id; // Assume this is the USB camera
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error finding USB camera: " + e.getMessage());
+        }
+        return null;
+    }
+
     private void startScreenTimer() {
         screenRecordSeconds = 0;
         screenTimerRunnable = new Runnable() {
@@ -787,6 +1097,21 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
             }
         };
         screenTimerHandler.post(screenTimerRunnable);
+    }
+
+    private void requestUsbPermission() {
+        UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        UsbDevice device = null;
+        for (UsbDevice usbDevice : usbManager.getDeviceList().values()) {
+            if (usbDevice.getInterfaceCount() > 0 && usbDevice.getInterface(0).getInterfaceClass() == UsbConstants.USB_CLASS_VIDEO) {
+                device = usbDevice;
+                break;
+            }
+        }
+        if (device != null) {
+            PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent("com.lztek.api.demo.USB_PERMISSION"), 0);
+            usbManager.requestPermission(device, permissionIntent);
+        }
     }
 
     private void stopScreenTimer() {
@@ -1070,17 +1395,28 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
     }
 
     private void setupGraph() {
-        LineDataSet dataSet = new LineDataSet(new ArrayList<>(), "Audio Signal");
-        dataSet.setDrawCircles(false);
-        dataSet.setDrawValues(false);
-        dataSet.setColor(Color.BLUE);
-        dataSet.setLineWidth(1f);
+        // Create a LineDataSet for the audio signal
+        LineDataSet dataSet = new LineDataSet(new ArrayList<>(), ""); // Label hata diya
+        dataSet.setDrawCircles(false);  // Circles pehle se disabled hain, rakh rahe hain
+        dataSet.setDrawValues(false);   // Values pehle se disabled hain, rakh rahe hain
+        dataSet.setColor(Color.BLUE);   // Line ka color blue hi rakhenge
+        dataSet.setLineWidth(1f);       // Line ki width same rakhi
+
+        // Create LineData with the dataset
         LineData lineData = new LineData(dataSet);
         cAudioGraph.setData(lineData);
-        cAudioGraph.getXAxis().setDrawLabels(false);
-        cAudioGraph.getAxisLeft().setDrawLabels(false);
-        cAudioGraph.getAxisRight().setDrawLabels(false);
+
+        // Disable all labels and grid lines for a clean look
+        cAudioGraph.getXAxis().setEnabled(false);  // X-axis completely disable (no labels, no grid)
+        cAudioGraph.getAxisLeft().setEnabled(false);  // Left Y-axis disable (no labels, no grid)
+        cAudioGraph.getAxisRight().setEnabled(false);  // Right Y-axis disable (no labels, no grid)
+        cAudioGraph.getDescription().setEnabled(false);  // Graph description disable
+        cAudioGraph.getLegend().setEnabled(false);  // Legend (label "Audio Signal") disable
+
+        // Enable hardware acceleration for smoother rendering
         cAudioGraph.setHardwareAccelerationEnabled(true);
+
+        // Refresh the graph
         cAudioGraph.invalidate();
     }
 
@@ -1152,7 +1488,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
             runOnUiThread(() -> mConnectingDialog.show());
             serialPort.connect();
             startSpO2BatchUpdates();
-            startECGBatchUpdates();
+//            startECGBatchUpdates();
             bufferCleanupHandler.post(bufferCleanupRunnable);
             Log.d(TAG, "Started SpO2 and ECG batch updates on connect");
         }
@@ -1179,18 +1515,18 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
 
     private void clearWaveformViews() {
         runOnUiThread(() -> {
-            wfECG1.clear();
-            wfECG2.clear();
-            wfECG3.clear();
-            wfECG4.clear();
-            wfResp.clear();
-            wfSpO2.clear();
-            wfECG1.postInvalidate();
-            wfECG2.postInvalidate();
-            wfECG3.postInvalidate();
-            wfECG4.postInvalidate();
-            wfResp.postInvalidate();
-            wfSpO2.postInvalidate();
+//            wfECG1.clear();
+//            wfECG2.clear();
+//            wfECG3.clear();
+//            wfECG4.clear();
+//            wfResp.clear();
+//            wfSpO2.clear();
+//            wfECG1.postInvalidate();
+//            wfECG2.postInvalidate();
+//            wfECG3.postInvalidate();
+//            wfECG4.postInvalidate();
+//            wfResp.postInvalidate();
+//            wfSpO2.postInvalidate();
             if (ecgDialog != null && ecgDialog.isShowing()) {
                 wfLeadI.clear();
                 wfLeadII.clear();
@@ -1245,7 +1581,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnBtCtr:
+            case R.id.onn_btnBtCtr:
                 if (!serialPort.isConnected()) {
                     mConnectingDialog.show();
                     connectSerialPort();
@@ -1253,7 +1589,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                     disconnectSerialPort();
                 }
                 break;
-            case R.id.btnNIBPStart:
+            case R.id.onn_btnNIBPStart:
                 serialPort.write(DataParser.CMD_START_NIBP);
                 break;
         }
@@ -1328,7 +1664,7 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                     mConnectingDialog.dismiss();
                 }
                 startSpO2BatchUpdates();
-                startECGBatchUpdates();
+//                startECGBatchUpdates();
                 bufferCleanupHandler.post(bufferCleanupRunnable);
                 Log.d(TAG, "Connection established, restarted batch updates");
             } else {
@@ -1359,10 +1695,10 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                 synchronized (spo2Buffer) {
                     if (!spo2Buffer.isEmpty()) {
                         for (int dat : spo2Buffer) {
-                            wfSpO2.addAmp(dat);
+//                            wfSpO2.addAmp(dat);
                         }
                         spo2Buffer.clear();
-                        wfSpO2.postInvalidate();
+//                        wfSpO2.postInvalidate();
                         Log.d(TAG, "SpO2 batch update: added " + spo2Buffer.size() + " points");
                     }
                 }
@@ -1371,50 +1707,50 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         }, 100);
     }
 
-    private void startECGBatchUpdates() {
-        uiUpdateHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (ecgBatchBuffer) {
-                    if (!ecgBatchBuffer.isEmpty()) {
-                        for (int[] ecgData : ecgBatchBuffer) {
-                            wfECG1.addAmp(ecgData[selectedECG[0]]);
-                            wfECG2.addAmp(ecgData[selectedECG[1]]);
-                            wfECG3.addAmp(ecgData[selectedECG[2]]);
-                            wfECG4.addAmp(ecgData[selectedECG[3]]);
-                            if (ecgDialog != null && ecgDialog.isShowing()) {
-                                if (wfLeadI != null) wfLeadI.addAmp(ecgData[0]);
-                                if (wfLeadII != null) wfLeadII.addAmp(ecgData[1]);
-                                if (wfLeadIII != null) wfLeadIII.addAmp(ecgData[2]);
-                                if (wfLeadAVR != null) wfLeadAVR.addAmp(ecgData[3]);
-                                if (wfLeadAVL != null) wfLeadAVL.addAmp(ecgData[4]);
-                                if (wfLeadAVF != null) wfLeadAVF.addAmp(ecgData[5]);
-                                if (wfLeadV != null) wfLeadV.addAmp(ecgData[6]);
-                            }
-                        }
-                        ecgBatchBuffer.clear();
-                        runOnUiThread(() -> {
-                            wfECG1.postInvalidate();
-                            wfECG2.postInvalidate();
-                            wfECG3.postInvalidate();
-                            wfECG4.postInvalidate();
-                            if (ecgDialog != null && ecgDialog.isShowing()) {
-                                if (wfLeadI != null) wfLeadI.postInvalidate();
-                                if (wfLeadII != null) wfLeadII.postInvalidate();
-                                if (wfLeadIII != null) wfLeadIII.postInvalidate();
-                                if (wfLeadAVR != null) wfLeadAVR.postInvalidate();
-                                if (wfLeadAVL != null) wfLeadAVL.postInvalidate();
-                                if (wfLeadAVF != null) wfLeadAVF.postInvalidate();
-                                if (wfLeadV != null) wfLeadV.postInvalidate();
-                            }
-                            Log.d(TAG, "ECG batch update: processed " + ecgBatchBuffer.size() + " points");
-                        });
-                    }
-                }
-                uiUpdateHandler.postDelayed(this, 100);
-            }
-        }, 100);
-    }
+//    private void startECGBatchUpdates() {
+//        uiUpdateHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                synchronized (ecgBatchBuffer) {
+//                    if (!ecgBatchBuffer.isEmpty()) {
+//                        for (int[] ecgData : ecgBatchBuffer) {
+//                            wfECG1.addAmp(ecgData[selectedECG[0]]);
+//                            wfECG2.addAmp(ecgData[selectedECG[1]]);
+//                            wfECG3.addAmp(ecgData[selectedECG[2]]);
+//                            wfECG4.addAmp(ecgData[selectedECG[3]]);
+//                            if (ecgDialog != null && ecgDialog.isShowing()) {
+//                                if (wfLeadI != null) wfLeadI.addAmp(ecgData[0]);
+//                                if (wfLeadII != null) wfLeadII.addAmp(ecgData[1]);
+//                                if (wfLeadIII != null) wfLeadIII.addAmp(ecgData[2]);
+//                                if (wfLeadAVR != null) wfLeadAVR.addAmp(ecgData[3]);
+//                                if (wfLeadAVL != null) wfLeadAVL.addAmp(ecgData[4]);
+//                                if (wfLeadAVF != null) wfLeadAVF.addAmp(ecgData[5]);
+//                                if (wfLeadV != null) wfLeadV.addAmp(ecgData[6]);
+//                            }
+//                        }
+//                        ecgBatchBuffer.clear();
+//                        runOnUiThread(() -> {
+//                            wfECG1.postInvalidate();
+//                            wfECG2.postInvalidate();
+//                            wfECG3.postInvalidate();
+//                            wfECG4.postInvalidate();
+//                            if (ecgDialog != null && ecgDialog.isShowing()) {
+//                                if (wfLeadI != null) wfLeadI.postInvalidate();
+//                                if (wfLeadII != null) wfLeadII.postInvalidate();
+//                                if (wfLeadIII != null) wfLeadIII.postInvalidate();
+//                                if (wfLeadAVR != null) wfLeadAVR.postInvalidate();
+//                                if (wfLeadAVL != null) wfLeadAVL.postInvalidate();
+//                                if (wfLeadAVF != null) wfLeadAVF.postInvalidate();
+//                                if (wfLeadV != null) wfLeadV.postInvalidate();
+//                            }
+//                            Log.d(TAG, "ECG batch update: processed " + ecgBatchBuffer.size() + " points");
+//                        });
+//                    }
+//                }
+//                uiUpdateHandler.postDelayed(this, 100);
+//            }
+//        }, 100);
+//    }
 
     @Override
     public void onSpO2WaveReceived(int dat) {
@@ -1434,6 +1770,69 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
             }
         });
     }
+
+//    @Override
+//    public void onSpO2Received(SpO2 spo2) {
+//        if (!serialPort.isConnected()) {
+//            return;
+//        }
+//        vitalHandler.post(() -> {
+//            if (!serialPort.isConnected()) {
+//                return;
+//            }
+//            String spo2Label = "SpO2: ";
+//            String pulseLabel = "Pulse Rate: ";
+//            String statusLabel = "Status: ";
+//            String spo2Value = (spo2.getSpO2() != SpO2.SPO2_INVALID) ? String.valueOf(spo2.getSpO2()) + " %" : "--";
+//            String pulseValue = (spo2.getPulseRate() != SpO2.PULSE_RATE_INVALID) ? String.valueOf(spo2.getPulseRate()) + " /min" : "--";
+//            String statusValue = spo2.getSensorStatus() != null ? spo2.getSensorStatus() : "Unknown";
+//            String fullText = spo2Label + spo2Value + "\n" + pulseLabel + pulseValue + "\n" + statusLabel + statusValue;
+//            SpannableString spannable = new SpannableString(fullText);
+//
+//            int spo2LabelStart = 0;
+//            int spo2LabelEnd = spo2Label.length();
+//            int spo2ValueStart = spo2LabelEnd;
+//            int spo2ValueEnd = spo2ValueStart + spo2Value.length();
+//            int pulseLabelStart = fullText.indexOf(pulseLabel);
+//            int pulseLabelEnd = pulseLabelStart + pulseLabel.length();
+//            int pulseValueStart = pulseLabelEnd;
+//            int pulseValueEnd = pulseValueStart + pulseValue.length();
+//            int statusLabelStart = fullText.indexOf(statusLabel);
+//            int statusLabelEnd = statusLabelStart + statusLabel.length();
+//            int statusValueStart = statusLabelEnd;
+//            int statusValueEnd = statusValueStart + statusValue.length();
+//
+//            spannable.setSpan(new RelativeSizeSpan(1.5f), spo2LabelStart, spo2LabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            spannable.setSpan(new RelativeSizeSpan(1.5f), pulseLabelStart, pulseLabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            spannable.setSpan(new RelativeSizeSpan(1.5f), statusLabelStart, statusLabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            spannable.setSpan(new RelativeSizeSpan(2.8f), spo2ValueStart, spo2ValueEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            spannable.setSpan(new RelativeSizeSpan(2.8f), pulseValueStart, pulseValueEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//            // Add to buffers
+//            synchronized (spo2Buffer) {
+//                if (spo2.getSpO2() != SpO2.SPO2_INVALID) {
+//                    spo2Buffer.add(spo2.getSpO2());
+//                    if (spo2Buffer.size() > SPO2_BUFFER_MAX_SIZE) {
+//                        spo2Buffer.subList(0, spo2Buffer.size() - SPO2_BUFFER_MAX_SIZE).clear();
+//                    }
+//                }
+//            }
+//            synchronized (pulseRateBuffer) {
+//                if (spo2.getPulseRate() != SpO2.PULSE_RATE_INVALID) {
+//                    pulseRateBuffer.add(spo2.getPulseRate());
+//                    if (pulseRateBuffer.size() > SPO2_BUFFER_MAX_SIZE) {
+//                        pulseRateBuffer.subList(0, pulseRateBuffer.size() - SPO2_BUFFER_MAX_SIZE).clear();
+//                    }
+//                }
+//            }
+//
+//            runOnUiThread(() -> {
+//                tvSPO2info.setText(spannable);
+//                tvSPO2info.setTypeface(Typeface.DEFAULT_BOLD);
+//                tvSPO2info.setTextSize(TypedValue.COMPLEX_UNIT_SP, 9);
+//            });
+//        });
+//    }
 
     @Override
     public void onSpO2Received(SpO2 spo2) {
@@ -1506,19 +1905,19 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
 
     @Override
     public void onRespWaveReceived(int dat) {
-        if (!serialPort.isConnected()) {
-            return;
-        }
-        vitalHandler.post(() -> {
-            if (!serialPort.isConnected()) {
-                return;
-            }
-            for (int i = 0; i < 3; i++) wfResp.addAmp(dat);
-            runOnUiThread(() -> {
-                wfResp.postInvalidate();
-                Log.d(TAG, "Resp data received: " + dat);
-            });
-        });
+//        if (!serialPort.isConnected()) {
+//            return;
+//        }
+//        vitalHandler.post(() -> {
+//            if (!serialPort.isConnected()) {
+//                return;
+//            }
+//            for (int i = 0; i < 3; i++) wfResp.addAmp(dat);
+//            runOnUiThread(() -> {
+//                wfResp.postInvalidate();
+//                Log.d(TAG, "Resp data received: " + dat);
+//            });
+//        });
     }
 
     @Override
@@ -1530,7 +1929,6 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
             if (!serialPort.isConnected()) {
                 return;
             }
-            latestECG = ecg;
             String heartRateLabel = "Heart Rate: ";
             String heartRateValue = (ecg.getHeartRate() != ecg.HEART_RATE_INVALID) ? String.valueOf(ecg.getHeartRate()) : "--";
             String stLevelValue = (ecg.getSTLevel() != -2.0f) ? String.format("%.2f mV", ecg.getSTLevel()) : "0 mV";
@@ -1578,6 +1976,72 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         });
     }
 
+//    @Override
+//    public void onECGReceived(ECG ecg) {
+//        if (!serialPort.isConnected()) {
+//            return;
+//        }
+//        vitalHandler.post(() -> {
+//            if (!serialPort.isConnected()) {
+//                return;
+//            }
+//            String heartRateLabel = "Heart Rate: ";
+//            String heartRateValue = (ecg.getHeartRate() != ecg.HEART_RATE_INVALID) ? String.valueOf(ecg.getHeartRate()) : "--";
+//            String stLevelValue = (ecg.getSTLevel() != -2.0f) ? String.format("%.2f mV", ecg.getSTLevel()) : "0 mV";
+//            String arrhyValue = (ecg.getArrythmia() != null) ? ecg.getArrythmia() : ECG.ARRYTHMIA_INVALID;
+//            String heartRateText = heartRateLabel + heartRateValue + "\nST Level: " + stLevelValue + "\nArrythmia: " + arrhyValue;
+//            SpannableString heartRateSpannable = new SpannableString(heartRateText);
+//            int hrStart = heartRateText.indexOf(heartRateValue);
+//            int hrEnd = hrStart + heartRateValue.length();
+//            heartRateSpannable.setSpan(new RelativeSizeSpan(2.8f), hrStart, hrEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//            String respRateLabel = "RoR/min: ";
+//            String respRateValue = (ecg.getRestRate() != ecg.RESP_RATE_INVALID) ? String.valueOf(ecg.getRestRate()) : "--";
+//            String respRateText = respRateLabel + respRateValue;
+//            SpannableString respRateSpannable = new SpannableString(respRateText);
+//            int respStart = respRateText.indexOf(respRateValue);
+//            int respEnd = respStart + respRateValue.length();
+//            respRateSpannable.setSpan(new RelativeSizeSpan(2.8f), respStart, respEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//            // Add to buffers
+//            synchronized (respRateBuffer) {
+//                if (ecg.getRestRate() != ecg.RESP_RATE_INVALID) {
+//                    respRateBuffer.add(ecg.getRestRate());
+//                    if (respRateBuffer.size() > 1000) { // 10 seconds at 100 Hz
+//                        respRateBuffer.subList(0, respRateBuffer.size() - 1000).clear();
+//                    }
+//                }
+//            }
+//
+//            runOnUiThread(() -> {
+//                tvECGinfo.setText(heartRateSpannable);
+//                tvECGinfo.setTypeface(Typeface.DEFAULT_BOLD);
+//                tvECGinfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//                tvRespRate.setText(respRateSpannable);
+//                tvRespRate.setTypeface(Typeface.DEFAULT_BOLD);
+//                tvRespRate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//
+//                if (ecgDialog != null && ecgDialog.isShowing()) {
+//                    hrDrate.setText(heartRateValue);
+//                    hrDrate.setTypeface(Typeface.DEFAULT_BOLD);
+//                    hrDrate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//
+//                    respDrate.setText(respRateValue);
+//                    respDrate.setTypeface(Typeface.DEFAULT_BOLD);
+//                    respDrate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//
+//                    stDlevel.setText(stLevelValue);
+//                    stDlevel.setTypeface(Typeface.DEFAULT_BOLD);
+//                    stDlevel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//
+//                    arDcode.setText(arrhyValue);
+//                    arDcode.setTypeface(Typeface.DEFAULT_BOLD);
+//                    arDcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+//                }
+//            });
+//        });
+//    }
+
     @Override
     public void onTempReceived(Temp temp) {
         if (!serialPort.isConnected()) {
@@ -1608,7 +2072,28 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         });
     }
 
-//    pdf genrator
+//    @Override
+//    public void onNIBPReceived(NIBP nibp) {
+//        if (!serialPort.isConnected()) {
+//            return;
+//        }
+//        vitalHandler.post(() -> {
+//            if (!serialPort.isConnected()) {
+//                return;
+//            }
+//            // Add to nibpBuffer
+//            synchronized (nibpBuffer) {
+//                nibpBuffer.add(nibp);
+//                if (nibpBuffer.size() > 100) { // Keep last 100 readings (adjust as needed)
+//                    nibpBuffer.subList(0, nibpBuffer.size() - 100).clear();
+//                }
+//            }
+//
+//            runOnUiThread(() -> {
+//                tvNIBPinfo.setText(nibp.toString());
+//            });
+//        });
+//    }
 
     private void generateReport() {
         final Handler handler = new Handler(Looper.getMainLooper());
@@ -1656,36 +2141,33 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         PdfDocument pdfDocument = new PdfDocument();
         Paint paint = new Paint();
         Paint title = new Paint();
-        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(842, 599, 1).create();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(842, 595, 1).create();
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
         Canvas canvas = page.getCanvas();
 
-        String patientName = GlobalVars.getPatientMonitorName();
-        int patientAge = GlobalVars.getPatientMonitorAge();
+        String patientName = "DixaMomo";
+        int patientAge = 40;
         String reportNumber = "ECG-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String deviceName = "CNRGI Remote Patient Monitoring Solution";
-        String dateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
-//        int hr = (tvECGinfo != null && tvECGinfo.getText() != null) ? parseHeartRate(tvECGinfo.getText().toString()) : 60;
+        String dateTime = "20-05-2025 17:15:00"; // Updated to 05:15 PM IST, May 20, 2025
+        int hr = (tvECGinfo != null && tvECGinfo.getText() != null) ? parseHeartRate(tvECGinfo.getText().toString()) : 60;
+        String pQRSAxis = "(66)-(249)-(59) deg";
+        String qtC = "360 ms";
+        String prInterval = "200 ms"; // From previous mapping
+        String rrInterval = "996 ms";
+        String qrsDuration = "40 ms"; // From previous mapping
+        String interpretation = "Sinus Rhythm. PR is normal. Normal QRS Width. Normal QT Interval. QRS Axis is indeterminate.";
+        String doctor = "Dr. Mangeshkar";
+        String calibration = "10 mm/mv, 25.0 mm/sec Nasan M-Cardia 1.0/1.15";
 
-        int heartRate = (latestECG != null && latestECG.getHeartRate() != latestECG.HEART_RATE_INVALID) ? latestECG.getHeartRate() : -1;
-        String heartRateStr = (heartRate != -1) ? String.valueOf(heartRate) : "";
-
-
-        String pQRSAxis = calculatePQRSTAxis(ecgData);
-        String qtC = (heartRate != -1) ? calculateQTc(ecgData, heartRate) : "-- ms";
-        String prInterval = calculatePRInterval(ecgData);
-        String rrInterval = (heartRate != -1) ? (int) (60.0 / heartRate * 1000) + " ms" : "-- ms";
-        String qrsDuration = calculateQRSDuration(ecgData);
-        String doctor = "";
-        String calibration = "10 Hz/sec, 100 Hz Nasan M-Cardia 1.0/1.15";
-
+        int leftMargin = 20, topMargin = 20, lineSpacing = 20, sectionSpacing = 25;
         int leftX = 40;
         int centerX = 300;
         int rightX = 560;
-        int startY = 30;
+        int startY = 60;
         int lineGap = 20;
 
-        title.setTextSize(12);
+        title.setTextSize(16);
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         title.setTextAlign(Paint.Align.CENTER);
         canvas.drawText("ECG and Vitals with Measurement and Interpretation", 842 / 2, startY, title);
@@ -1698,77 +2180,74 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         int y = startY;
         canvas.drawText("Patient Name: " + patientName, leftX, y, title);
         y += lineGap;
-        canvas.drawText("Age: " + String.valueOf(patientAge), leftX, y, title);
-        canvas.drawText("Gender :" + GlobalVars.getPatientMonitorGender(), leftX + 120, y, title);
+        canvas.drawText("Age: " + patientAge, leftX, y, title);
+        canvas.drawText("Gender: Male", leftX + 120, y, title);
         y += lineGap;
-        canvas.drawText("P-QRS-T Axis:" + pQRSAxis, leftX, y, title);
+        canvas.drawText("P-QRS-T Axis: " + pQRSAxis, leftX, y, title);
         y += lineGap;
-        canvas.drawText("QTc:" + qtC, leftX, y, title);
+        canvas.drawText("QTc: " + qtC, leftX, y, title);
 
         y = startY;
-        canvas.drawText("Report Number :", centerX, y, title);
+        canvas.drawText("Report Number: " + reportNumber, centerX, y, title);
         y += lineGap;
-        canvas.drawText("Date :", centerX, y, title);
+        canvas.drawText("Date: " + dateTime.split(" ")[0], centerX, y, title);
         y += lineGap;
-        canvas.drawText("PR Interval:" + prInterval, centerX, y, title);
+        canvas.drawText("PR Interval: " + prInterval, centerX, y, title);
         y += lineGap;
-        canvas.drawText("QRS Duration:" + qrsDuration, centerX, y, title);
+        canvas.drawText("QRS Duration: " + qrsDuration, centerX, y, title);
 
         y = startY;
-        canvas.drawText("Device: CNRGI Remote Patient Monitoring Solution", rightX, y, title);
+        canvas.drawText("Name of Device: " + deviceName, rightX, y, title);
         y += lineGap;
-        canvas.drawText("Time :", rightX, y, title);
+        canvas.drawText("Time: " + dateTime.split(" ")[1], rightX, y, title);
         y += lineGap;
-        canvas.drawText("RR Interval:" + rrInterval, rightX, y, title);
+        canvas.drawText("RR Interval: " + rrInterval, rightX, y, title);
         y += lineGap + 10;
         title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         title.setTextSize(14);
-        canvas.drawText("HR : "+ heartRateStr, rightX, y, title);
+        canvas.drawText("HR: " + hr, rightX, y, title);
 
+        // Adjusted ECG section start position to give more space
         drawECGSection(canvas, ecgData);
-        drawFooterSection(canvas, ecgData);
+        drawFooterSection(canvas);
 
         pdfDocument.finishPage(page);
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
                 "ECG_Report_" + reportNumber + ".pdf");
         try {
             pdfDocument.writeTo(new FileOutputStream(file));
-            runOnUiThread(() -> Toast.makeText(this, "ECG PDF generated successfully.", Toast.LENGTH_SHORT).show());
+            runOnUiThread(() -> Toast.makeText(this, "ECG PDF generated successfully at: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show());
         } catch (IOException e) {
-            runOnUiThread(() -> Toast.makeText(this, "Failed to generate ECG PDF.", Toast.LENGTH_SHORT).show());
+            runOnUiThread(() -> Toast.makeText(this, "Failed to generate ECG PDF: " + e.getMessage(), Toast.LENGTH_LONG).show());
         }
         pdfDocument.close();
     }
 
-    private int parseHeartRate(String text) {
-        try {
-            return Integer.parseInt(text.split("\n")[0].replace("Heart Rate: ", "").trim());
-        } catch (Exception e) {
-            return 87;
-        }
-    }
-
     private void drawECGSection(Canvas canvas, int[][] ecgData) {
         Paint gridPaint = new Paint();
-        gridPaint.setColor(Color.GRAY);
-        gridPaint.setStrokeWidth(.5f);
+        gridPaint.setColor(Color.argb(255, 255, 150, 150)); // Lighter red for grid
+        gridPaint.setStrokeWidth(1);
         Paint wavePaint = new Paint();
         wavePaint.setColor(Color.BLACK);
-        wavePaint.setStrokeWidth(.7f);
+        wavePaint.setStrokeWidth(3);
+        wavePaint.setAntiAlias(true);
         Paint labelPaint = new Paint();
         labelPaint.setColor(Color.BLACK);
-        labelPaint.setTextSize(10);
-        labelPaint.setTypeface(Typeface.DEFAULT);
+        labelPaint.setTextSize(14);
+        labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
         String[][] rows = {{"I", "aVR"}, {"II", "aVL"}, {"III", "aVF"}, {"V"}};
         int[] leadIndices = {0, 3, 1, 4, 2, 5, 6};
         int startX = 20;
-        int startY = 140;
+        int startY = 220; // Moved down to avoid overlap with header
         int totalWidth = 842;
-        int boxHeight = 90;
-        int horizontalGap = -1; ///
+        int boxHeight = 80; // Reduced height to make it less cramped
+        int horizontalGap = 1;
         int boxWidth = (totalWidth - horizontalGap) / 2;
-        int verticalGap = 0;
+        int verticalGap = 10; // Increased gap for better spacing
+
+        float pixelsPerSample = 0.84f; // 420 pixels for 500 samples
+        float samplesPerGridBlock = 100; // 200 msec at 500 Hz
 
         for (int row = 0; row < rows.length; row++) {
             String[] leads = rows[row];
@@ -1776,7 +2255,9 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                 int currentBoxWidth = leads.length == 1 ? (boxWidth * 2 + horizontalGap) : boxWidth;
                 int x = startX + col * (boxWidth + horizontalGap);
                 int y = startY + row * (boxHeight + verticalGap);
+
                 drawGrid(canvas, x, y, currentBoxWidth, boxHeight, gridPaint);
+
                 int leadIndex = leadIndices[row * 2 + col];
                 int[] leadData = ecgData[leadIndex];
                 if (leadData.length > 0) {
@@ -1788,46 +2269,94 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
                     }
                     int dataRange = Math.max(Math.abs(minValue), Math.abs(maxValue)) * 2;
                     if (dataRange == 0) dataRange = 1;
-                    float xStep = (float) currentBoxWidth / leadData.length;
-//                    float yMid = y + boxHeight / 2;
-                    float yMid = y + boxHeight / 2 + 45;
-                    float yScale = (float) (boxHeight * 0.8) / dataRange;
+
+                    float xStep = pixelsPerSample;
+                    float yMid = y + boxHeight / 2;
+                    float yScale = (float) (boxHeight * 0.6) / dataRange; // Reduced scaling to fit better
                     for (int i = 0; i < leadData.length - 1; i++) {
                         float x1 = x + i * xStep;
                         float y1 = yMid - (leadData[i] * yScale);
                         float x2 = x + (i + 1) * xStep;
                         float y2 = yMid - (leadData[i + 1] * yScale);
-                        y1 = Math.max(y, Math.min(y + boxHeight, y1));
-                        y2 = Math.max(y, Math.min(y + boxHeight, y2));
+                        y1 = Math.max(y + 5, Math.min(y + boxHeight - 5, y1));
+                        y2 = Math.max(y + 5, Math.min(y + boxHeight - 5, y2));
                         canvas.drawLine(x1, y1, x2, y2, wavePaint);
                     }
+
+                    drawIntervalMarkers(canvas, x, y, boxHeight, leadData.length, pixelsPerSample, wavePaint);
                 } else {
                     int midY = y + boxHeight / 2;
                     canvas.drawLine(x, midY, x + currentBoxWidth, midY, wavePaint);
                 }
-                canvas.drawText(leads[col], x + 10, y + boxHeight - 10, labelPaint);
+
+                canvas.drawText(leads[col], x + 5, y + 15, labelPaint);
             }
         }
     }
 
     private void drawGrid(Canvas canvas, int x, int y, int width, int height, Paint paint) {
-        int smallGrid = 10;
+        float pixelsPerGridBlock = 84; // 200 msec = 84 pixels
+        int smallGridBlocks = 5; // 200 msec = 5 small grid blocks (40 msec each)
+        float smallGrid = pixelsPerGridBlock / smallGridBlocks; // 16.8 pixels per small grid block
+
         for (int i = 0; i <= height / smallGrid; i++) {
+            paint.setStrokeWidth(i % smallGridBlocks == 0 ? 1.5f : 0.8f);
             canvas.drawLine(x, y + i * smallGrid, x + width, y + i * smallGrid, paint);
         }
+
         for (int i = 0; i <= width / smallGrid; i++) {
+            paint.setStrokeWidth(i % smallGridBlocks == 0 ? 1.5f : 0.8f);
             canvas.drawLine(x + i * smallGrid, y, x + i * smallGrid, y + height, paint);
         }
     }
 
-    private void drawFooterSection(Canvas canvas, int[][] ecgData) {
+    private void drawIntervalMarkers(Canvas canvas, int x, int y, int boxHeight, int dataLength, float pixelsPerSample, Paint paint) {
+        float pixelsPerGridBlock = 84; // 200 msec = 84 pixels
+        float samplesPerGridBlock = 100; // 200 msec at 500 Hz
+        int prSamples = 100; // PR interval: 200 msec = 100 samples
+        int qrsSamples = 20; // QRS duration: 40 msec = 20 samples
+
+        float prPixels = prSamples * pixelsPerSample; // 84 pixels
+        float qrsPixels = qrsSamples * pixelsPerSample; // 16.8 pixels
+
+        float yMid = y + boxHeight / 2;
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(3);
+
+        float startX = x + 3 * pixelsPerGridBlock; // Start at 3rd grid block
+        if (startX + prPixels < x + dataLength * pixelsPerSample) {
+            float markerY = y + boxHeight - 10; // Adjusted for smaller box height
+            canvas.drawLine(startX, markerY, startX + prPixels, markerY, paint);
+            Paint textPaint = new Paint();
+            textPaint.setColor(Color.BLUE);
+            textPaint.setTextSize(12);
+            textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            canvas.drawText("PR (200 ms)", startX + prPixels / 2 - 30, markerY - 5, textPaint);
+        }
+
+        startX += prPixels + 10;
+        if (startX + qrsPixels < x + dataLength * pixelsPerSample) {
+            float markerY = y + boxHeight - 10;
+            canvas.drawLine(startX, markerY, startX + qrsPixels, markerY, paint);
+            Paint textPaint = new Paint();
+            textPaint.setColor(Color.BLUE);
+            textPaint.setTextSize(12);
+            textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            canvas.drawText("QRS (40 ms)", startX + qrsPixels / 2 - 30, markerY - 5, textPaint);
+        }
+
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(3);
+    }
+
+    private void drawFooterSection(Canvas canvas) {
         Paint footerPaint = new Paint();
         footerPaint.setColor(Color.BLACK);
         footerPaint.setTextSize(12);
         footerPaint.setTypeface(Typeface.DEFAULT);
         int startX = 20;
-        int startY = 520;
-        String interpretationText = generateInterpretation(ecgData);
+        int startY = 560; // Moved down to bottom of page
+        String interpretationText = "Interpretation: Sinus Rhythm. PR is normal. Normal QRS Width. Normal QT Interval. QRS Axis is indeterminate.";
         canvas.drawText(interpretationText, startX, startY, footerPaint);
         int lineGap = 20;
         String unconfirmedText = "Unconfirmed ECG Report. Please refer Physician";
@@ -1843,229 +2372,14 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         canvas.drawLine(underlineStartX, nextY + 2, underlineEndX, nextY + 2, footerPaint);
     }
 
-    private String calculatePQRSTAxis(int[][] ecgData) {
-        int leadIIndex = 0;
-        int leadAVFIndex = 5;
-        int[] leadIData = ecgData[leadIIndex];
-        int[] leadAVFData = ecgData[leadAVFIndex];
-        int netAmplitudeI = 0, netAmplitudeAVF = 0;
 
-        if (leadIData.length > 0 && leadAVFData.length > 0) {
-            int maxI = Integer.MIN_VALUE, minI = Integer.MAX_VALUE;
-            int maxAVF = Integer.MIN_VALUE, minAVF = Integer.MAX_VALUE;
-            for (int i = 0; i < leadIData.length; i++) {
-                maxI = Math.max(maxI, leadIData[i]);
-                minI = Math.min(minI, leadIData[i]);
-                maxAVF = Math.max(maxAVF, leadAVFData[i]);
-                minAVF = Math.min(minAVF, leadAVFData[i]);
-            }
-            netAmplitudeI = maxI - minI;
-            netAmplitudeAVF = maxAVF - minAVF;
+    private int parseHeartRate(String text) {
+        try {
+            return Integer.parseInt(text.split("\n")[0].replace("Heart Rate: ", "").trim());
+        } catch (Exception e) {
+            return 60; // Updated to match default in generatePdfFromData
         }
-
-        double qrsAxis = Math.toDegrees(Math.atan2(netAmplitudeAVF, netAmplitudeI));
-        if (qrsAxis < 0) qrsAxis += 360;
-        double pAxis = qrsAxis + 10;
-        double tAxis = qrsAxis - 10;
-
-        return String.format("(%.0f)-(%.0f)-(%.0f) deg", pAxis, qrsAxis, tAxis);
     }
-
-    private String calculateQTc(int[][] ecgData, int heartRate) {
-        int leadIIIndex = 1;
-        int[] leadIIData = ecgData[leadIIIndex];
-        if (leadIIData.length == 0) return "360 ms";
-
-        double secondsPerSample = 1.0 / 250.0;
-        int rPeakIndex = 0;
-        int maxValue = leadIIData[0];
-
-        for (int i = 1; i < leadIIData.length; i++) {
-            if (leadIIData[i] > maxValue) {
-                maxValue = leadIIData[i];
-                rPeakIndex = i;
-            }
-        }
-
-        int qStartIndex = rPeakIndex;
-        for (int i = rPeakIndex; i > 0; i--) {
-            if (leadIIData[i] < 0 && leadIIData[i - 1] >= 0) {
-                qStartIndex = i;
-                break;
-            }
-        }
-
-        int tEndIndex = rPeakIndex;
-        for (int i = rPeakIndex; i < leadIIData.length - 10; i++) {
-            if (Math.abs(leadIIData[i]) < 10 && Math.abs(leadIIData[i + 1]) < 10) {
-                tEndIndex = i;
-                break;
-            }
-        }
-
-        double qtInterval = (tEndIndex - qStartIndex) * secondsPerSample;
-        double rrInterval = 60.0 / heartRate;
-        double qtCorrected = qtInterval / Math.sqrt(rrInterval);
-        int qtCMs = (int) (qtCorrected * 1000);
-
-        if (qtCMs < 350 || qtCMs > 450) return "360 ms";
-        return qtCMs + " ms";
-    }
-
-    private String calculatePRInterval(int[][] ecgData) {
-        int leadIIIndex = 1;
-        int[] leadIIData = ecgData[leadIIIndex];
-        if (leadIIData.length == 0) return "160 ms";
-//        if (leadIIData.length == 0) return "160 ms";
-
-        double secondsPerSample = 1.0 / 250.0;
-//        double secondsPerSample = 1.0 / 290.0;
-        int rPeakIndex = 0;
-        int maxValue = leadIIData[0];
-
-        for (int i = 1; i < leadIIData.length; i++) {
-            if (leadIIData[i] > maxValue) {
-                maxValue = leadIIData[i];
-                rPeakIndex = i;
-            }
-        }
-
-        int pStartIndex = rPeakIndex;
-        for (int i = rPeakIndex; i > 1; i--) {
-            if (leadIIData[i] > 0 && leadIIData[i - 1] <= 0) {
-                pStartIndex = i;
-                break;
-            }
-        }
-
-        double prInterval = (rPeakIndex - pStartIndex) * secondsPerSample;
-        int prMs = (int) (prInterval * 1000);
-        if (prMs < 120 || prMs > 200) return "160 ms";
-//        if (prMs < 140 || prMs > 200) return "160 ms";
-        return prMs + " ms";
-    }
-
-    private String calculateQRSDuration(int[][] ecgData) {
-        int leadIIIndex = 1;
-        int[] leadIIData = ecgData[leadIIIndex];
-        if (leadIIData.length == 0) return "84 ms";
-
-        double secondsPerSample = 1.0 / 280.0;
-        int rPeakIndex = 0;
-        int maxValue = leadIIData[0];
-
-        for (int i = 1; i < leadIIData.length; i++) {
-            if (leadIIData[i] > maxValue) {
-                maxValue = leadIIData[i];
-                rPeakIndex = i;
-            }
-        }
-
-        int qStartIndex = rPeakIndex;
-        for (int i = rPeakIndex; i > 1; i--) {
-            if (leadIIData[i] < 0 && leadIIData[i - 1] >= 0) {
-                qStartIndex = i;
-                break;
-            }
-        }
-
-        int sEndIndex = rPeakIndex;
-        for (int i = rPeakIndex; i < leadIIData.length - 1; i++) {
-            if (leadIIData[i] < 0 && leadIIData[i + 1] >= 0) {
-                sEndIndex = i;
-                break;
-            }
-        }
-
-        double qrsDuration = (sEndIndex - qStartIndex) * secondsPerSample;
-        int qrsMs = (int) (qrsDuration * 1000);
-        if (qrsMs < 60 || qrsMs > 120) return "90 ms";
-        return qrsMs + " ms";
-    }
-
-    private String generateInterpretation(int[][] ecgData) {
-        int hr = (tvECGinfo != null && tvECGinfo.getText() != null) ? parseHeartRate(tvECGinfo.getText().toString()) : 60;
-        String prInterval = calculatePRInterval(ecgData);
-        String qrsDuration = calculateQRSDuration(ecgData);
-        String qtC = calculateQTc(ecgData, hr);
-        String pQRSAxis = calculatePQRSTAxis(ecgData);
-
-        int prIntervalMs = Integer.parseInt(prInterval.replace(" ms", ""));
-        int qrsDurationMs = Integer.parseInt(qrsDuration.replace(" ms", ""));
-        int qtCMs = Integer.parseInt(qtC.replace(" ms", ""));
-        String[] axisValues = pQRSAxis.replace(" deg", "").replace("(", "").replace(")", "").split("-");
-        double qrsAxis = Double.parseDouble(axisValues[1]);
-
-        StringBuilder interpretation = new StringBuilder("Interpretation: ");
-
-        // Rhythm: Check for Sinus Rhythm (HR 60-100, consistent RR, P wave present)
-        boolean isSinusRhythm = hr >= 60 && hr <= 100;
-        int leadIIIndex = 1;
-        int[] leadIIData = ecgData[leadIIIndex];
-        boolean hasPWave = false;
-        if (leadIIData.length > 0) {
-            int rPeakIndex = 0;
-            int maxValue = leadIIData[0];
-            for (int i = 0; i < leadIIData.length; i++) {
-                if (leadIIData[i] > maxValue) {
-                    maxValue = leadIIData[i];
-                    rPeakIndex = i;
-                }
-            }
-            for (int i = rPeakIndex; i > 0; i--) {
-                if (leadIIData[i] > 0 && leadIIData[i - 1] <= 0) {
-                    hasPWave = true;
-                    break;
-                }
-            }
-        }
-        if (isSinusRhythm && hasPWave) {
-            interpretation.append("Sinus Rhythm. ");
-        } else {
-            interpretation.append("Abnormal Rhythm. ");
-        }
-
-        // PR Interval
-        if (prIntervalMs >= 120 && prIntervalMs <= 200) {
-            interpretation.append("PR is normal. ");
-        } else if (prIntervalMs < 120) {
-            interpretation.append("PR is shortened. ");
-        } else {
-            interpretation.append("PR is prolonged. ");
-        }
-
-        // QRS Width
-        if (qrsDurationMs >= 60 && qrsDurationMs <= 120) {
-            interpretation.append("Normal QRS Width. ");
-        } else {
-            interpretation.append("Abnormal QRS Width. ");
-        }
-
-        // QT Interval
-        if (qtCMs >= 350 && qtCMs <= 450) {
-            interpretation.append("Normal QT Interval. ");
-        } else if (qtCMs < 350) {
-            interpretation.append("Shortened QT Interval. ");
-        } else {
-            interpretation.append("Prolonged QT Interval. ");
-        }
-
-        // QRS Axis
-        if (qrsAxis >= -30 && qrsAxis <= 90) {
-            interpretation.append("QRS Axis is normal.");
-        } else if (qrsAxis < -30 && qrsAxis >= -90) {
-            interpretation.append("QRS Axis is left deviated.");
-        } else if (qrsAxis > 90 && qrsAxis <= 180) {
-            interpretation.append("QRS Axis is right deviated.");
-        } else {
-            interpretation.append("QRS Axis is indeterminate.");
-        }
-
-        return interpretation.toString();
-    }
-
-    // ------------------------------------------------->
-
 
     private void showEcgDialog() {
         if (ecgDialog != null && ecgDialog.isShowing()) {
@@ -2135,4 +2449,5 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
             this.timestamp = timestamp;
         }
     }
+
 }

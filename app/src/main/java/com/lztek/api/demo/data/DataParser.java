@@ -2,6 +2,8 @@ package com.lztek.api.demo.data;
 
 import android.util.Log;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -11,6 +13,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DataParser {
 
     private static final String TAG = "DataParser";
+
+    ExecutorService parserExecutor = Executors.newSingleThreadExecutor();
+
 
     // Buffer queue with limited size to prevent overload
     private LinkedBlockingQueue<Integer> bufferQueue = new LinkedBlockingQueue<>(512); // Increased to 512
@@ -27,11 +32,9 @@ public class DataParser {
     private final int PKG_SPO2_WAVE = 0xfe;
     private final int PKG_RESP_WAVE = 0xFF;
 
-//    public static byte[] CMD_START_NIBP = new byte[]{0x55, (byte) 0xAA, 0x04, 0x09, 0x02, (byte) 0xF0};
     public static byte[] CMD_START_NIBP = new byte[]{0x55, (byte) 0xaa, 0x04, 0x02, 0x01, (byte) 0xf8};
     public static byte[] CMD_STOP_NIBP = new byte[]{0x55, (byte) 0xaa, 0x04, 0x02, 0x00, (byte) 0xf9};
-//    public static byte[] CMD_FW_VERSION = new byte[]{0x55, (byte) 0xaa, 0x04, (byte) 0xfc, 0x00, (byte) 0xff};
-//    public static byte[] CMD_HW_VERSION = new byte[]{0x55, (byte) 0xaa, 0x04, (byte) 0xfd, 0x00, (byte) 0xfe};
+
 
     private ParseRunnable mParseRunnable;
     private volatile boolean isStop = true; // Volatile for thread safety
@@ -118,7 +121,7 @@ public class DataParser {
 
     // Separate method to parse in background
     private void parsePackageInBackground(int[] pkgData) {
-        new Thread(() -> {
+        parserExecutor.submit(() -> {
             int pkgType = pkgData[3];
 //            Log.d(TAG, "Parsing packet type: " + String.format("0x%02X", pkgType));
 
@@ -191,26 +194,6 @@ public class DataParser {
                     }
                     break;
 
-//                case PKG_SW_VER:
-//                    StringBuilder sb = new StringBuilder();
-//                    for (int i = 4; i < pkgData.length - 1; i++) {
-//                        sb.append((char) (pkgData[i] & 0xff));
-//                    }
-//                    if (mListener != null) {
-//                        mListener.onFirmwareReceived(sb.toString());
-//                    }
-//                    break;
-//
-//                case PKG_HW_VER:
-//                    StringBuilder sb1 = new StringBuilder();
-//                    for (int i = 4; i < pkgData.length - 1; i++) {
-//                        sb1.append((char) (pkgData[i] & 0xff));
-//                    }
-//                    if (mListener != null) {
-//                        mListener.onHardwareReceived(sb1.toString());
-//                    }
-//                    break;
-
                 case PKG_RESP_WAVE:
                     if (pkgData.length >= 5) {
                         if (mListener != null) {
@@ -223,7 +206,7 @@ public class DataParser {
                     Log.w(TAG, "Unknown packet type: " + String.format("0x%02X", pkgType));
                     break;
             }
-        }).start();
+        });
     }
 
     /**

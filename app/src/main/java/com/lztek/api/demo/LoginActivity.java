@@ -423,7 +423,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String selectedSSID = wifiNames.get(which);
-                networkButton.setText("Wi-Fi: " + selectedSSID);
+                networkButton.setText("Wi-Fi");
                 Toast.makeText(LoginActivity.this, "Selected: " + selectedSSID, Toast.LENGTH_SHORT).show();
                 // Note: Actual connection requires credentials; implement if needed
             }
@@ -469,7 +469,7 @@ public class LoginActivity extends AppCompatActivity {
         if (wifiManager.isWifiEnabled()) {
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             String ssid = wifiInfo != null && wifiInfo.getSSID() != null ? wifiInfo.getSSID().replace("\"", "") : "Wi-Fi";
-            networkButton.setText("Wi-Fi: " + ssid);
+            networkButton.setText("Wi-Fi");
         } else {
             NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             boolean isMobileDataEnabled = mobileNetwork != null && mobileNetwork.isConnectedOrConnecting();
@@ -616,7 +616,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void submitCode() {
-        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(LoginActivity.this, LoginActivityWeb.class);
         startActivity(intent);
     }
 

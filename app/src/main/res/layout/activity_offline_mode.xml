@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F5F5F5">
+    android:gravity="center_horizontal"
+    android:background="@drawable/bg_gradient">
 
     <!-- Header Text -->
     <TextView
@@ -31,11 +32,11 @@
     <!-- New Offline Session Button -->
     <Button
         android:id="@+id/btn_new_session"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Offline Session"
         android:textSize="16sp"
-        android:backgroundTint="#4CAF50"
+        android:background="@drawable/blue_button"
         android:textColor="#FFFFFF"
         android:layout_marginTop="16dp"
         android:padding="12dp" />

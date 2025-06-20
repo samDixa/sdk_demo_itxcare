@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:divider="?android:attr/dividerHorizontal"
+        android:showDividers="middle"
+        android:dividerPadding="8dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tv_session_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Session Name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#2E3B4E"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Grid fields -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="4"
+            android:alignmentMode="alignMargins"
+            android:rowOrderPreserved="false"
+            android:layout_marginBottom="16dp">
+
+            <!-- Patient Name -->
+            <TextView
+                android:layout_columnSpan="1"
+                android:text="Patient:"
+                android:textStyle="bold"
+                android:textColor="#444"
+                android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_patient_name"
+                android:text="John Doe"
+                android:padding="4dp" />
+
+            <!-- Location -->
+            <TextView
+                android:text="Location:"
+                android:textStyle="bold"
+                android:textColor="#444"
+                android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_location"
+                android:text="Delhi"
+                android:padding="4dp" />
+
+            <!-- Date/Time -->
+            <TextView
+                android:text="Date/Time:"
+                android:textStyle="bold"
+                android:textColor="#444"
+                android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_date_time"
+                android:text="03 Jun 2025, 3:30 PM"
+                android:padding="4dp" />
+
+            <!-- Status -->
+            <TextView
+                android:text="Status:"
+                android:textStyle="bold"
+                android:textColor="#444"
+                android:padding="4dp" />
+            <TextView
+                android:id="@+id/tv_status"
+                android:text="Completed"
+                android:textColor="#008000"
+                android:padding="4dp" />
+        </GridLayout>
+
+        <!-- File Section -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tv_vital_json"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vital JSON: N/A"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_audio_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Audio File: N/A"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_photo_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Photo File: N/A"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_video_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Video File: N/A"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btn_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload"
+                android:backgroundTint="#0288D1"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btn_update_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Update"
+                android:backgroundTint="#455A64"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

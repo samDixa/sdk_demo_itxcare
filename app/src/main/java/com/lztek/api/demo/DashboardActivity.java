@@ -2,6 +2,7 @@ package com.lztek.api.demo;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
     private Button patienMonitorButton;
     private Button newAppoinmentButton;
     private Button offlineButton;
+    private Button myfilesStorage;
     private ImageView internalCameraIndicator, usbCameraIndicator, keyboardIndicator;
     private View spO2Indicator, ecgIndicator, nibpIndicator, tempIndicator;
     private GlobalVars globalVars;
@@ -41,6 +43,9 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
     private Handler handler;
     private Runnable indicatorUpdater;
     private TextView stethoBtn, othersButton;
+    private TextView peramedicName, peramedicId;
+
+    private AppCompatImageView profileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +75,23 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         stethoBtn = findViewById(R.id.stetho_btn);
         othersButton = findViewById(R.id.othresButton);
 
+        peramedicName = findViewById(R.id.pramedic_name);
+        peramedicId = findViewById(R.id.permedic_id);
+
+        profileImage = findViewById(R.id.profile_image);
+
+        peramedicName.setText("Name: "+GlobalVars.getFirstName() + " " + GlobalVars.getLastName());
+        peramedicId.setText("ID: " + GlobalVars.getParamedicId());
+
+
         offlineButton = findViewById(R.id.offline_button);
 
         appoimentButton = findViewById(R.id.my_appointments);
         patienMonitorButton = findViewById(R.id.patient_monitor);
 
         newAppoinmentButton = findViewById(R.id.new_appoinments);
+
+        myfilesStorage = findViewById(R.id.myfiles_storage);
 
         handler = new Handler(Looper.getMainLooper());
         indicatorUpdater = new Runnable() {
@@ -92,7 +108,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         appoimentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,AppointmentListActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, AppointmentListActivity.class);
                 startActivity(intent);
             }
         });
@@ -100,7 +116,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         patienMonitorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,BerryDeviceActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, BerryDeviceActivity.class);
                 startActivity(intent);
             }
         });
@@ -108,7 +124,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         newAppoinmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,TextActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, TextActivity.class);
                 startActivity(intent);
             }
         });
@@ -116,7 +132,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         offlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this,OfflineModeActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, OfflineModeActivity.class);
                 startActivity(intent);
             }
         });
@@ -128,6 +144,10 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         othersButton.setOnClickListener(view -> {
             Intent ointent = new Intent(DashboardActivity.this, CameraFeedActivity.class);
             startActivity(ointent);
+        });
+        myfilesStorage.setOnClickListener(view -> {
+            Intent intent = new Intent(DashboardActivity.this, OfflineModeActivity.class);
+            startActivity(intent);
         });
 
         ActionBar actionBar = getSupportActionBar();
@@ -238,11 +258,6 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
 //        Log.d(TAG, "📊 NIBP received: " + nibp.toString());
         berrySensorChecker.onNIBPDataReceived();
     }
-
-//    @Override
-//    public void onFirmwareReceived(String str) {}
-//    @Override
-//    public void onHardwareReceived(String str) {}
 
     private String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();

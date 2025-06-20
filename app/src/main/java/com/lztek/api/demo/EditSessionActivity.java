@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EditSessionActivity extends AppCompatActivity {
 
@@ -26,9 +28,11 @@ public class EditSessionActivity extends AppCompatActivity {
     private Button btnSaveSession;
     private AppDatabase database;
     private SessionDao sessionDao;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private int sessionId;
     private Calendar selectedDate;
     private String originalTime;
+    private Session originalSession; // To store the original session data
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +103,22 @@ public class EditSessionActivity extends AppCompatActivity {
             String currentTime = originalTime != null ? originalTime : timeFormat.format(new Date());
             String dateTime = date + " " + currentTime;
 
-            // Create updated Session object
-            Session updatedSession = new Session(sessionName, patientName, locationName, dateTime, status);
+            // Create updated Session object, preserving original vitalJson, audioPath, videoPath, photoPath
+            Session updatedSession = new Session(
+                    sessionName,
+                    patientName,
+                    locationName,
+                    dateTime,
+                    status,
+                    originalSession.vitalJson,  // Preserve original value
+                    originalSession.audioPath,  // Preserve original value
+                    originalSession.videoPath,  // Preserve original value
+                    originalSession.photoPath   // Preserve original value
+            );
             updatedSession.id = sessionId;
 
             // Update in database using Room
-            new Thread(() -> {
+            executor.execute(() -> {
                 try {
                     sessionDao.update(updatedSession);
                     runOnUiThread(() -> {
@@ -117,22 +131,22 @@ public class EditSessionActivity extends AppCompatActivity {
                         Toast.makeText(this, "Error updating session: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
                 }
-            }).start();
+            });
         });
     }
 
     private void loadSessionData() {
-        new Thread(() -> {
-            Session session = sessionDao.getSessionById(sessionId);
+        executor.execute(() -> {
+            originalSession = sessionDao.getSessionById(sessionId); // Store the original session
             runOnUiThread(() -> {
-                if (session != null) {
-                    etSessionName.setText(session.sessionName);
-                    etPatientName.setText(session.patientName);
-                    etLocationName.setText(session.locationName);
+                if (originalSession != null) {
+                    etSessionName.setText(originalSession.sessionName);
+                    etPatientName.setText(originalSession.patientName);
+                    etLocationName.setText(originalSession.locationName);
 
                     // Split dateTime into date and time
                     try {
-                        String[] parts = session.dateTime.split(" ");
+                        String[] parts = originalSession.dateTime.split(" ");
                         if (parts.length == 2) {
                             String date = parts[0];
                             originalTime = parts[1];
@@ -146,18 +160,24 @@ public class EditSessionActivity extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Error parsing dateTime: " + e.getMessage());
-                        etDate.setText(session.dateTime);
+                        etDate.setText(originalSession.dateTime);
                     }
 
                     // Set Spinner selection
                     String[] statusItems = getResources().getStringArray(R.array.status_items);
-                    int statusPosition = Arrays.asList(statusItems).indexOf(session.status);
+                    int statusPosition = Arrays.asList(statusItems).indexOf(originalSession.status);
                     spinnerStatus.setSelection(statusPosition != -1 ? statusPosition : 0);
                 } else {
                     Toast.makeText(this, "Session not found", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
-        }).start();
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdown();
     }
 }

@@ -2,30 +2,35 @@ package com.lztek.api.demo;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NewSessionActivity extends AppCompatActivity {
 
     private static final String TAG = "NewSessionActivity";
     private EditText etSessionName, etPatientName, etLocationName, etDate;
-    private Spinner spinnerStatus;
     private Button btnEnterSession;
     private AppDatabase database;
     private SessionDao sessionDao;
     private Calendar selectedDate;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +42,7 @@ public class NewSessionActivity extends AppCompatActivity {
         etPatientName = findViewById(R.id.et_patient_name);
         etLocationName = findViewById(R.id.et_location_name);
         etDate = findViewById(R.id.et_date);
-        spinnerStatus = findViewById(R.id.spinner_status);
         btnEnterSession = findViewById(R.id.btn_enter_session);
-
-        // Setup Spinner for Status
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.status_items, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(adapter);
-        spinnerStatus.setSelection(0); // Default to "Pending"
 
         // Setup DatePicker for Date field
         selectedDate = Calendar.getInstance();
@@ -74,7 +71,6 @@ public class NewSessionActivity extends AppCompatActivity {
             String patientName = etPatientName.getText().toString().trim();
             String locationName = etLocationName.getText().toString().trim();
             String date = etDate.getText().toString().trim();
-            String status = spinnerStatus.getSelectedItem().toString();
 
             if (sessionName.isEmpty() || patientName.isEmpty() || locationName.isEmpty() || date.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -86,19 +82,29 @@ public class NewSessionActivity extends AppCompatActivity {
             String currentTime = timeFormat.format(new Date());
             String dateTime = date + " " + currentTime;
 
-            // Create Session object
-            Session session = new Session(sessionName, patientName, locationName, dateTime, status);
+            // Create Session object with status "pending"
+            Session session = new Session(
+                    sessionName,
+                    patientName,
+                    locationName,
+                    dateTime,
+                    "pending", // Hardcode status to "pending"
+                    null, // vitalJson
+                    null, // audioPath
+                    null, // videoPath
+                    null  // photoPath
+            );
 
             // Save to database using Room
-            try {
-                new Thread(() -> {
+            executor.execute(() -> {
+                try {
                     long newRowId = sessionDao.insert(session);
                     runOnUiThread(() -> {
                         if (newRowId != -1) {
                             Log.d(TAG, "Session saved with ID: " + newRowId);
                             Toast.makeText(this, "Session saved", Toast.LENGTH_SHORT).show();
 
-                            // Start the Offline Session Activity
+                            // Start the OfflineSessionActivity
                             Intent intent = new Intent(NewSessionActivity.this, OfflineSessionActivity.class);
                             intent.putExtra("session_id", newRowId);
                             startActivity(intent);
@@ -109,11 +115,77 @@ public class NewSessionActivity extends AppCompatActivity {
                             Toast.makeText(this, "Error saving session", Toast.LENGTH_SHORT).show();
                         }
                     });
-                }).start();
-            } catch (Exception e) {
-                Log.e(TAG, "Exception while saving session: " + e.getMessage());
-                Toast.makeText(this, "Error saving session: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+                } catch (Exception e) {
+                    runOnUiThread(() -> {
+                        Log.e(TAG, "Exception while saving session: " + e.getMessage());
+                        Toast.makeText(this, "Error saving session: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+                }
+            });
         });
+
+//        disableSoftKeyboard(etSessionName);
+//        disableSoftKeyboard(etPatientName);
+//        disableSoftKeyboard(etLocationName);
+//        disableSoftKeyboard(etDate);
+//
+        setEnterToNext(etSessionName);
+        setEnterToNext(etPatientName);
+        setEnterToNext(etLocationName);
+        setEnterToNext(etDate);
+
+        preventSoftKeyboard(etSessionName);
+        preventSoftKeyboard(etPatientName);
+        preventSoftKeyboard(etLocationName);
+        preventSoftKeyboard(etDate);
+
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        );
+    }
+
+    private void preventSoftKeyboard(EditText editText) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            editText.setShowSoftInputOnFocus(false);
+        } else {
+            try {
+                Method method = EditText.class.getMethod("setShowSoftInputOnFocus", boolean.class);
+                method.setAccessible(true);
+                method.invoke(editText, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void disableSoftKeyboard(EditText editText) {
+        editText.setInputType(InputType.TYPE_NULL);
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+    }
+
+    private void setEnterToNext(EditText editText) {
+        editText.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                View nextView = v.focusSearch(View.FOCUS_DOWN);
+                if (nextView != null) {
+                    nextView.requestFocus();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdown();
     }
 }

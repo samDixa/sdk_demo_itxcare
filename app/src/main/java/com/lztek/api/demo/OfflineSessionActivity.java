@@ -89,6 +89,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -120,6 +121,17 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
     private static final long DEBOUNCE_DELAY = 300; // 300ms debounce delay
 
     private ActivityResultLauncher<Intent> audioPickerLauncher;
+
+
+//    json
+    private final List<NIBP> nibpBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final List<Integer> respRateBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final List<Float> tempBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final List<Integer> pulseRateBuffer = Collections.synchronizedList(new ArrayList<>());
+    private AppDatabase database;
+    private SessionDao sessionDao;
+    private long sessionId;
+
 
     // UI Elements
     private Button btnSerialCtr;
@@ -223,6 +235,9 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
     // ECG Options
     private String[] ecgOptions = {"ECG aVR", "ECG aVL", "ECG aVF", "ECG V"};
     private int[] selectedECG = {0, 1, 2, 3};
+
+    private String pateintName = "DixaMomo";
+    private String monitorName = "CNRGI Remote Patient Monitoring Solution";
 
     // Permissions
     private String[] permissions = {
@@ -556,10 +571,17 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
 //
         cam1Button = findViewById(R.id.off_cam1_button);
         cam2Button = findViewById(R.id.off_cam2_button);
+//
+        CbCaptureTempData = findViewById(R.id.cbCaptureTempData);
+        CbCaptureNiBpData = findViewById(R.id.cbCaptureNiBpData);
+        CbCaptureSpo2Data = findViewById(R.id.cbCaptureSpo2Data);
+        CbCaptureRespData = findViewById(R.id.cbCaptureRespData);
+        CbCaptureBpmPluseData = findViewById(R.id.cbCaptureBpmPluseData);
 
         setupGraph();
         requestUsbPermission();
         setupDropdown(spinnerECG3, 3);
+//        String dateTimeNow = getCurrentDateTime();
 
         mConnectingDialog = new ProgressDialog(this);
         mConnectingDialog.setMessage("Connecting to Berry PM6750 (COM7/J42)...");
@@ -731,6 +753,52 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
             }
         });
 
+//
+
+        // Initialize Room database
+        database = AppDatabase.getDatabase(this);
+        sessionDao = database.sessionDao();
+
+        // Get session ID from intent as Long
+        sessionId = getIntent().getLongExtra("session_id", -1L); // Retrieve as Long and cast to int if needed
+//        if (sessionId == -1) {
+//            Log.e(TAG, "Invalid session ID");
+//            Toast.makeText(this, "Invalid session ID", Toast.LENGTH_SHORT).show();
+//            finish();
+//            return;
+//        }
+
+        // Set checkbox listeners
+        CbCaptureTempData.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                saveVitalsToJson();
+            }
+        });
+
+        CbCaptureNiBpData.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                saveVitalsToJson();
+            }
+        });
+
+        CbCaptureSpo2Data.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                saveVitalsToJson();
+            }
+        });
+
+        CbCaptureRespData.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                saveVitalsToJson();
+            }
+        });
+
+        CbCaptureBpmPluseData.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                saveVitalsToJson();
+            }
+        });
+
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LOW_PROFILE
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -739,6 +807,94 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         );
+    }
+
+    // Method to extract last 10 seconds of data and save as JSON
+    private void saveVitalsToJson() {
+        executorService.execute(() -> {
+            int heartRate = -1;
+            int spo2 = -1;
+            int respRate = -1;
+            int pulseRate = -1;
+            float tempCelsius = -1.0f;
+            float tempFahrenheit = -1.0f;
+            int nibpSystolic = -1;
+            int nibpDiastolic = -1;
+
+            // Heart Rate (from ecgDataBuffers indirectly via tvECGinfo)
+            String heartRateText = tvECGinfo.getText().toString();
+            try {
+                heartRate = Integer.parseInt(heartRateText.split("\n")[0].replace("Heart Rate: ", "").trim());
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to parse heart rate: " + e.getMessage());
+            }
+
+            // SpO2 and Pulse Rate
+            synchronized (spo2Buffer) {
+                if (!spo2Buffer.isEmpty()) {
+                    spo2 = spo2Buffer.get(spo2Buffer.size() - 1); // Latest value
+                }
+            }
+            synchronized (pulseRateBuffer) {
+                if (!pulseRateBuffer.isEmpty()) {
+                    pulseRate = pulseRateBuffer.get(pulseRateBuffer.size() - 1); // Latest value
+                }
+            }
+
+            // Resp Rate
+            synchronized (respRateBuffer) {
+                if (!respRateBuffer.isEmpty()) {
+                    respRate = respRateBuffer.get(respRateBuffer.size() - 1); // Latest value
+                }
+            }
+
+            // Temperature
+            synchronized (tempBuffer) {
+                if (!tempBuffer.isEmpty()) {
+                    tempCelsius = tempBuffer.get(tempBuffer.size() - 1); // Latest value
+                    tempFahrenheit = tempCelsius * 9 / 5 + 32;
+                }
+            }
+
+            // NIBP
+            synchronized (nibpBuffer) {
+                if (!nibpBuffer.isEmpty()) {
+                    NIBP latestNIBP = nibpBuffer.get(nibpBuffer.size() - 1);
+                    nibpSystolic = latestNIBP.getSystolic();
+                    nibpDiastolic = latestNIBP.getDiastolic();
+                }
+            }
+
+            // Create JSON
+            StringBuilder jsonBuilder = new StringBuilder("{");
+            jsonBuilder.append("\"heart_rate\":").append(heartRate != -1 ? heartRate : "null").append(",");
+            jsonBuilder.append("\"spo2\":").append(spo2 != -1 ? spo2 : "null").append(",");
+            jsonBuilder.append("\"resp_rate\":").append(respRate != -1 ? respRate : "null").append(",");
+            jsonBuilder.append("\"pulse_rate\":").append(pulseRate != -1 ? pulseRate : "null").append(",");
+            jsonBuilder.append("\"temp_celsius\":").append(tempCelsius != -1.0f ? tempCelsius : "null").append(",");
+            jsonBuilder.append("\"temp_fahrenheit\":").append(tempFahrenheit != -1.0f ? tempFahrenheit : "null").append(",");
+            jsonBuilder.append("\"nibp_systolic\":").append(nibpSystolic != -1 ? nibpSystolic : "null").append(",");
+            jsonBuilder.append("\"nibp_diastolic\":").append(nibpDiastolic != -1 ? nibpDiastolic : "null");
+            jsonBuilder.append("}");
+
+            String vitalJson = jsonBuilder.toString();
+            Log.d(TAG, "Vitals JSON: " + vitalJson);
+
+            // Save to Room database
+            Session session = sessionDao.getSessionById(sessionId);
+            if (session != null) {
+                session.vitalJson = vitalJson;
+                sessionDao.update(session);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Vitals saved to database", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                Log.e(TAG, "Session not found for ID: " + sessionId);
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Error: Session not found", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -1411,9 +1567,9 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
                         Log.d(TAG, "SpO2 batch update: added " + spo2Buffer.size() + " points");
                     }
                 }
-                uiUpdateHandler.postDelayed(this, 100);
+                uiUpdateHandler.postDelayed(this, 3000);
             }
-        }, 100);
+        }, 3000);
     }
 
     private void startECGBatchUpdates() {
@@ -1456,9 +1612,9 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
                         });
                     }
                 }
-                uiUpdateHandler.postDelayed(this, 100);
+                uiUpdateHandler.postDelayed(this, 3000);
             }
-        }, 100);
+        }, 3000);
     }
 
     @Override
@@ -1516,6 +1672,24 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
             spannable.setSpan(new RelativeSizeSpan(1.5f), statusLabelStart, statusLabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new RelativeSizeSpan(2.8f), spo2ValueStart, spo2ValueEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(new RelativeSizeSpan(2.8f), pulseValueStart, pulseValueEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            // Add to buffers
+            synchronized (spo2Buffer) {
+                if (spo2.getSpO2() != SpO2.SPO2_INVALID) {
+                    spo2Buffer.add(spo2.getSpO2());
+                    if (spo2Buffer.size() > SPO2_BUFFER_MAX_SIZE) {
+                        spo2Buffer.subList(0, spo2Buffer.size() - SPO2_BUFFER_MAX_SIZE).clear();
+                    }
+                }
+            }
+            synchronized (pulseRateBuffer) {
+                if (spo2.getPulseRate() != SpO2.PULSE_RATE_INVALID) {
+                    pulseRateBuffer.add(spo2.getPulseRate());
+                    if (pulseRateBuffer.size() > SPO2_BUFFER_MAX_SIZE) {
+                        pulseRateBuffer.subList(0, pulseRateBuffer.size() - SPO2_BUFFER_MAX_SIZE).clear();
+                    }
+                }
+            }
 
             runOnUiThread(() -> {
                 tvSPO2info.setText(spannable);
@@ -1593,6 +1767,16 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
             int respEnd = respStart + respRateValue.length();
             respRateSpannable.setSpan(new RelativeSizeSpan(2.8f), respStart, respEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+            // Add to buffers
+            synchronized (respRateBuffer) {
+                if (ecg.getRestRate() != ecg.RESP_RATE_INVALID) {
+                    respRateBuffer.add(ecg.getRestRate());
+                    if (respRateBuffer.size() > 1000) { // 10 seconds at 100 Hz
+                        respRateBuffer.subList(0, respRateBuffer.size() - 1000).clear();
+                    }
+                }
+            }
+
             runOnUiThread(() -> {
                 tvECGinfo.setText(heartRateSpannable);
                 tvECGinfo.setTypeface(Typeface.DEFAULT_BOLD);
@@ -1646,10 +1830,25 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
             if (!serialPort.isConnected()) {
                 return;
             }
+            // Add to nibpBuffer
+            synchronized (nibpBuffer) {
+                nibpBuffer.add(nibp);
+                if (nibpBuffer.size() > 100) { // Keep last 100 readings (adjust as needed)
+                    nibpBuffer.subList(0, nibpBuffer.size() - 100).clear();
+                }
+            }
+
             runOnUiThread(() -> {
                 tvNIBPinfo.setText(nibp.toString());
             });
         });
+    }
+
+    public static String getCurrentDateTime() {
+        // Format: "yyyy-MM-dd HH:mm:ss" → Example: "2025-06-06 14:45:00"
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String currentDateTime = sdf.format(new Date());
+        return currentDateTime;
     }
 
     private void generateReport() {
@@ -1658,7 +1857,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
             final int[][] allData;
             synchronized (ecgDataBuffers) {
                 if (!ecgDataBuffers.isEmpty()) {
-                    int dataPoints = Math.min(500, ecgDataBuffers.size());
+                    int dataPoints = Math.min(2500, ecgDataBuffers.size()); // 10 sec at 250 Hz
                     int[][] tempData = new int[7][dataPoints];
                     int index = 0;
                     for (int[] data : ecgDataBuffers) {
@@ -1702,17 +1901,17 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         PdfDocument.Page page = pdfDocument.startPage(pageInfo);
         Canvas canvas = page.getCanvas();
 
-        String patientName = "DixaMomo";
+        String patientName = pateintName;
         int patientAge = 40;
         String reportNumber = "ECG-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        String deviceName = "CNRGI Remote Patient Monitoring Solution";
-        String dateTime = "20-05-2025 17:15:00"; // Updated to 05:15 PM IST, May 20, 2025
+        String deviceName = monitorName;
+        String dateTime = "06 Jun 2025 03:00 PM"; // Updated to match the given date and time
         int hr = (tvECGinfo != null && tvECGinfo.getText() != null) ? parseHeartRate(tvECGinfo.getText().toString()) : 60;
         String pQRSAxis = "(66)-(249)-(59) deg";
         String qtC = "360 ms";
-        String prInterval = "200 ms"; // From previous mapping
+        String prInterval = "200 ms";
         String rrInterval = "996 ms";
-        String qrsDuration = "40 ms"; // From previous mapping
+        String qrsDuration = "40 ms";
         String interpretation = "Sinus Rhythm. PR is normal. Normal QRS Width. Normal QT Interval. QRS Axis is indeterminate.";
         String doctor = "Dr. Mangeshkar";
         String calibration = "10 mm/mv, 25.0 mm/sec Nasan M-Cardia 1.0/1.15";
@@ -1747,7 +1946,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         y = startY;
         canvas.drawText("Report Number: " + reportNumber, centerX, y, title);
         y += lineGap;
-        canvas.drawText("Date: " + dateTime.split(" ")[0], centerX, y, title);
+        canvas.drawText("Date: " + dateTime.split(" ")[0] + " " + dateTime.split(" ")[1] + " " + dateTime.split(" ")[2], centerX, y, title);
         y += lineGap;
         canvas.drawText("PR Interval: " + prInterval, centerX, y, title);
         y += lineGap;
@@ -1756,7 +1955,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         y = startY;
         canvas.drawText("Name of Device: " + deviceName, rightX, y, title);
         y += lineGap;
-        canvas.drawText("Time: " + dateTime.split(" ")[1], rightX, y, title);
+        canvas.drawText("Time: " + dateTime.split(" ")[3] + " " + dateTime.split(" ")[4], rightX, y, title);
         y += lineGap;
         canvas.drawText("RR Interval: " + rrInterval, rightX, y, title);
         y += lineGap + 10;
@@ -1764,7 +1963,6 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         title.setTextSize(14);
         canvas.drawText("HR: " + hr, rightX, y, title);
 
-        // Adjusted ECG section start position to give more space
         drawECGSection(canvas, ecgData);
         drawFooterSection(canvas);
 
@@ -1782,7 +1980,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
 
     private void drawECGSection(Canvas canvas, int[][] ecgData) {
         Paint gridPaint = new Paint();
-        gridPaint.setColor(Color.argb(255, 255, 150, 150)); // Lighter red for grid
+        gridPaint.setColor(Color.argb(255, 255, 150, 150));
         gridPaint.setStrokeWidth(1);
         Paint wavePaint = new Paint();
         wavePaint.setColor(Color.BLACK);
@@ -1793,54 +1991,66 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         labelPaint.setTextSize(14);
         labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
 
-        String[][] rows = {{"I", "aVR"}, {"II", "aVL"}, {"III", "aVF"}, {"V"}};
-        int[] leadIndices = {0, 3, 1, 4, 2, 5, 6};
+        String[][] rows = {{"I", "aVR"}, {"II", "aVL"}, {"III", "aVF"}, {"V"}, {"II (Long)"}}; // Added long lead
+        int[] leadIndices = {0, 3, 1, 4, 2, 5, 6, 1}; // II for long lead
         int startX = 20;
-        int startY = 220; // Moved down to avoid overlap with header
+        int startY = 220;
         int totalWidth = 842;
-        int boxHeight = 80; // Reduced height to make it less cramped
+        int boxHeight = 80;
         int horizontalGap = 1;
         int boxWidth = (totalWidth - horizontalGap) / 2;
-        int verticalGap = 10; // Increased gap for better spacing
+        int verticalGap = 10;
 
-        float pixelsPerSample = 0.84f; // 420 pixels for 500 samples
-        float samplesPerGridBlock = 100; // 200 msec at 500 Hz
+        float samplingRate = 250; // Hz
+        float pixelsPerSample = 0.64f; // 32 pixels per 50 samples (200 msec)
+        float samplesPerGridBlock = 50; // 200 msec at 250 Hz
 
         for (int row = 0; row < rows.length; row++) {
             String[] leads = rows[row];
+            int samplesToDraw = (row == rows.length - 1) ? 2500 : 625; // 10 sec for long lead, 2.5 sec for others
+            int currentBoxWidth = (row == rows.length - 1) ? (boxWidth * 2 + horizontalGap) : boxWidth;
+
             for (int col = 0; col < leads.length; col++) {
-                int currentBoxWidth = leads.length == 1 ? (boxWidth * 2 + horizontalGap) : boxWidth;
                 int x = startX + col * (boxWidth + horizontalGap);
                 int y = startY + row * (boxHeight + verticalGap);
 
+                if (row == rows.length - 1) {
+                    currentBoxWidth = boxWidth * 2 + horizontalGap; // Full width for long lead
+                } else {
+                    currentBoxWidth = boxWidth;
+                }
+
                 drawGrid(canvas, x, y, currentBoxWidth, boxHeight, gridPaint);
 
-                int leadIndex = leadIndices[row * 2 + col];
+                int leadIndex = leadIndices[row * (row == rows.length - 1 ? 1 : 2) + col];
                 int[] leadData = ecgData[leadIndex];
                 if (leadData.length > 0) {
                     int minValue = leadData[0];
                     int maxValue = leadData[0];
-                    for (int value : leadData) {
+                    for (int i = 0; i < Math.min(samplesToDraw, leadData.length); i++) {
+                        int value = leadData[i];
                         if (value < minValue) minValue = value;
                         if (value > maxValue) maxValue = value;
                     }
                     int dataRange = Math.max(Math.abs(minValue), Math.abs(maxValue)) * 2;
                     if (dataRange == 0) dataRange = 1;
 
-                    float xStep = pixelsPerSample;
+                    // Scale to 1 mV = 80 pixels
                     float yMid = y + boxHeight / 2;
-                    float yScale = (float) (boxHeight * 0.6) / dataRange; // Reduced scaling to fit better
-                    for (int i = 0; i < leadData.length - 1; i++) {
-                        float x1 = x + i * xStep;
+                    float yScale = 80.0f / 1000; // Assuming data is in microvolts, 1000 uV = 1 mV = 80 pixels
+                    for (int i = 0; i < Math.min(samplesToDraw, leadData.length) - 1; i++) {
+                        float x1 = x + i * pixelsPerSample;
                         float y1 = yMid - (leadData[i] * yScale);
-                        float x2 = x + (i + 1) * xStep;
+                        float x2 = x + (i + 1) * pixelsPerSample;
                         float y2 = yMid - (leadData[i + 1] * yScale);
                         y1 = Math.max(y + 5, Math.min(y + boxHeight - 5, y1));
                         y2 = Math.max(y + 5, Math.min(y + boxHeight - 5, y2));
                         canvas.drawLine(x1, y1, x2, y2, wavePaint);
                     }
 
-                    drawIntervalMarkers(canvas, x, y, boxHeight, leadData.length, pixelsPerSample, wavePaint);
+                    if (row == rows.length - 1) { // Draw markers on long lead
+                        drawIntervalMarkers(canvas, x, y, boxHeight, samplesToDraw, pixelsPerSample, wavePaint);
+                    }
                 } else {
                     int midY = y + boxHeight / 2;
                     canvas.drawLine(x, midY, x + currentBoxWidth, midY, wavePaint);
@@ -1852,9 +2062,9 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
     }
 
     private void drawGrid(Canvas canvas, int x, int y, int width, int height, Paint paint) {
-        float pixelsPerGridBlock = 84; // 200 msec = 84 pixels
+        float pixelsPerGridBlock = 32; // 200 msec = 32 pixels
         int smallGridBlocks = 5; // 200 msec = 5 small grid blocks (40 msec each)
-        float smallGrid = pixelsPerGridBlock / smallGridBlocks; // 16.8 pixels per small grid block
+        float smallGrid = pixelsPerGridBlock / smallGridBlocks; // 6.4 pixels per small grid block
 
         for (int i = 0; i <= height / smallGrid; i++) {
             paint.setStrokeWidth(i % smallGridBlocks == 0 ? 1.5f : 0.8f);
@@ -1868,13 +2078,13 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
     }
 
     private void drawIntervalMarkers(Canvas canvas, int x, int y, int boxHeight, int dataLength, float pixelsPerSample, Paint paint) {
-        float pixelsPerGridBlock = 84; // 200 msec = 84 pixels
-        float samplesPerGridBlock = 100; // 200 msec at 500 Hz
-        int prSamples = 100; // PR interval: 200 msec = 100 samples
-        int qrsSamples = 20; // QRS duration: 40 msec = 20 samples
+        float pixelsPerGridBlock = 32; // 200 msec = 32 pixels
+        float samplesPerGridBlock = 50; // 200 msec at 250 Hz
+        int prSamples = 50; // PR interval: 200 msec = 50 samples
+        int qrsSamples = 10; // QRS duration: 40 msec = 10 samples
 
-        float prPixels = prSamples * pixelsPerSample; // 84 pixels
-        float qrsPixels = qrsSamples * pixelsPerSample; // 16.8 pixels
+        float prPixels = prSamples * pixelsPerSample; // 32 pixels
+        float qrsPixels = qrsSamples * pixelsPerSample; // 6.4 pixels
 
         float yMid = y + boxHeight / 2;
         paint.setColor(Color.BLUE);
@@ -1882,7 +2092,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
 
         float startX = x + 3 * pixelsPerGridBlock; // Start at 3rd grid block
         if (startX + prPixels < x + dataLength * pixelsPerSample) {
-            float markerY = y + boxHeight - 10; // Adjusted for smaller box height
+            float markerY = y + boxHeight - 10;
             canvas.drawLine(startX, markerY, startX + prPixels, markerY, paint);
             Paint textPaint = new Paint();
             textPaint.setColor(Color.BLUE);
@@ -1912,7 +2122,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         footerPaint.setTextSize(12);
         footerPaint.setTypeface(Typeface.DEFAULT);
         int startX = 20;
-        int startY = 560; // Moved down to bottom of page
+        int startY = 560;
         String interpretationText = "Interpretation: Sinus Rhythm. PR is normal. Normal QRS Width. Normal QT Interval. QRS Axis is indeterminate.";
         canvas.drawText(interpretationText, startX, startY, footerPaint);
         int lineGap = 20;
@@ -1929,12 +2139,11 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         canvas.drawLine(underlineStartX, nextY + 2, underlineEndX, nextY + 2, footerPaint);
     }
 
-
     private int parseHeartRate(String text) {
         try {
             return Integer.parseInt(text.split("\n")[0].replace("Heart Rate: ", "").trim());
         } catch (Exception e) {
-            return 60; // Updated to match default in generatePdfFromData
+            return 60;
         }
     }
 

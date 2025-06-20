@@ -98,6 +98,7 @@ package com.lztek.api.demo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -118,7 +119,7 @@ public class OfflineModeActivity extends AppCompatActivity {
     private List<Session> sessionsList;
     private AppDatabase database;
     private SessionDao sessionDao;
-    private final ExecutorService executor = Executors.newSingleThreadExecutor(); // ✅ Background thread
+    private final ExecutorService executor = Executors.newSingleThreadExecutor(); // Background thread
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +153,15 @@ public class OfflineModeActivity extends AppCompatActivity {
             Intent intent = new Intent(OfflineModeActivity.this, NewSessionActivity.class);
             startActivity(intent);
         });
+
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        );
     }
 
     public void loadSessions() {

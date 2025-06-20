@@ -19,86 +19,47 @@
         android:paddingTop="16dp"
         android:paddingRight="70dp"
         android:paddingBottom="16dp"
-        android:weightSum="3">
+        android:weightSum="4">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/pramedicName_pm"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="Doctor Name :"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/doctor_name_vital"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sam Bisht"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+        <TextView
+            android:id="@+id/patientName_pm"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/patientAge_pm"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/patientGender_pm"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="Paramedic Name :"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/paramedic_name_vital"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ajay Singh"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="Patient Name :"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/patient_name_vital"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dinesh Kumar"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-
-    </LinearLayout>
 
     <!--    /-->
 

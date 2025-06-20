@@ -1,214 +1,308 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="8dp"
     android:layout_margin="8dp"
-    android:background="#DDDDDD">
+    android:background="#F5F5F5"
+    android:stretchColumns="*">
 
-    <!-- Title TextView -->
-    <TextView
-        android:id="@+id/scheduled_appointments_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Appointment"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_gravity="center"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Main GridLayout with 2 Columns -->
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:layout_marginBottom="8dp">
-
-        <!-- Left Column: Inner GridLayout for Details -->
-        <GridLayout
+    <!-- Data Row -->
+    <TableRow
+        android:padding="4dp">
+        <TextView
+            android:id="@+id/sr_no"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:columnCount="2"
-            android:padding="16dp">
-
-            <!-- Patient Name Row -->
-            <TextView
-                android:id="@+id/patient_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Patient Name:"
-                android:textStyle="bold"
-                android:textColor="#555555" />
-
-            <TextView
-                android:id="@+id/patient_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#000000"
-                android:text="Patient Name" />
-
-            <!-- Paramedic Name Row -->
-            <TextView
-                android:id="@+id/paramedic_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Paramedic:"
-                android:textStyle="bold"
-                android:textColor="#555555"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/paramedic_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#000000"
-                android:text="Paramedic Name"
-                android:layout_marginTop="8dp" />
-
-            <!-- Doctor Name Row -->
-            <TextView
-                android:id="@+id/doctor_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Doctor:"
-                android:textStyle="bold"
-                android:textColor="#555555"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/doctor_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#000000"
-                android:text="Doctor Name"
-                android:layout_marginTop="8dp" />
-
-            <!-- Appointment Date Row -->
-            <TextView
-                android:id="@+id/appointment_date_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Date:"
-                android:textStyle="bold"
-                android:textColor="#555555"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/appointment_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#000000"
-                android:text="Date"
-                android:layout_marginTop="8dp" />
-
-            <!-- Appointment Time Row -->
-            <TextView
-                android:id="@+id/appointment_time_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Time:"
-                android:textStyle="bold"
-                android:textColor="#555555"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/appointment_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#000000"
-                android:text="Time"
-                android:layout_marginTop="8dp" />
-
-            <!-- Appointment Status Row -->
-            <TextView
-                android:id="@+id/appointment_status_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Status:"
-                android:textStyle="bold"
-                android:textColor="#555555"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/appointment_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#FF9800"
-                android:text="Status"
-                android:layout_marginTop="8dp" />
-
-            <!-- Booked On Row -->
-            <TextView
-                android:id="@+id/booked_on_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:text="Booked On:"
-                android:textStyle="bold"
-                android:textColor="#555555"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/booked_on"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:textColor="#000000"
-                android:text="Booking Date"
-                android:layout_marginTop="8dp" />
-        </GridLayout>
-
-        <!-- Right Column: Profile Picture -->
-        <ImageView
-            android:id="@+id/patient_profile_picture"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_patient"
-            android:layout_margin="8dp"
-            android:padding="8dp"/>
-    </GridLayout>
-
-    <!-- Action Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="12dp">
-
-        <Button
-            android:id="@+id/button_details"
-            android:layout_width="wrap_content"
+            android:layout_weight="0.5"
+            android:text="1"
+            android:textColor="#000000"
+            android:padding="4dp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/patient_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="DETAILS"
-            android:textAllCaps="true"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF" />
-
-        <Button
-            android:id="@+id/button_start"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:text="Patient Name"
+            android:textColor="#000000"
+            android:padding="4dp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/doctor_name"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="START"
-            android:textAllCaps="true"
-            android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
+            android:layout_weight="1"
+            android:text="Doctor Name"
+            android:textColor="#000000"
+            android:padding="4dp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/appointment_date_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Date Time"
+            android:textColor="#000000"
+            android:padding="4dp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/appointment_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Status"
+            android:textColor="#FF9800"
+            android:padding="4dp"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/booked_on"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Booked On"
+            android:textColor="#000000"
+            android:padding="4dp"
+            android:gravity="center" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button
+                android:id="@+id/button_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="DETAILS"
+                android:textAllCaps="true"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/button_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="START"
+                android:textAllCaps="true"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </TableRow>
 
-</LinearLayout>
+</TableLayout>
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="vertical"-->
+<!--    android:padding="8dp"-->
+<!--    android:layout_margin="8dp"-->
+<!--    android:background="#DDDDDD">-->
+
+<!--    &lt;!&ndash; Title TextView &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/scheduled_appointments_title"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Appointment"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="#333333"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginBottom="8dp" />-->
+
+<!--    &lt;!&ndash; Main GridLayout with 2 Columns &ndash;&gt;-->
+<!--    <GridLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:columnCount="2"-->
+<!--        android:layout_marginBottom="8dp">-->
+
+<!--        &lt;!&ndash; Left Column: Inner GridLayout for Details &ndash;&gt;-->
+<!--        <GridLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_columnWeight="1"-->
+<!--            android:columnCount="2"-->
+<!--            android:padding="16dp">-->
+
+<!--            &lt;!&ndash; Patient Name Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/patient_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Patient Name:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/patient_name"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:text="Patient Name" />-->
+
+<!--            &lt;!&ndash; Paramedic Name Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/paramedic_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Paramedic:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/paramedic_name"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:text="Paramedic Name"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            &lt;!&ndash; Doctor Name Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/doctor_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Doctor:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/doctor_name"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:text="Doctor Name"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            &lt;!&ndash; Appointment Date Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/appointment_date_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Date:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/appointment_date"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:text="Date"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            &lt;!&ndash; Appointment Time Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/appointment_time_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Time:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/appointment_time"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:text="Time"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            &lt;!&ndash; Appointment Status Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/appointment_status_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Status:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/appointment_status"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#FF9800"-->
+<!--                android:text="Status"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            &lt;!&ndash; Booked On Row &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/booked_on_label"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:text="Booked On:"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="#555555"-->
+<!--                android:layout_marginTop="8dp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/booked_on"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_columnWeight="1"-->
+<!--                android:textColor="#000000"-->
+<!--                android:text="Booking Date"-->
+<!--                android:layout_marginTop="8dp" />-->
+<!--        </GridLayout>-->
+
+<!--        &lt;!&ndash; Right Column: Profile Picture &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/patient_profile_picture"-->
+<!--            android:layout_width="128dp"-->
+<!--            android:layout_height="128dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:src="@drawable/ic_patient"-->
+<!--            android:layout_margin="8dp"-->
+<!--            android:padding="8dp"/>-->
+<!--    </GridLayout>-->
+
+<!--    &lt;!&ndash; Action Buttons &ndash;&gt;-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_marginTop="12dp">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_details"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:text="DETAILS"-->
+<!--            android:textAllCaps="true"-->
+<!--            android:backgroundTint="#4CAF50"-->
+<!--            android:textColor="#FFFFFF" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_start"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="START"-->
+<!--            android:textAllCaps="true"-->
+<!--            android:backgroundTint="#2196F3"-->
+<!--            android:textColor="#FFFFFF" />-->
+<!--    </LinearLayout>-->
+
+<!--</LinearLayout>-->

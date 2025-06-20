@@ -14,7 +14,7 @@ public class Constants {
     public static final String PARAMEDIC_MY_PROFILE = BASE_URL_QA + "account/paramedic/myprofile";
     public static final String UPDATE_PROFILE = BASE_URL_QA + "account/paramedic/updateprofile";
     public static final String APPOINTMENT_LIST = BASE_URL_QA + "paramedic/appointment/list/{id}";
-    public static final String APPOINTMENT_DETAILS = BASE_URL_QA + "appointment/details?appointmentId={id}";
+    public static final String APPOINTMENT_DETAILS = BASE_URL_QA + "paramedic/appointmentbyid/{id}";
     public static final String BOOK_APPOINTMENT = BASE_URL_QA + "patient/appointment/booking";
     public static final String CONFIRM_APPOINTMENT = BASE_URL_QA + "appointment/confirmed/{appointmentId}";
     public static final String END_APPOINTMENT = BASE_URL_QA + "paramedic/appointment/end";

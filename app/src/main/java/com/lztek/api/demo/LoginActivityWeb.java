@@ -258,6 +258,7 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -413,9 +414,11 @@ public class LoginActivityWeb extends AppCompatActivity {
 
         private static final String TAG = "LoginTask";
         private final String LOGIN_URL = Constants.LOGIN_ENDPOINT;
+        private final String PROFILE_URL = Constants.PARAMEDIC_MY_PROFILE;
         private Context context;
         private String statusMessage;
         private boolean isLoginSuccessful;
+        private boolean isProfileFetchSuccessful;
 
         public LoginTask(Context context) {
             this.context = context;
@@ -458,6 +461,67 @@ public class LoginActivityWeb extends AppCompatActivity {
                     JSONObject data = jsonResponse.getJSONObject("data");
                     GlobalVars.setAccessToken(data.getString("accessToken"));
                     GlobalVars.setRefreshToken(data.getString("refreshToken"));
+
+                    // ------ Fetch Permedic
+                    URL profileURL = new URL(PROFILE_URL);
+                    HttpURLConnection profileConn = (HttpURLConnection) profileURL.openConnection();
+                    profileConn.setRequestMethod("GET");
+                    profileConn.setRequestProperty("Content-Type", "application/json");
+                    profileConn.setRequestProperty(Constants.AUTHORIZATION_HEADER,"Bearer " + GlobalVars.getAccessToken());
+                    profileConn.setRequestProperty(Constants.APP_TENANT_HEADER,GlobalVars.getClientId());
+
+                    // Read profile response
+                    InputStream profileInputStream;
+                    int responseCode = profileConn.getResponseCode();
+                    if (responseCode >= 200 && responseCode < 300) {
+                        profileInputStream = profileConn.getInputStream();
+                    } else {
+                        profileInputStream = profileConn.getErrorStream();
+                        statusMessage = "Failed to fetch profile: HTTP " + responseCode;
+                        isProfileFetchSuccessful = false;
+                        profileConn.disconnect();
+                        return statusMessage;
+                    }
+
+                    Scanner profileInStream = new Scanner(profileInputStream);
+                    StringBuilder profileResponse = new StringBuilder();
+                    while (profileInStream.hasNextLine()) {
+                        profileResponse.append(profileInStream.nextLine());
+                    }
+                    profileInStream.close();
+                    profileConn.disconnect();
+
+                    JSONObject profileJsonResponse = new JSONObject(profileResponse.toString());
+                    isProfileFetchSuccessful = profileJsonResponse.getBoolean("success");
+                    if (isProfileFetchSuccessful) {
+                        JSONObject profileData = profileJsonResponse.getJSONObject("data");
+                        // Save paramedic details to GlobalVars
+                        GlobalVars.setParamedicId(profileData.getInt("paramedic_Id"));
+                        GlobalVars.setUserId(profileData.getInt("user_ID"));
+                        GlobalVars.setFirstName(profileData.getString("first_name"));
+                        GlobalVars.setLastName(profileData.getString("last_name"));
+                        GlobalVars.setEmail(profileData.getString("email"));
+                        GlobalVars.setAddress(profileData.getString("address"));
+                        GlobalVars.setDateOfBirth(profileData.getString("date_of_birth"));
+                        GlobalVars.setGender(profileData.getString("gender"));
+                        GlobalVars.setPhoneNumber(profileData.getString("phone_number"));
+                        GlobalVars.setTraining(profileData.optString("training", ""));
+                        GlobalVars.setPreviousPositions(profileData.optString("previous_positions", "[]"));
+                        GlobalVars.setEducation(profileData.optString("education", ""));
+                        GlobalVars.setWorkingHours(profileData.optString("working_hours", ""));
+                        GlobalVars.setLanguage(profileData.isNull("language") ? null : profileData.getString("language"));
+                        GlobalVars.setExpertise(profileData.optString("expertise", ""));
+                        GlobalVars.setNotes(profileData.optString("notes", ""));
+                        GlobalVars.setYearsOfExperience(profileData.getString("years_of_experience"));
+                        GlobalVars.setPassword(profileData.getString("password"));
+                        GlobalVars.setIsActive(profileData.getBoolean("is_active"));
+                        GlobalVars.setAverageRating(profileData.isNull("average_rating") ? null : profileData.getDouble("average_rating"));
+                        GlobalVars.setProfilePicture(profileData.isNull("profile_picture") ? null : profileData.getString("profile_picture"));
+                        GlobalVars.setProfilePhotoUrl(profileData.getString("profilephotourl"));
+                        statusMessage = "Login and profile fetch successful";
+                    } else {
+                        statusMessage = profileJsonResponse.getString("message");
+                    }
                 }
                 return statusMessage;
 
@@ -467,18 +531,22 @@ public class LoginActivityWeb extends AppCompatActivity {
             }
         }
 
+
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                if (isLoginSuccessful) {
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+                if (isLoginSuccessful && isProfileFetchSuccessful) {
+                    Toast.makeText(context, "Login and profile fetch successful", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, DashboardActivity.class);
                     context.startActivity(intent);
+                    ((AppCompatActivity) context).finish(); // Close LoginActivity
+                } else if (isLoginSuccessful) {
+                    Toast.makeText(context, "Login successful but profile fetch failed: " + statusMessage, Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(context, "Login failed: " + statusMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Login failed: " + statusMessage, Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(context, "Login error. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error during login or profile fetch. Please try again.", Toast.LENGTH_LONG).show();
             }
         }
     }

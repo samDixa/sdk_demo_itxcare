@@ -94,5 +94,7 @@ dependencies {
 // vonage
 //    implementation 'com.vonage:vonage-video-sdk:2.25.1'
 
+    implementation'com.opentok.android:opentok-android-sdk:2.25.0'
+
 
 }

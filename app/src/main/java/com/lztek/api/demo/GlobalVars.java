@@ -37,6 +37,12 @@ public class GlobalVars {
     private boolean isNIBPConnected = false;
     private boolean isTempConnected = false;
 
+//    Patient Monitor Details
+
+    private static String patientMonitorName;
+    private static int patientMonitorAge;
+    private static String patientMonitorGender;
+
     // Profile data
     private static int paramedicId;
     private static int userId;
@@ -113,6 +119,39 @@ public class GlobalVars {
     public static void setRefreshToken(String token) {
         refreshToken = token;
     }
+
+
+//    patient monitor det
+
+    public static String getPatientMonitorName() {
+        return patientMonitorName;
+    }
+
+    public static void setPatientMonitorName(String name) {
+        patientMonitorName = name;
+    }
+
+
+    public static int getPatientMonitorAge() {
+        return patientMonitorAge;
+    }
+
+    public static void setPatientMonitorAge(int age) {
+        patientMonitorAge = age;
+    }
+
+    public static String getPatientMonitorGender() {
+        return patientMonitorGender;
+    }
+
+    public static void setPatientMonitorGender(String Gender) {
+        patientMonitorGender = Gender;
+    }
+
+
+
+
+//
 
     // Profile data getters and setters
     public static int getParamedicId() {

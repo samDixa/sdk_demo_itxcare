@@ -2,78 +2,94 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#F5F5F5">
+    android:padding="16dp">
 
+    <!-- Header Text -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Offline Session"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
         android:paddingBottom="16dp"
-        android:textColor="#212121" />
+        android:text="Create a new Session"
+        android:textColor="#212121"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/et_session_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Session Name"
-        android:textSize="16sp"
-        android:padding="12dp"
-        android:backgroundTint="#E0E0E0"
-        android:layout_marginBottom="12dp" />
+    <ImageView
+        android:layout_width="400dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/cnrgi_logo"/>
 
-    <EditText
-        android:id="@+id/et_patient_name"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="800dp"
         android:layout_height="wrap_content"
-        android:hint="Patient Name"
-        android:textSize="16sp"
-        android:padding="12dp"
-        android:backgroundTint="#E0E0E0"
-        android:layout_marginBottom="12dp" />
+        android:background="@drawable/card_bg"
+        android:layout_marginBottom="50dp"
+        android:padding="18sp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_location_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Location Name"
-        android:textSize="16sp"
-        android:padding="12dp"
-        android:backgroundTint="#E0E0E0"
-        android:layout_marginBottom="12dp" />
+        <EditText
+            android:id="@+id/et_session_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:inputType="text"
+            android:background="@drawable/input_box"
+            android:hint="Session Name" />
 
-    <EditText
-        android:id="@+id/et_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Select Date (e.g., 2025-05-26)"
-        android:textSize="16sp"
-        android:padding="12dp"
-        android:backgroundTint="#E0E0E0"
-        android:layout_marginBottom="12dp"
-        android:focusable="false"
-        android:clickable="true" />
+        <EditText
+            android:id="@+id/et_patient_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/input_box"
+            android:hint="Patient Name" />
 
-    <Spinner
-        android:id="@+id/spinner_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#E0E0E0"
-        android:padding="12dp" />
+        <EditText
+            android:id="@+id/et_location_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/input_box"
+            android:hint="Location Name" />
+
+        <EditText
+            android:id="@+id/et_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/input_box"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Select Date" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_enter_session"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/blue_button"
         android:text="Enter"
-        android:textSize="16sp"
-        android:backgroundTint="#4CAF50"
         android:textColor="#FFFFFF"
-        android:padding="12dp" />
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sm_cnrg_logo"/>
+    </LinearLayout>
 
 </LinearLayout>
