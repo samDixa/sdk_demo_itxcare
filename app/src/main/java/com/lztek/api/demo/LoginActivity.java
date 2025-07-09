@@ -616,7 +616,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void submitCode() {
-        Intent intent = new Intent(LoginActivity.this, LoginActivityWeb.class);
+        Intent intent = new Intent(LoginActivity.this, BerryDeviceActivity.class);
         startActivity(intent);
     }
 

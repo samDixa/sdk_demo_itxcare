@@ -63,7 +63,7 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
         TypedArray arr = context.getTheme().obtainStyledAttributes(attrs, R.styleable.WaveformView, defStyleAttr, 0);
 
         int waveColor = arr.getColor(R.styleable.WaveformView_waveColor, Color.WHITE);
-        mLineWidth = arr.getDimension(R.styleable.WaveformView_lineWidth, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, metrics));
+        mLineWidth = arr.getDimension(R.styleable.WaveformView_lineWidth, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, .8f, metrics)); // wave line width adjust
         pointStep = arr.getDimension(R.styleable.WaveformView_pointStep, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.4f, metrics));
         mBufferSize = arr.getInt(R.styleable.WaveformView_bufferSize, 5);
         mMaxValue = arr.getInteger(R.styleable.WaveformView_maxValue, 100);
@@ -97,7 +97,7 @@ public class WaveformView extends SurfaceView implements SurfaceHolder.Callback{
 
         int width  = (MeasureSpec.getSize(widthMeasureSpec));
         if(width > mWidth) mWidth = width;
-        int height = (int) (MeasureSpec.getSize(heightMeasureSpec)*0.95);
+        int height = (int) (MeasureSpec.getSize(heightMeasureSpec)*1.4); // wave peak hight adjust
         if(height > mHeight) mHeight = height;
 //
 //        mWidth  = (MeasureSpec.getSize(widthMeasureSpec));

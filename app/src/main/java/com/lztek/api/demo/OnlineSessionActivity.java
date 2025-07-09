@@ -320,6 +320,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -345,6 +346,12 @@ import com.lztek.api.demo.data.Temp;
 import com.lztek.api.demo.view.WaveformView;
 import com.lztek.toolkit.Lztek;
 import com.lztek.toolkit.SerialPort;
+import com.opentok.android.OpentokError;
+import com.opentok.android.Publisher;
+import com.opentok.android.PublisherKit;
+import com.opentok.android.Session;
+import com.opentok.android.Stream;
+import com.opentok.android.Subscriber;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -366,7 +373,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class OnlineSessionActivity extends AppCompatActivity implements BerrySerialPort.OnDataReceivedListener, DataParser.onPackageReceivedListener {
+public class OnlineSessionActivity extends AppCompatActivity implements Session.SessionListener, PublisherKit.PublisherListener, BerrySerialPort.OnDataReceivedListener, DataParser.onPackageReceivedListener {
 
 
     private static final String TAG = "BerryDeviceActivity";
@@ -413,12 +420,12 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
     private TextView tvTEMP2info; // External temperature TextView
     private TextView tvNIBPinfo;
     private TextView tvRespRate;
-//    private WaveformView wfSpO2;
+    //    private WaveformView wfSpO2;
     private WaveformView wfECG1;
     private WaveformView wfECG2;
     private WaveformView wfECG3;
     private WaveformView wfECG4;
-//    private WaveformView wfResp;
+    //    private WaveformView wfResp;
     //    private Spinner spinnerECG3;
     private Button btnGenerateReport;
     private Button chestoConnett;
@@ -507,6 +514,15 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
     // ECG Options
     private String[] ecgOptions = {"ECG aVR", "ECG aVL", "ECG aVF", "ECG V"};
     private int[] selectedECG = {0, 1, 2, 3};
+
+    private FrameLayout publisherContainer, subscriberContainer;
+    private Session session;
+    private Publisher publisher;
+    private Subscriber subscriber;
+
+    private String API_KEY = GlobalVars.getMeetingApiKey();
+    private String SESSION_ID = GlobalVars.getMeetingSessionId();
+    private String TOKEN = GlobalVars.getMeetingToken();
 
 
     // Permissions
@@ -844,11 +860,15 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
 //
         cam1Button = findViewById(R.id.onn_cam1_button);
         cam2Button = findViewById(R.id.onn_cam2_button);
+
+        publisherContainer = findViewById(R.id.publisher_container);
+        subscriberContainer = findViewById(R.id.subscriber_container);
 //
 
         setupGraph();
         requestUsbPermission();
 //        setupDropdown(spinnerECG3, 3);
+        initializeSession();
 
         mConnectingDialog = new ProgressDialog(this);
         mConnectingDialog.setMessage("Connecting to Berry PM6750 (COM7/J42)...");
@@ -1707,51 +1727,6 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
         }, 100);
     }
 
-//    private void startECGBatchUpdates() {
-//        uiUpdateHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                synchronized (ecgBatchBuffer) {
-//                    if (!ecgBatchBuffer.isEmpty()) {
-//                        for (int[] ecgData : ecgBatchBuffer) {
-//                            wfECG1.addAmp(ecgData[selectedECG[0]]);
-//                            wfECG2.addAmp(ecgData[selectedECG[1]]);
-//                            wfECG3.addAmp(ecgData[selectedECG[2]]);
-//                            wfECG4.addAmp(ecgData[selectedECG[3]]);
-//                            if (ecgDialog != null && ecgDialog.isShowing()) {
-//                                if (wfLeadI != null) wfLeadI.addAmp(ecgData[0]);
-//                                if (wfLeadII != null) wfLeadII.addAmp(ecgData[1]);
-//                                if (wfLeadIII != null) wfLeadIII.addAmp(ecgData[2]);
-//                                if (wfLeadAVR != null) wfLeadAVR.addAmp(ecgData[3]);
-//                                if (wfLeadAVL != null) wfLeadAVL.addAmp(ecgData[4]);
-//                                if (wfLeadAVF != null) wfLeadAVF.addAmp(ecgData[5]);
-//                                if (wfLeadV != null) wfLeadV.addAmp(ecgData[6]);
-//                            }
-//                        }
-//                        ecgBatchBuffer.clear();
-//                        runOnUiThread(() -> {
-//                            wfECG1.postInvalidate();
-//                            wfECG2.postInvalidate();
-//                            wfECG3.postInvalidate();
-//                            wfECG4.postInvalidate();
-//                            if (ecgDialog != null && ecgDialog.isShowing()) {
-//                                if (wfLeadI != null) wfLeadI.postInvalidate();
-//                                if (wfLeadII != null) wfLeadII.postInvalidate();
-//                                if (wfLeadIII != null) wfLeadIII.postInvalidate();
-//                                if (wfLeadAVR != null) wfLeadAVR.postInvalidate();
-//                                if (wfLeadAVL != null) wfLeadAVL.postInvalidate();
-//                                if (wfLeadAVF != null) wfLeadAVF.postInvalidate();
-//                                if (wfLeadV != null) wfLeadV.postInvalidate();
-//                            }
-//                            Log.d(TAG, "ECG batch update: processed " + ecgBatchBuffer.size() + " points");
-//                        });
-//                    }
-//                }
-//                uiUpdateHandler.postDelayed(this, 100);
-//            }
-//        }, 100);
-//    }
-
     @Override
     public void onSpO2WaveReceived(int dat) {
         if (!serialPort.isConnected()) {
@@ -1770,69 +1745,6 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
             }
         });
     }
-
-//    @Override
-//    public void onSpO2Received(SpO2 spo2) {
-//        if (!serialPort.isConnected()) {
-//            return;
-//        }
-//        vitalHandler.post(() -> {
-//            if (!serialPort.isConnected()) {
-//                return;
-//            }
-//            String spo2Label = "SpO2: ";
-//            String pulseLabel = "Pulse Rate: ";
-//            String statusLabel = "Status: ";
-//            String spo2Value = (spo2.getSpO2() != SpO2.SPO2_INVALID) ? String.valueOf(spo2.getSpO2()) + " %" : "--";
-//            String pulseValue = (spo2.getPulseRate() != SpO2.PULSE_RATE_INVALID) ? String.valueOf(spo2.getPulseRate()) + " /min" : "--";
-//            String statusValue = spo2.getSensorStatus() != null ? spo2.getSensorStatus() : "Unknown";
-//            String fullText = spo2Label + spo2Value + "\n" + pulseLabel + pulseValue + "\n" + statusLabel + statusValue;
-//            SpannableString spannable = new SpannableString(fullText);
-//
-//            int spo2LabelStart = 0;
-//            int spo2LabelEnd = spo2Label.length();
-//            int spo2ValueStart = spo2LabelEnd;
-//            int spo2ValueEnd = spo2ValueStart + spo2Value.length();
-//            int pulseLabelStart = fullText.indexOf(pulseLabel);
-//            int pulseLabelEnd = pulseLabelStart + pulseLabel.length();
-//            int pulseValueStart = pulseLabelEnd;
-//            int pulseValueEnd = pulseValueStart + pulseValue.length();
-//            int statusLabelStart = fullText.indexOf(statusLabel);
-//            int statusLabelEnd = statusLabelStart + statusLabel.length();
-//            int statusValueStart = statusLabelEnd;
-//            int statusValueEnd = statusValueStart + statusValue.length();
-//
-//            spannable.setSpan(new RelativeSizeSpan(1.5f), spo2LabelStart, spo2LabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            spannable.setSpan(new RelativeSizeSpan(1.5f), pulseLabelStart, pulseLabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            spannable.setSpan(new RelativeSizeSpan(1.5f), statusLabelStart, statusLabelEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            spannable.setSpan(new RelativeSizeSpan(2.8f), spo2ValueStart, spo2ValueEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            spannable.setSpan(new RelativeSizeSpan(2.8f), pulseValueStart, pulseValueEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//            // Add to buffers
-//            synchronized (spo2Buffer) {
-//                if (spo2.getSpO2() != SpO2.SPO2_INVALID) {
-//                    spo2Buffer.add(spo2.getSpO2());
-//                    if (spo2Buffer.size() > SPO2_BUFFER_MAX_SIZE) {
-//                        spo2Buffer.subList(0, spo2Buffer.size() - SPO2_BUFFER_MAX_SIZE).clear();
-//                    }
-//                }
-//            }
-//            synchronized (pulseRateBuffer) {
-//                if (spo2.getPulseRate() != SpO2.PULSE_RATE_INVALID) {
-//                    pulseRateBuffer.add(spo2.getPulseRate());
-//                    if (pulseRateBuffer.size() > SPO2_BUFFER_MAX_SIZE) {
-//                        pulseRateBuffer.subList(0, pulseRateBuffer.size() - SPO2_BUFFER_MAX_SIZE).clear();
-//                    }
-//                }
-//            }
-//
-//            runOnUiThread(() -> {
-//                tvSPO2info.setText(spannable);
-//                tvSPO2info.setTypeface(Typeface.DEFAULT_BOLD);
-//                tvSPO2info.setTextSize(TypedValue.COMPLEX_UNIT_SP, 9);
-//            });
-//        });
-//    }
 
     @Override
     public void onSpO2Received(SpO2 spo2) {
@@ -1976,72 +1888,6 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
         });
     }
 
-//    @Override
-//    public void onECGReceived(ECG ecg) {
-//        if (!serialPort.isConnected()) {
-//            return;
-//        }
-//        vitalHandler.post(() -> {
-//            if (!serialPort.isConnected()) {
-//                return;
-//            }
-//            String heartRateLabel = "Heart Rate: ";
-//            String heartRateValue = (ecg.getHeartRate() != ecg.HEART_RATE_INVALID) ? String.valueOf(ecg.getHeartRate()) : "--";
-//            String stLevelValue = (ecg.getSTLevel() != -2.0f) ? String.format("%.2f mV", ecg.getSTLevel()) : "0 mV";
-//            String arrhyValue = (ecg.getArrythmia() != null) ? ecg.getArrythmia() : ECG.ARRYTHMIA_INVALID;
-//            String heartRateText = heartRateLabel + heartRateValue + "\nST Level: " + stLevelValue + "\nArrythmia: " + arrhyValue;
-//            SpannableString heartRateSpannable = new SpannableString(heartRateText);
-//            int hrStart = heartRateText.indexOf(heartRateValue);
-//            int hrEnd = hrStart + heartRateValue.length();
-//            heartRateSpannable.setSpan(new RelativeSizeSpan(2.8f), hrStart, hrEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//            String respRateLabel = "RoR/min: ";
-//            String respRateValue = (ecg.getRestRate() != ecg.RESP_RATE_INVALID) ? String.valueOf(ecg.getRestRate()) : "--";
-//            String respRateText = respRateLabel + respRateValue;
-//            SpannableString respRateSpannable = new SpannableString(respRateText);
-//            int respStart = respRateText.indexOf(respRateValue);
-//            int respEnd = respStart + respRateValue.length();
-//            respRateSpannable.setSpan(new RelativeSizeSpan(2.8f), respStart, respEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//            // Add to buffers
-//            synchronized (respRateBuffer) {
-//                if (ecg.getRestRate() != ecg.RESP_RATE_INVALID) {
-//                    respRateBuffer.add(ecg.getRestRate());
-//                    if (respRateBuffer.size() > 1000) { // 10 seconds at 100 Hz
-//                        respRateBuffer.subList(0, respRateBuffer.size() - 1000).clear();
-//                    }
-//                }
-//            }
-//
-//            runOnUiThread(() -> {
-//                tvECGinfo.setText(heartRateSpannable);
-//                tvECGinfo.setTypeface(Typeface.DEFAULT_BOLD);
-//                tvECGinfo.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//                tvRespRate.setText(respRateSpannable);
-//                tvRespRate.setTypeface(Typeface.DEFAULT_BOLD);
-//                tvRespRate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//
-//                if (ecgDialog != null && ecgDialog.isShowing()) {
-//                    hrDrate.setText(heartRateValue);
-//                    hrDrate.setTypeface(Typeface.DEFAULT_BOLD);
-//                    hrDrate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//
-//                    respDrate.setText(respRateValue);
-//                    respDrate.setTypeface(Typeface.DEFAULT_BOLD);
-//                    respDrate.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//
-//                    stDlevel.setText(stLevelValue);
-//                    stDlevel.setTypeface(Typeface.DEFAULT_BOLD);
-//                    stDlevel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//
-//                    arDcode.setText(arrhyValue);
-//                    arDcode.setTypeface(Typeface.DEFAULT_BOLD);
-//                    arDcode.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-//                }
-//            });
-//        });
-//    }
-
     @Override
     public void onTempReceived(Temp temp) {
         if (!serialPort.isConnected()) {
@@ -2071,29 +1917,6 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
             });
         });
     }
-
-//    @Override
-//    public void onNIBPReceived(NIBP nibp) {
-//        if (!serialPort.isConnected()) {
-//            return;
-//        }
-//        vitalHandler.post(() -> {
-//            if (!serialPort.isConnected()) {
-//                return;
-//            }
-//            // Add to nibpBuffer
-//            synchronized (nibpBuffer) {
-//                nibpBuffer.add(nibp);
-//                if (nibpBuffer.size() > 100) { // Keep last 100 readings (adjust as needed)
-//                    nibpBuffer.subList(0, nibpBuffer.size() - 100).clear();
-//                }
-//            }
-//
-//            runOnUiThread(() -> {
-//                tvNIBPinfo.setText(nibp.toString());
-//            });
-//        });
-//    }
 
     private void generateReport() {
         final Handler handler = new Handler(Looper.getMainLooper());
@@ -2423,6 +2246,88 @@ public class OnlineSessionActivity extends AppCompatActivity implements BerrySer
             autoTriggerHandler.removeCallbacks(autoTriggerRunnable);
             autoTriggerRunnable = null;
         }
+    }
+
+//
+
+    private void initializeSession() {
+        session = new Session.Builder(this, API_KEY, SESSION_ID).build();
+        session.setSessionListener(this);
+        session.connect(TOKEN);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100 && grantResults.length > 0) {
+            boolean cameraGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            boolean audioGranted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+        }
+    }
+
+    @Override
+    public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
+
+    }
+
+    @Override
+    public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
+        publisherContainer.removeView(publisher.getView());
+        publisher = null;
+    }
+
+    @Override
+    public void onError(PublisherKit publisherKit, OpentokError opentokError) {
+        Toast.makeText(this, "Publisher error: " + opentokError.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnected(Session session) {
+        try {
+            publisher = new Publisher.Builder(this).build();
+            publisher.setPublisherListener(this);
+            publisherContainer.addView(publisher.getView());
+            publisher.getView().setVisibility(View.VISIBLE); // Ensure visibility
+            publisherContainer.bringToFront(); // Bring publisher to front
+            session.publish(publisher);
+            Toast.makeText(this, "Connected to session", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Publisher init failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onDisconnected(Session session) {
+        Toast.makeText(this, "Session disconnected", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStreamReceived(Session session, Stream stream) {
+        if (subscriber == null) {
+            subscriber = new Subscriber.Builder(this, stream).build();
+            session.subscribe(subscriber);
+            subscriberContainer.removeAllViews();
+            subscriberContainer.bringToFront(); // Bring subscriber to front
+            publisherContainer.bringToFront(); // Ensure publisher stays visible
+            subscriberContainer.addView(subscriber.getView());
+            Toast.makeText(this, "New participant joined", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onStreamDropped(Session session, Stream stream) {
+        if (subscriber != null) {
+            subscriberContainer.removeView(subscriber.getView());
+            subscriber = null;
+            Toast.makeText(this, "Participant left", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onError(Session session, OpentokError opentokError) {
+        Toast.makeText(this, "Session error: " + opentokError.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     public static class TemperatureData {

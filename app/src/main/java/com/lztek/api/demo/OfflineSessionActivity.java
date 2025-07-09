@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -146,8 +147,8 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
     private WaveformView wfECG2;
     private WaveformView wfECG3;
     private WaveformView wfECG4;
-    private WaveformView wfResp;
-    private Spinner spinnerECG3;
+//    private WaveformView wfResp;
+//    private Spinner spinnerECG3;
     private Button btnGenerateReport;
     private Button chestoConnett;
     private ImageButton liveChesto;
@@ -543,12 +544,12 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         wfECG2 = findViewById(R.id.wfECG2);
         wfECG3 = findViewById(R.id.wfECG3);
         wfECG4 = findViewById(R.id.wfECG4);
-        wfSpO2 = findViewById(R.id.wfSpO2);
-        wfResp = findViewById(R.id.wfResp);
+//        wfSpO2 = findViewById(R.id.wfSpO2);
+//        wfResp = findViewById(R.id.wfResp);
         tvRespRate = findViewById(R.id.off_tvRespRate);
         btnGenerateReport = findViewById(R.id.off_btnGenerateReport);
         btnShowAllLeads = findViewById(R.id.off_btnShowAllLeads);
-        spinnerECG3 = findViewById(R.id.off_spinnerECG4);
+//        spinnerECG3 = findViewById(R.id.off_spinnerECG4);
         nibpStopButton = findViewById(R.id.off_btnNIBPStop);
         nibp5MinButton = findViewById(R.id.off_nibp5minbtn);
         nibp15MinButton = findViewById(R.id.off_nibp15minbtn);
@@ -580,7 +581,7 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
 
         setupGraph();
         requestUsbPermission();
-        setupDropdown(spinnerECG3, 3);
+//        setupDropdown(spinnerECG3, 3);
 //        String dateTimeNow = getCurrentDateTime();
 
         mConnectingDialog = new ProgressDialog(this);
@@ -1380,18 +1381,18 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
 
     private void clearWaveformViews() {
         runOnUiThread(() -> {
-            wfECG1.clear();
-            wfECG2.clear();
-            wfECG3.clear();
-            wfECG4.clear();
-            wfResp.clear();
-            wfSpO2.clear();
-            wfECG1.postInvalidate();
-            wfECG2.postInvalidate();
-            wfECG3.postInvalidate();
-            wfECG4.postInvalidate();
-            wfResp.postInvalidate();
-            wfSpO2.postInvalidate();
+//            wfECG1.clear();
+//            wfECG2.clear();
+//            wfECG3.clear();
+//            wfECG4.clear();
+////            wfResp.clear();
+////            wfSpO2.clear();
+//            wfECG1.postInvalidate();
+//            wfECG2.postInvalidate();
+//            wfECG3.postInvalidate();
+//            wfECG4.postInvalidate();
+//            wfResp.postInvalidate();
+//            wfSpO2.postInvalidate();
             if (ecgDialog != null && ecgDialog.isShowing()) {
                 wfLeadI.clear();
                 wfLeadII.clear();
@@ -1560,10 +1561,10 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
                 synchronized (spo2Buffer) {
                     if (!spo2Buffer.isEmpty()) {
                         for (int dat : spo2Buffer) {
-                            wfSpO2.addAmp(dat);
+//                            wfSpO2.addAmp(dat);
                         }
                         spo2Buffer.clear();
-                        wfSpO2.postInvalidate();
+//                        wfSpO2.postInvalidate();
                         Log.d(TAG, "SpO2 batch update: added " + spo2Buffer.size() + " points");
                     }
                 }
@@ -1579,10 +1580,10 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
                 synchronized (ecgBatchBuffer) {
                     if (!ecgBatchBuffer.isEmpty()) {
                         for (int[] ecgData : ecgBatchBuffer) {
-                            wfECG1.addAmp(ecgData[selectedECG[0]]);
-                            wfECG2.addAmp(ecgData[selectedECG[1]]);
-                            wfECG3.addAmp(ecgData[selectedECG[2]]);
-                            wfECG4.addAmp(ecgData[selectedECG[3]]);
+//                            wfECG1.addAmp(ecgData[selectedECG[0]]);
+//                            wfECG2.addAmp(ecgData[selectedECG[1]]);
+//                            wfECG3.addAmp(ecgData[selectedECG[2]]);
+//                            wfECG4.addAmp(ecgData[selectedECG[3]]);
                             if (ecgDialog != null && ecgDialog.isShowing()) {
                                 if (wfLeadI != null) wfLeadI.addAmp(ecgData[0]);
                                 if (wfLeadII != null) wfLeadII.addAmp(ecgData[1]);
@@ -1595,10 +1596,10 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
                         }
                         ecgBatchBuffer.clear();
                         runOnUiThread(() -> {
-                            wfECG1.postInvalidate();
-                            wfECG2.postInvalidate();
-                            wfECG3.postInvalidate();
-                            wfECG4.postInvalidate();
+//                            wfECG1.postInvalidate();
+//                            wfECG2.postInvalidate();
+//                            wfECG3.postInvalidate();
+//                            wfECG4.postInvalidate();
                             if (ecgDialog != null && ecgDialog.isShowing()) {
                                 if (wfLeadI != null) wfLeadI.postInvalidate();
                                 if (wfLeadII != null) wfLeadII.postInvalidate();
@@ -1725,19 +1726,19 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
 
     @Override
     public void onRespWaveReceived(int dat) {
-        if (!serialPort.isConnected()) {
-            return;
-        }
-        vitalHandler.post(() -> {
-            if (!serialPort.isConnected()) {
-                return;
-            }
-            for (int i = 0; i < 3; i++) wfResp.addAmp(dat);
-            runOnUiThread(() -> {
-                wfResp.postInvalidate();
-                Log.d(TAG, "Resp data received: " + dat);
-            });
-        });
+//        if (!serialPort.isConnected()) {
+//            return;
+//        }
+//        vitalHandler.post(() -> {
+//            if (!serialPort.isConnected()) {
+//                return;
+//            }
+//            for (int i = 0; i < 3; i++) wfResp.addAmp(dat);
+//            runOnUiThread(() -> {
+//                wfResp.postInvalidate();
+//                Log.d(TAG, "Resp data received: " + dat);
+//            });
+//        });
     }
 
     @Override
@@ -1844,11 +1845,18 @@ public class OfflineSessionActivity extends AppCompatActivity implements BerrySe
         });
     }
 
-    public static String getCurrentDateTime() {
-        // Format: "yyyy-MM-dd HH:mm:ss" → Example: "2025-06-06 14:45:00"
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String currentDateTime = sdf.format(new Date());
-        return currentDateTime;
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("End Session")
+                .setMessage("Are you sure to end session?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    super.onBackPressed(); // Close the activity
+                    finish(); // Ensure activity is finished
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss()) // Keep the activity open
+                .setCancelable(false) // Prevent back press to dismiss dialog
+                .show();
     }
 
     private void generateReport() {

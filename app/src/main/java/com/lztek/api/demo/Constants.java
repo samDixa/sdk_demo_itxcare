@@ -13,12 +13,16 @@ public class Constants {
     public static final String UPDATE_DEVICE_INSTANCE = BASE_URL_QA + "update/device/{device_Id}";
     public static final String PARAMEDIC_MY_PROFILE = BASE_URL_QA + "account/paramedic/myprofile";
     public static final String UPDATE_PROFILE = BASE_URL_QA + "account/paramedic/updateprofile";
+
     public static final String APPOINTMENT_LIST = BASE_URL_QA + "paramedic/appointment/list/{id}";
+
     public static final String APPOINTMENT_DETAILS = BASE_URL_QA + "paramedic/appointmentbyid/{id}";
     public static final String BOOK_APPOINTMENT = BASE_URL_QA + "patient/appointment/booking";
     public static final String CONFIRM_APPOINTMENT = BASE_URL_QA + "appointment/confirmed/{appointmentId}";
     public static final String END_APPOINTMENT = BASE_URL_QA + "paramedic/appointment/end";
     public static final String DEVICE_BY_HARDWARE_ID = BASE_URL_QA + "devicebyhardwareid";
+
+    public static  final  String STARTMEETING = BASE_URL_QA + "paramedic/appointment/start";
 
     // API Query Parameters
     public static final String PAGE_QUERY = "page";

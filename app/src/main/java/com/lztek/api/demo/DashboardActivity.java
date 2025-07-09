@@ -28,11 +28,14 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
     private static final String TAG = "DashboardActivity";
 
     private Button backButton;
+
     private Button appoimentButton;
     private Button patienMonitorButton;
     private Button newAppoinmentButton;
     private Button offlineButton;
     private Button myfilesStorage;
+    private Button ambulanceMode;
+
     private ImageView internalCameraIndicator, usbCameraIndicator, keyboardIndicator;
     private View spO2Indicator, ecgIndicator, nibpIndicator, tempIndicator;
     private GlobalVars globalVars;
@@ -74,6 +77,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         tempIndicator = findViewById(R.id.temp_indicator);
         stethoBtn = findViewById(R.id.stetho_btn);
         othersButton = findViewById(R.id.othresButton);
+        ambulanceMode = findViewById(R.id.ambulance_mode);
 
         peramedicName = findViewById(R.id.pramedic_name);
         peramedicId = findViewById(R.id.permedic_id);
@@ -116,7 +120,7 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
         patienMonitorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DashboardActivity.this, BerryDeviceActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, PatientMonitorDetailsActivity.class);
                 startActivity(intent);
             }
         });
@@ -133,6 +137,14 @@ public class DashboardActivity extends AppCompatActivity implements BerrySerialP
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DashboardActivity.this, OfflineModeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        ambulanceMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DashboardActivity.this,OnlineSessionActivity.class);
                 startActivity(intent);
             }
         });

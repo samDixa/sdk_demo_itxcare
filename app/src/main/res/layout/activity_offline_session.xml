@@ -444,66 +444,50 @@
             <LinearLayout
                 android:id="@+id/off_vitals_graphs"
                 android:layout_width="0dp"
-                android:layout_height="500dp"
+                android:layout_height="570dp"
                 android:layout_weight="1.7"
                 android:orientation="vertical">
 
-                <TextView
+<!--                cam-->
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ECG L1"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
-                <include layout="@layout/layout_ecg" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ECG L2"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                    <FrameLayout
+                        android:id="@+id/video_call_root"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#C8C7C7">
 
-                <include layout="@layout/layout_ecg2" />
+                        <FrameLayout
+                            android:id="@+id/subscriber_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ECG L3"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                        <!-- Publisher (self camera) as picture-in-picture -->
+                        <FrameLayout
+                            android:id="@+id/publisher_container"
+                            android:layout_width="190dp"
+                            android:layout_height="160dp"
+                            android:layout_gravity="bottom|end"
+                            android:layout_margin="16dp"
+                            android:background="#333" />
 
-                <include layout="@layout/layout_ecg3" />
+                    </FrameLayout>
 
-                <Spinner
-                    android:id="@+id/off_spinnerECG4"
-                    android:layout_width="60dp"
-                    android:layout_height="15dp"
-                    android:layout_alignParentStart="true"
-                    android:background="@drawable/spinner_background"
-                    android:gravity="center"
-                    android:textSize="8sp" />
-
-                <include layout="@layout/layout_ecg4" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Respiration"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
-
-                <include layout="@layout/layout_resp_rate" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Blood Oyygen"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
-
-                <include layout="@layout/layout_spo2" />
-
+                </LinearLayout>
 
             </LinearLayout>
 

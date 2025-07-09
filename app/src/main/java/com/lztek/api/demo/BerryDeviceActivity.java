@@ -1093,6 +1093,8 @@ public class BerryDeviceActivity extends AppCompatActivity implements BerrySeria
         }
     };
 
+
+
     private void updateGraph() {
         List<Byte> bufferCopy;
         synchronized (plotBuffer) {

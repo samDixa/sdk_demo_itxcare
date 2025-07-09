@@ -14,6 +14,15 @@ public class GlobalVars {
 
     private static GlobalVars instance;
 
+
+    // Meeting-related variables
+    private static String meetingApiKey;
+    private static String meetingSessionId;
+    private static String meetingAudioSessionId;
+    private static String meetingToken;
+    private static String meetingAudioToken;
+    private static String meetingUrl;
+
     private static boolean isCam1On = false;
     private static boolean isCam2On = false;
     private static boolean isFrontRecording = false; // Added
@@ -148,6 +157,55 @@ public class GlobalVars {
         patientMonitorGender = Gender;
     }
 
+
+    // Getters and Setters for Meeting-related variables
+    public static String getMeetingApiKey() {
+        return meetingApiKey;
+    }
+
+    public static void setMeetingApiKey(String apiKey) {
+        meetingApiKey = apiKey;
+    }
+
+    public static String getMeetingSessionId() {
+        return meetingSessionId;
+    }
+
+    public static void setMeetingSessionId(String sessionId) {
+        meetingSessionId = sessionId;
+    }
+
+    public static String getMeetingAudioSessionId() {
+        return meetingAudioSessionId;
+    }
+
+    public static void setMeetingAudioSessionId(String audioSessionId) {
+        meetingAudioSessionId = audioSessionId;
+    }
+
+    public static String getMeetingToken() {
+        return meetingToken;
+    }
+
+    public static void setMeetingToken(String token) {
+        meetingToken = token;
+    }
+
+    public static String getMeetingAudioToken() {
+        return meetingAudioToken;
+    }
+
+    public static void setMeetingAudioToken(String audioToken) {
+        meetingAudioToken = audioToken;
+    }
+
+    public static String getMeetingUrl() {
+        return meetingUrl;
+    }
+
+    public static void setMeetingUrl(String url) {
+        meetingUrl = url;
+    }
 
 
 
